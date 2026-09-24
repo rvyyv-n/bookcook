@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Mom's biryani, just talking",
+    "input": "okay so first you take the chicken about a kilo and put the yogurt maybe a cup. then the masala you know the red chilli, haldi, a little salt and leave it for 30 minutes. after that boil three cups of rice with four cardamom for 7 minutes and drain it. then you cook the chicken until the oil comes up. then layer the rice and keep it on low heat for 20 minutes",
+    "expected": {
+      "ingredients": ["chicken", "yogurt", "rice"],
+      "minSteps": 4,
+      "timers": [1800, 420, 1200]
+    }
+  },
+  {
+    "name": "Ingredient list then steps",
+    "input": "you'll need two cups of flour, a cup of milk, two eggs and a pinch of salt. whisk everything together and then rest the batter for 10 minutes. then fry in a hot pan for a couple of minutes each side",
+    "expected": {
+      "ingredients": ["flour", "milk", "eggs", "salt"],
+      "minSteps": 3,
+      "timers": [600, 120]
+    }
+  }
+]

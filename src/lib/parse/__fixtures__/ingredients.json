@@ -1,0 +1,163 @@
+[
+  {
+    "source": "typed",
+    "input": "2 cups basmati rice, washed",
+    "expected": { "quantity": 2, "unit": "cup", "name": "basmati rice", "note": "washed" }
+  },
+  {
+    "source": "typed",
+    "input": "1 kg chicken, bone-in",
+    "expected": { "quantity": 1, "unit": "kg", "name": "chicken", "note": "bone-in" }
+  },
+  { "source": "typed", "input": "1 cup yogurt", "expected": { "quantity": 1, "unit": "cup", "name": "yogurt" } },
+  {
+    "source": "typed",
+    "input": "1 tbsp ginger garlic paste",
+    "expected": { "quantity": 1, "unit": "tbsp", "name": "ginger garlic paste" }
+  },
+  { "source": "typed", "input": "2 tsp red chilli powder", "expected": { "quantity": 2, "unit": "tsp", "name": "red chilli powder" } },
+  { "source": "typed", "input": "1 tsp turmeric", "expected": { "quantity": 1, "unit": "tsp", "name": "turmeric" } },
+  { "source": "typed", "input": "salt to taste", "expected": { "unit": "to taste", "name": "salt" } },
+  {
+    "source": "typed",
+    "input": "3 cups basmati rice, washed and soaked",
+    "expected": { "quantity": 3, "unit": "cup", "name": "basmati rice", "note": "washed and soaked" }
+  },
+  { "source": "typed", "input": "4 green cardamom", "expected": { "quantity": 4, "name": "green cardamom" } },
+  { "source": "typed", "input": "1 bay leaf", "expected": { "quantity": 1, "name": "bay leaf" } },
+  {
+    "source": "typed",
+    "input": "2 onions, thinly sliced and fried",
+    "expected": { "quantity": 2, "name": "onions", "note": "thinly sliced and fried" }
+  },
+  { "source": "typed", "input": "a handful of mint leaves", "expected": { "quantity": 1, "unit": "handful", "name": "mint leaves" } },
+  { "source": "typed", "input": "a handful of coriander", "expected": { "quantity": 1, "unit": "handful", "name": "coriander" } },
+  {
+    "source": "typed",
+    "input": "a pinch of saffron in 2 tbsp warm milk",
+    "expected": { "quantity": 1, "unit": "pinch", "name": "saffron", "note": "in 2 tbsp warm milk" }
+  },
+  { "source": "typed", "input": "1 1/2 cups sugar", "expected": { "quantity": 1.5, "unit": "cup", "name": "sugar" } },
+  { "source": "typed", "input": "½ tsp baking soda", "expected": { "quantity": 0.5, "unit": "tsp", "name": "baking soda" } },
+  { "source": "typed", "input": "1½ cups milk", "expected": { "quantity": 1.5, "unit": "cup", "name": "milk" } },
+  { "source": "typed", "input": "1.5 kg lamb shoulder", "expected": { "quantity": 1.5, "unit": "kg", "name": "lamb shoulder" } },
+  {
+    "source": "typed",
+    "input": "100g butter, softened",
+    "expected": { "quantity": 100, "unit": "g", "name": "butter", "note": "softened" }
+  },
+  { "source": "typed", "input": "250 ml double cream", "expected": { "quantity": 250, "unit": "ml", "name": "double cream" } },
+  { "source": "typed", "input": "3-4 green chillies, slit", "expected": { "quantity": [3, 4], "name": "green chillies", "note": "slit" } },
+  {
+    "source": "typed",
+    "input": "1 (400g) can chopped tomatoes",
+    "expected": { "quantity": 1, "unit": "can", "name": "chopped tomatoes", "note": "400g" }
+  },
+  { "source": "typed", "input": "2 T butter", "expected": { "quantity": 2, "unit": "tbsp", "name": "butter" } },
+  { "source": "typed", "input": "1 t salt", "expected": { "quantity": 1, "unit": "tsp", "name": "salt" } },
+  { "source": "typed", "input": "6 cloves", "expected": { "quantity": 6, "name": "cloves" } },
+  {
+    "source": "typed",
+    "input": "4 cloves garlic, minced",
+    "expected": { "quantity": 4, "unit": "clove", "name": "garlic", "note": "minced" }
+  },
+  {
+    "source": "typed",
+    "input": "1 inch piece ginger, grated",
+    "expected": { "quantity": 1, "unit": "inch", "name": "ginger", "note": "grated" }
+  },
+  { "source": "typed", "input": "2 large eggs", "expected": { "quantity": 2, "name": "large eggs" } },
+  { "source": "typed", "input": "1 lb ground beef", "expected": { "quantity": 1, "unit": "lb", "name": "ground beef" } },
+  {
+    "source": "typed",
+    "input": "8 oz cream cheese, at room temperature",
+    "expected": { "quantity": 8, "unit": "oz", "name": "cream cheese", "note": "at room temperature" }
+  },
+  { "source": "typed", "input": "1/4 cup olive oil", "expected": { "quantity": 0.25, "unit": "cup", "name": "olive oil" } },
+  { "source": "typed", "input": "3/4 tsp salt", "expected": { "quantity": 0.75, "unit": "tsp", "name": "salt" } },
+  { "source": "typed", "input": "2 tablespoons soy sauce", "expected": { "quantity": 2, "unit": "tbsp", "name": "soy sauce" } },
+  { "source": "typed", "input": "1 teaspoon vanilla extract", "expected": { "quantity": 1, "unit": "tsp", "name": "vanilla extract" } },
+  {
+    "source": "typed",
+    "input": "500 grams paneer, cubed",
+    "expected": { "quantity": 500, "unit": "g", "name": "paneer", "note": "cubed" }
+  },
+  { "source": "typed", "input": "1 litre water", "expected": { "quantity": 1, "unit": "l", "name": "water" } },
+  {
+    "source": "typed",
+    "input": "2 carrots, peeled and diced",
+    "expected": { "quantity": 2, "name": "carrots", "note": "peeled and diced" }
+  },
+  { "source": "typed", "input": "1 bunch coriander", "expected": { "quantity": 1, "unit": "bunch", "name": "coriander" } },
+  { "source": "typed", "input": "2 cinnamon sticks", "expected": { "quantity": 2, "name": "cinnamon sticks" } },
+  { "source": "typed", "input": "1 sprig rosemary", "expected": { "quantity": 1, "unit": "sprig", "name": "rosemary" } },
+  { "source": "typed", "input": "freshly ground black pepper", "expected": { "name": "freshly ground black pepper" } },
+  { "source": "typed", "input": "oil for frying", "expected": { "name": "oil", "note": "for frying" } },
+  { "source": "typed", "input": "lemon wedges, to serve", "expected": { "name": "lemon wedges", "note": "to serve" } },
+  {
+    "source": "typed",
+    "input": "1 cup frozen peas (optional)",
+    "expected": { "quantity": 1, "unit": "cup", "name": "frozen peas", "note": "optional" }
+  },
+  {
+    "source": "typed",
+    "input": "2 x 400g tins chickpeas, drained",
+    "expected": { "quantity": 2, "unit": "can", "name": "chickpeas", "note": "drained, 400g" }
+  },
+  { "source": "typed", "input": "a splash of lemon juice", "expected": { "quantity": 1, "unit": "splash", "name": "lemon juice" } },
+  { "source": "typed", "input": "2 pinches salt", "expected": { "quantity": 2, "unit": "pinch", "name": "salt" } },
+  { "source": "typed", "input": "1 packet yeast", "expected": { "quantity": 1, "unit": "packet", "name": "yeast" } },
+  { "source": "typed", "input": "10 curry leaves", "expected": { "quantity": 10, "name": "curry leaves" } },
+  { "source": "typed", "input": "1 tsp cumin seeds", "expected": { "quantity": 1, "unit": "tsp", "name": "cumin seeds" } },
+  { "source": "typed", "input": "1-2 tbsp honey", "expected": { "quantity": [1, 2], "unit": "tbsp", "name": "honey" } },
+  { "source": "typed", "input": "salt and pepper to taste", "expected": { "unit": "to taste", "name": "salt and pepper" } },
+  { "source": "typed", "input": "sugar, as needed", "expected": { "unit": "to taste", "name": "sugar" } },
+  {
+    "source": "typed",
+    "input": "3 medium potatoes, boiled and mashed",
+    "expected": { "quantity": 3, "name": "medium potatoes", "note": "boiled and mashed" }
+  },
+  { "source": "pasted", "input": "- 2 cups flour", "expected": { "quantity": 2, "unit": "cup", "name": "flour" } },
+  { "source": "pasted", "input": "• 1 tsp baking powder", "expected": { "quantity": 1, "unit": "tsp", "name": "baking powder" } },
+  { "source": "pasted", "input": "* 3 eggs", "expected": { "quantity": 3, "name": "eggs" } },
+  { "source": "pasted", "input": "Chicken - 1 kg", "expected": { "quantity": 1, "unit": "kg", "name": "Chicken" } },
+  { "source": "pasted", "input": "Onions: 2", "expected": { "quantity": 2, "name": "Onions" } },
+  { "source": "pasted", "input": "Yogurt - 1 cup", "expected": { "quantity": 1, "unit": "cup", "name": "Yogurt" } },
+  { "source": "pasted", "input": "Rice 500g", "expected": { "quantity": 500, "unit": "g", "name": "Rice" } },
+  { "source": "pasted", "input": "▪️ ½ cup sugar", "expected": { "quantity": 0.5, "unit": "cup", "name": "sugar" } },
+  { "source": "spoken", "input": "two onions finely chopped", "expected": { "quantity": 2, "name": "onions", "note": "finely chopped" } },
+  { "source": "spoken", "input": "one kilo chicken", "expected": { "quantity": 1, "unit": "kg", "name": "chicken" } },
+  { "source": "spoken", "input": "a cup of yogurt", "expected": { "quantity": 1, "unit": "cup", "name": "yogurt" } },
+  { "source": "spoken", "input": "and a cup of yogurt", "expected": { "quantity": 1, "unit": "cup", "name": "yogurt" } },
+  { "source": "spoken", "input": "half a cup of milk", "expected": { "quantity": 0.5, "unit": "cup", "name": "milk" } },
+  { "source": "spoken", "input": "a cup and a half of flour", "expected": { "quantity": 1.5, "unit": "cup", "name": "flour" } },
+  { "source": "spoken", "input": "two and a half cups of water", "expected": { "quantity": 2.5, "unit": "cup", "name": "water" } },
+  { "source": "spoken", "input": "one to two tablespoons of oil", "expected": { "quantity": [1, 2], "unit": "tbsp", "name": "oil" } },
+  { "source": "spoken", "input": "a quarter teaspoon of turmeric", "expected": { "quantity": 0.25, "unit": "tsp", "name": "turmeric" } },
+  { "source": "spoken", "input": "a couple of potatoes", "expected": { "quantity": 2, "name": "potatoes" } },
+  { "source": "spoken", "input": "a few cloves of garlic", "expected": { "quantity": [2, 3], "unit": "clove", "name": "garlic" } },
+  { "source": "spoken", "input": "three big spoons of ghee", "expected": { "quantity": 3, "unit": "tbsp", "name": "ghee" } },
+  { "source": "spoken", "input": "one small spoon of salt", "expected": { "quantity": 1, "unit": "tsp", "name": "salt" } },
+  { "source": "spoken", "input": "an onion", "expected": { "quantity": 1, "name": "onion" } },
+  { "source": "spoken", "input": "a little salt", "expected": { "name": "salt" } },
+  { "source": "spoken", "input": "some coriander for garnish", "expected": { "name": "coriander", "note": "for garnish" } },
+  { "source": "spoken", "input": "um two tomatoes", "expected": { "quantity": 2, "name": "tomatoes" } },
+  { "source": "spoken", "input": "about 500 grams of mince", "expected": { "quantity": 500, "unit": "g", "name": "mince" } },
+  { "source": "spoken", "input": "three quarters of a cup of sugar", "expected": { "quantity": 0.75, "unit": "cup", "name": "sugar" } },
+  { "source": "spoken", "input": "twelve curry leaves", "expected": { "quantity": 12, "name": "curry leaves" } },
+  { "source": "spoken", "input": "twenty five grams of butter", "expected": { "quantity": 25, "unit": "g", "name": "butter" } },
+  { "source": "spoken", "input": "two or three green chillies", "expected": { "quantity": [2, 3], "name": "green chillies" } },
+  { "source": "spoken", "input": "a dozen eggs", "expected": { "quantity": 12, "name": "eggs" } },
+  { "source": "spoken", "input": "half a kilo of lamb", "expected": { "quantity": 0.5, "unit": "kg", "name": "lamb" } },
+  { "source": "spoken", "input": "salt according to taste", "expected": { "unit": "to taste", "name": "salt" } },
+  { "source": "spoken", "input": "a pinch of hing", "expected": { "quantity": 1, "unit": "pinch", "name": "hing" } },
+  { "source": "spoken", "input": "one tin of coconut milk", "expected": { "quantity": 1, "unit": "can", "name": "coconut milk" } },
+  {
+    "source": "spoken",
+    "input": "two pounds of potatoes peeled",
+    "expected": { "quantity": 2, "unit": "lb", "name": "potatoes", "note": "peeled" }
+  },
+  { "source": "spoken", "input": "one teaspoon garam masala", "expected": { "quantity": 1, "unit": "tsp", "name": "garam masala" } },
+  { "source": "spoken", "input": "four eggs beaten", "expected": { "quantity": 4, "name": "eggs", "note": "beaten" } },
+  { "source": "spoken", "input": "a handful of cashews", "expected": { "quantity": 1, "unit": "handful", "name": "cashews" } }
+]

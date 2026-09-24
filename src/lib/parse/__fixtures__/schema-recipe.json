@@ -1,0 +1,49 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", "name": "Example Kitchen" },
+    {
+      "@type": ["Recipe"],
+      "name": "Classic Banana Bread",
+      "author": [{ "@type": "Person", "name": "Jane Baker" }],
+      "description": "Moist and easy banana bread &amp; a family favourite.",
+      "image": [{ "@type": "ImageObject", "url": "https://example.com/banana.jpg" }],
+      "recipeYield": ["8", "1 loaf (8 slices)"],
+      "prepTime": "PT15M",
+      "cookTime": "PT1H",
+      "totalTime": "PT1H15M",
+      "recipeCategory": "Bread",
+      "recipeCuisine": "American",
+      "keywords": "banana, quick bread, baking",
+      "recipeIngredient": [
+        "3 ripe bananas, mashed",
+        "1/3 cup melted butter",
+        "3/4 cup sugar",
+        "1 egg, beaten",
+        "1 teaspoon vanilla extract",
+        "1 teaspoon baking soda",
+        "Pinch of salt",
+        "1 &frac12; cups all-purpose flour"
+      ],
+      "recipeInstructions": [
+        {
+          "@type": "HowToSection",
+          "name": "Make the batter",
+          "itemListElement": [
+            { "@type": "HowToStep", "text": "Preheat the oven to 350&deg;F." },
+            { "@type": "HowToStep", "text": "Mix the <b>butter</b> into the mashed bananas." },
+            {
+              "@type": "HowToStep",
+              "text": "Mix in the sugar, egg and vanilla. Sprinkle the baking soda and salt over and mix. Add the flour."
+            }
+          ]
+        },
+        {
+          "@type": "HowToSection",
+          "name": "Bake",
+          "itemListElement": [{ "@type": "HowToStep", "text": "Bake for 1 hour, until a skewer comes out clean." }]
+        }
+      ]
+    }
+  ]
+}

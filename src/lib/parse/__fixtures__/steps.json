@@ -1,0 +1,42 @@
+[
+  {
+    "source": "spoken",
+    "input": "okay so first you wash the rice and soak it for 30 minutes then fry the onions until golden after that add the chicken and cook for 25 minutes once that's done layer the rice",
+    "expected": [
+      "Wash the rice and soak it for 30 minutes.",
+      "Fry the onions until golden.",
+      "Add the chicken and cook for 25 minutes.",
+      "Layer the rice."
+    ]
+  },
+  {
+    "source": "spoken",
+    "input": "heat the oil and then add the cumin seeds and then add the onions",
+    "expected": ["Heat the oil.", "Add the cumin seeds.", "Add the onions."]
+  },
+  {
+    "source": "spoken",
+    "input": "mix the flour and water. knead for ten minutes. afterwards let it rest",
+    "expected": ["Mix the flour and water.", "Knead for ten minutes.", "Let it rest."]
+  },
+  {
+    "source": "spoken",
+    "input": "you boil the potatoes next you mash them finally you add the butter",
+    "expected": ["Boil the potatoes.", "Mash them.", "Add the butter."]
+  },
+  {
+    "source": "typed",
+    "input": "Cover tightly and keep on the lowest heat for 20 minutes until the steam comes out.",
+    "expected": ["Cover tightly and keep on the lowest heat for 20 minutes until the steam comes out."]
+  },
+  {
+    "source": "spoken",
+    "input": "um so you put the pan on the stove and after that you add some ghee",
+    "expected": ["Put the pan on the stove.", "Add some ghee."]
+  },
+  {
+    "source": "spoken",
+    "input": "when the oil is hot add the mustard seeds then the curry leaves then the onions",
+    "expected": ["When the oil is hot add the mustard seeds.", "The curry leaves.", "The onions."]
+  }
+]

@@ -1,0 +1,36 @@
+[
+  { "input": "2 1/4 cups all-purpose flour", "expected": { "quantity": 2.25, "unit": "cup", "name": "all-purpose flour" } },
+  {
+    "input": "1 stick unsalted butter, cold and cubed",
+    "expected": { "quantity": 1, "unit": "stick", "name": "unsalted butter", "note": "cold and cubed" }
+  },
+  { "input": "3 tbsp. brown sugar", "expected": { "quantity": 3, "unit": "tbsp", "name": "brown sugar" } },
+  { "input": "1 medium red onion, diced", "expected": { "quantity": 1, "name": "medium red onion", "note": "diced" } },
+  { "input": "400 g tinned tomatoes", "expected": { "quantity": 400, "unit": "g", "name": "tinned tomatoes" } },
+  { "input": "1/2 lemon, juiced", "expected": { "quantity": 0.5, "name": "lemon", "note": "juiced" } },
+  { "input": "Handful of spinach", "expected": { "quantity": 1, "unit": "handful", "name": "spinach" } },
+  { "input": "750ml chicken stock", "expected": { "quantity": 750, "unit": "ml", "name": "chicken stock" } },
+  { "input": "2 heaped tbsp plain yogurt", "expected": { "quantity": 2, "unit": "tbsp", "name": "plain yogurt", "note": "heaped" } },
+  { "input": "1 x 400ml can coconut milk", "expected": { "quantity": 1, "unit": "can", "name": "coconut milk", "note": "400ml" } },
+  { "input": "Few sprigs of thyme", "expected": { "quantity": [2, 3], "unit": "sprig", "name": "thyme" } },
+  { "input": "one and a half teaspoons of salt", "expected": { "quantity": 1.5, "unit": "tsp", "name": "salt" } },
+  { "input": "a kilo of potatoes", "expected": { "quantity": 1, "unit": "kg", "name": "potatoes" } },
+  { "input": "three cloves of garlic crushed", "expected": { "quantity": 3, "unit": "clove", "name": "garlic", "note": "crushed" } },
+  { "input": "some oil", "expected": { "name": "oil" } },
+  { "input": "two big onions", "expected": { "quantity": 2, "name": "big onions" } },
+  { "input": "a small piece of ginger", "expected": { "quantity": 1, "unit": "piece", "name": "ginger", "note": "small" } },
+  { "input": "Butter - 2 tbsp", "expected": { "quantity": 2, "unit": "tbsp", "name": "Butter" } },
+  { "input": "Garam masala: 1 tsp", "expected": { "quantity": 1, "unit": "tsp", "name": "Garam masala" } },
+  {
+    "input": "1 tbsp each of cumin and coriander",
+    "expected": { "quantity": 1, "unit": "tbsp", "name": "cumin and coriander", "note": "each" }
+  },
+  { "input": "6-8 chicken thighs", "expected": { "quantity": [6, 8], "name": "chicken thighs" } },
+  { "input": "2 cups (480ml) milk", "expected": { "quantity": 2, "unit": "cup", "name": "milk", "note": "480ml" } },
+  { "input": "salt, to taste", "expected": { "unit": "to taste", "name": "salt" } },
+  {
+    "input": "1 kg boneless mutton, cut into pieces",
+    "expected": { "quantity": 1, "unit": "kg", "name": "boneless mutton", "note": "cut into pieces" }
+  },
+  { "input": "a quarter cup of lemon juice", "expected": { "quantity": 0.25, "unit": "cup", "name": "lemon juice" } }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "name": "WhatsApp message with bold headings and emoji bullets",
+    "input": "*Mom's Chicken Karahi* 🍗\n\n*Ingredients*\n▪️ Chicken - 1 kg\n▪️ Tomatoes - 4\n▪️ Ginger garlic paste 2 tbsp\n▪️ Green chillies - 6\n▪️ Oil half cup\n▪️ Salt to taste\n\n*Method*\n1. Heat oil and add chicken. Fry for 10 minutes.\n2. Add tomatoes and ginger garlic paste, cover and cook 15 min.\n3. Add green chillies and salt.\nCook on high flame till oil separates.\n4. Garnish with ginger and coriander.",
+    "expected": {
+      "title": "Mom's Chicken Karahi",
+      "ingredients": ["Chicken", "Tomatoes", "Ginger garlic paste", "Green chillies", "Oil", "Salt"],
+      "steps": 4,
+      "timers": [600, 900, null, null]
+    }
+  },
+  {
+    "name": "Notes app, no headings",
+    "input": "Banana bread\n3 ripe bananas\n1/3 cup melted butter\n3/4 cup sugar\n1 egg, beaten\n1 tsp vanilla\n1 tsp baking soda\npinch of salt\n1 1/2 cups flour\nMash the bananas with the butter.\nMix in the sugar, egg and vanilla.\nSprinkle the soda and salt over and mix in the flour.\nBake at 175C for 1 hour.",
+    "expected": {
+      "title": "Banana bread",
+      "ingredients": ["ripe bananas", "melted butter", "sugar", "egg", "vanilla", "baking soda", "salt", "flour"],
+      "steps": 4,
+      "timers": [null, null, null, 3600]
+    }
+  },
+  {
+    "name": "Email with Ingredients/Directions headings, sections and serves line",
+    "input": "Sunday Lentil Soup\nServes 4\nPrep: 10 min\n\nIngredients:\nFor the soup:\n- 1 cup red lentils, rinsed\n- 1 onion, chopped\n- 2 carrots, diced\n- 1 litre vegetable stock\nTo finish:\n- juice of 1 lemon\n- a handful of parsley\n\nDirections:\nSoften the onion and carrots in a little oil for 5 minutes. Add the lentils and stock and simmer for 25 minutes.\n\nBlend until smooth, then finish with lemon and parsley.\n\nTips: Freezes well.",
+    "expected": {
+      "title": "Sunday Lentil Soup",
+      "servings": 4,
+      "prepMinutes": 10,
+      "ingredients": ["red lentils", "onion", "carrots", "vegetable stock", "juice of 1 lemon", "parsley"],
+      "sections": ["For the soup", "For the soup", "For the soup", "For the soup", "To finish", "To finish"],
+      "steps": 3,
+      "tips": "Freezes well."
+    }
+  },
+  {
+    "name": "Website copy with numbered steps and STEP labels",
+    "input": "Quick Tomato Pasta\nINGREDIENTS\n200g spaghetti\n2 tbsp olive oil\n3 cloves garlic, sliced\n1 can chopped tomatoes\nfresh basil\nINSTRUCTIONS\nStep 1\nCook the spaghetti for 10 minutes.\nStep 2\nFry the garlic in the oil for 1 minute, add the tomatoes and simmer 10 min.\nStep 3\nToss with the pasta and basil.",
+    "expected": {
+      "title": "Quick Tomato Pasta",
+      "ingredients": ["spaghetti", "olive oil", "garlic", "chopped tomatoes", "fresh basil"],
+      "steps": 3,
+      "timers": [600, 60, null]
+    }
+  },
+  {
+    "name": "One-line ingredients after a colon",
+    "input": "Aloo paratha\nIngredients: 2 cups atta, 3 potatoes, 1 tsp salt, 1 tsp chilli flakes\nMethod: Knead the atta with water into a soft dough. Boil and mash the potatoes with the salt and chilli. Stuff the dough and roll out. Cook on a hot tawa with ghee.",
+    "expected": {
+      "title": "Aloo paratha",
+      "ingredients": ["atta", "potatoes", "salt", "chilli flakes"],
+      "steps": 4
+    }
+  }
+]
