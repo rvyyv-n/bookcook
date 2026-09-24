@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-ssr
+coverage
+*.local
+.wrangler
+test-results
+playwright-report
+android/app/build
+android/.gradle
+android/build
+.DS_Store
+*.log

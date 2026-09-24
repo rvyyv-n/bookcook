@@ -1,0 +1,122 @@
+import type { Quantity } from '../lib/parse/types';
+
+export type RecipeSource = 'voice' | 'typed' | 'pasted' | 'web' | 'imported';
+
+export interface Ingredient {
+  id: string;
+  quantity?: Quantity;
+  unit?: string;
+  name: string;
+  note?: string;
+  section?: string;
+}
+
+export interface Step {
+  id: string;
+  text: string;
+  timerSeconds?: number;
+  photoId?: string;
+}
+
+export interface StoryAnswer {
+  prompt: string;
+  answer: string;
+  audioId?: string;
+}
+
+export interface Recipe {
+  id: string;
+  title: string;
+  author: string;
+  description?: string;
+  servings?: number;
+  prepMinutes?: number;
+  cookMinutes?: number;
+  lang: string;
+  tags: string[];
+  collectionIds: string[];
+  ingredients: Ingredient[];
+  steps: Step[];
+  tips?: string;
+  /** "In her words": the raw transcript. */
+  transcript?: string;
+  story?: StoryAnswer[];
+  photoIds: string[];
+  originalCardPhotoIds: string[];
+  voiceNoteIds: string[];
+  source: RecipeSource;
+  sourceUrl?: string;
+  /** "My version": the recipe this one was forked from. */
+  forkedFromId?: string;
+  cookedCount: number;
+  lastCookedAt?: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export type DraftMode = 'tell' | 'talk' | 'type' | 'paste' | 'link' | 'edit';
+
+export interface Draft {
+  id: string;
+  mode: DraftMode;
+  recipe: Partial<Recipe>;
+  /** Where the user was in a guided flow (e.g. "ingredients"). */
+  step?: string;
+  /** For drafts that edit an existing recipe. */
+  recipeId?: string;
+  /** For drafts started from a request. */
+  requestId?: string;
+  updatedAt: number;
+}
+
+export interface CookLog {
+  id: string;
+  recipeId: string;
+  cookedAt: number;
+  rating?: number;
+  note?: string;
+  photoId?: string;
+}
+
+export interface GroceryItem {
+  id: string;
+  name: string;
+  quantity?: number;
+  unit?: string;
+  aisle?: string;
+  checked: boolean;
+  fromRecipeIds: string[];
+  order: number;
+}
+
+export interface RecipeRequest {
+  id: string;
+  title: string;
+  requestedBy?: string;
+  note?: string;
+  createdAt: number;
+  fulfilledRecipeId?: string;
+}
+
+export interface Collection {
+  id: string;
+  name: string;
+  emoji?: string;
+  order: number;
+}
+
+export type MediaKind = 'photo' | 'audio';
+
+export interface Media {
+  id: string;
+  recipeId?: string;
+  kind: MediaKind;
+  blob: Blob;
+  mime: string;
+  createdAt: number;
+}
+
+export interface Setting {
+  key: string;
+  value: unknown;
+}
