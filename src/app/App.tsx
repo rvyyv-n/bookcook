@@ -1,46 +1,74 @@
-import { createBrowserRouter, Link, Outlet, RouterProvider, useParams } from 'react-router';
+import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
+import { RecipeDetailPage } from '../features/recipe/RecipeDetail';
+import { SettingsPage } from '../features/settings/SettingsPage';
+import { useT } from '../i18n';
+import { ButtonLink } from '../ui/Button';
+import { Providers } from './providers';
+import { AppShell, LibraryHome } from './Shell';
 
-function Stub({ name }: { name: string }) {
-  const params = useParams();
+function Root() {
   return (
-    <main>
-      <h1>{name}</h1>
-      {params.id && <p>Recipe {params.id}</p>}
+    <Providers>
+      <Outlet />
+    </Providers>
+  );
+}
+
+function NotFound() {
+  const t = useT();
+  return (
+    <div className="flex flex-col items-start gap-4 py-10">
+      <h1 className="text-3xl">{t.ui.common.notFound}</h1>
+      <ButtonLink href="/" variant="primary" icon="book">
+        {t.ui.common.goHome}
+      </ButtonLink>
+    </div>
+  );
+}
+
+function RouteError() {
+  const error = useRouteError();
+  return (
+    <main className="mx-auto flex max-w-xl flex-col gap-4 p-8">
+      <h1 className="text-3xl">Something went wrong</h1>
+      <p className="text-ink-muted">Your recipes are safe. Reload the page to try again.</p>
+      <pre className="overflow-auto rounded-md bg-sunk p-3 text-sm">{error instanceof Error ? error.message : String(error)}</pre>
+      <a href="/" className="font-bold underline">
+        Go to your cookbook
+      </a>
     </main>
   );
 }
 
-function Shell() {
-  return (
-    <>
-      <nav>
-        <Link to="/">Cookbook</Link> <Link to="/grocery">Grocery</Link> <Link to="/new">New recipe</Link>{' '}
-        <Link to="/requests">Requests</Link> <Link to="/settings">Settings</Link>
-      </nav>
-      <Outlet />
-    </>
-  );
+function Placeholder({ title }: { title: string }) {
+  return <h1 className="text-3xl">{title}</h1>;
 }
 
 const router = createBrowserRouter([
   {
-    element: <Shell />,
+    element: <Root />,
+    errorElement: <RouteError />,
     children: [
-      { path: '/', element: <Stub name="Cookbook" /> },
-      { path: '/r/:id', element: <Stub name="Recipe" /> },
-      { path: '/r/:id/edit', element: <Stub name="Edit recipe" /> },
-      { path: '/r/:id/cook', element: <Stub name="Cook mode" /> },
-      { path: '/new', element: <Stub name="New recipe" /> },
-      { path: '/new/tell', element: <Stub name="Tell it" /> },
-      { path: '/new/talk', element: <Stub name="Just talk" /> },
-      { path: '/new/type', element: <Stub name="Type it" /> },
-      { path: '/new/paste', element: <Stub name="Paste it" /> },
-      { path: '/new/link', element: <Stub name="From a link" /> },
-      { path: '/grocery', element: <Stub name="Grocery list" /> },
-      { path: '/requests', element: <Stub name="Recipe requests" /> },
-      { path: '/settings', element: <Stub name="Settings" /> },
-      { path: '/import', element: <Stub name="Add to my cookbook" /> },
-      { path: '*', element: <Stub name="Page not found" /> },
+      { path: '/r/:id/cook', element: <Placeholder title="Cook mode" /> },
+      {
+        element: <AppShell />,
+        children: [
+          { path: '/', element: <LibraryHome /> },
+          { path: '/r/:id', element: <RecipeDetailPage /> },
+          { path: '/r/:id/edit', element: <Placeholder title="Edit recipe" /> },
+          { path: '/new', element: <Placeholder title="New recipe" /> },
+          { path: '/new/tell', element: <Placeholder title="Tell it" /> },
+          { path: '/new/talk', element: <Placeholder title="Just talk" /> },
+          { path: '/new/type', element: <Placeholder title="Type it" /> },
+          { path: '/new/paste', element: <Placeholder title="Paste it" /> },
+          { path: '/new/link', element: <Placeholder title="From a link" /> },
+          { path: '/grocery', element: <Placeholder title="Grocery list" /> },
+          { path: '/requests', element: <Placeholder title="Recipe requests" /> },
+          { path: '/settings', element: <SettingsPage /> },
+          { path: '/import', element: <Placeholder title="Add to my cookbook" /> },
+          { path: '*', element: <NotFound /> },
+        ],
+      },
     ],
   },
 ]);

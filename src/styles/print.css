@@ -1,0 +1,40 @@
+/* Print: black on white, one recipe per page, no app chrome. */
+@media print {
+  :root {
+    --paper: #fff;
+    --surface: #fff;
+    --sunk: #fff;
+    --ink: #000;
+    --ink-muted: #333;
+    --line: #bbb;
+    --accent-text: #000;
+    --accent-soft: transparent;
+    --scale: 1 !important;
+  }
+  html {
+    font-size: 11pt;
+  }
+  body {
+    background: #fff;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-page {
+    break-after: page;
+    break-inside: avoid-page;
+  }
+  .print-page:last-child {
+    break-after: auto;
+  }
+  .print-avoid-break {
+    break-inside: avoid;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  @page {
+    margin: 16mm 18mm;
+  }
+}

@@ -9,9 +9,10 @@ import { DEFAULT_SETTINGS, getSettings, type Settings } from './settings';
 
 /** Reactive reads for the UI. `undefined` means still loading. */
 export const useRecipes = () => useLiveQuery(listRecipes);
-export const useRecipe = (id: string | undefined) => useLiveQuery(() => (id ? getRecipe(id) : undefined), [id]);
+/** `undefined` while loading, `null` when there is no such recipe. */
+export const useRecipe = (id: string | undefined) => useLiveQuery(async () => (id ? ((await getRecipe(id)) ?? null) : null), [id]);
 export const useDrafts = () => useLiveQuery(listDrafts);
-export const useDraft = (id: string | undefined) => useLiveQuery(() => (id ? getDraft(id) : undefined), [id]);
+export const useDraft = (id: string | undefined) => useLiveQuery(async () => (id ? ((await getDraft(id)) ?? null) : null), [id]);
 export const useGrocery = () => useLiveQuery(listGrocery);
 export const useRequests = () => useLiveQuery(listRequests);
 export const useCollections = () => useLiveQuery(listCollections);

@@ -11,3 +11,4 @@ android/.gradle
 android/build
 .DS_Store
 *.log
+shots

@@ -1,0 +1,76 @@
+/*
+ * Bookcook design tokens: "warm editorial minimalism".
+ * Light and dark palettes, the type scale, spacing, radius, elevation and motion.
+ * The root --scale (Normal 1 / Large 1.2 / Huge 1.45) drives rem, so the text-size
+ * setting scales type and spacing together.
+ */
+
+:root {
+  --scale: 1;
+
+  /* Colour: light */
+  --paper: #fbf7f0;
+  --surface: #ffffff;
+  --sunk: #f4ede2; /* recessed areas: inputs, slips, the tab bar */
+  --ink: #1f1b16; /* 16.0:1 on paper */
+  --ink-muted: #5a5148; /* 7.3:1 on paper */
+  --line: #e8e0d4;
+  --line-strong: #cfc3b2;
+  --accent: #f0b429; /* saffron: fills with ink text */
+  --accent-strong: #e0a114;
+  --accent-soft: #fbe7b4; /* highlights, mention wash */
+  --accent-ink: #1f1b16; /* text on accent: 9.2:1 */
+  --accent-text: #7a4e00; /* saffron as text on paper: 6.7:1 */
+  --success: #3f6b3a;
+  --success-soft: #e3eedf;
+  --danger: #a63d2f;
+  --danger-soft: #f6e0dc;
+  --focus: #1f1b16;
+  --shadow-color: 38 28 12;
+
+  /* Type */
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-body: 'Atkinson Hyperlegible Next', 'Atkinson Hyperlegible', system-ui, sans-serif;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 150ms;
+  --dur: 220ms;
+  --dur-slow: 380ms;
+
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --paper: #171411;
+  --surface: #211d19;
+  --sunk: #1c1916;
+  --ink: #f3ede4;
+  --ink-muted: #b9afa3;
+  --line: #332d27;
+  --line-strong: #4a4239;
+  --accent: #f2bc3f;
+  --accent-strong: #f6ca63;
+  --accent-soft: #3d3016;
+  --accent-ink: #1f1b16;
+  --accent-text: #f2bc3f;
+  --success: #8dbf84;
+  --success-soft: #223020;
+  --danger: #e58b7c;
+  --danger-soft: #3a211d;
+  --focus: #f2bc3f;
+  --shadow-color: 0 0 0;
+  color-scheme: dark;
+}
+
+:root[data-text-size='large'] {
+  --scale: 1.2;
+}
+:root[data-text-size='huge'] {
+  --scale: 1.45;
+}
+
+html {
+  /* 1rem = 18px at Normal. */
+  font-size: calc(112.5% * var(--scale));
+}
