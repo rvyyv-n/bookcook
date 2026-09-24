@@ -34,7 +34,7 @@ function Meta({ recipe }: { recipe: Recipe }) {
       {items.map(([k, v]) => (
         <div key={k}>
           <dt className="text-sm text-ink-muted">{k}</dt>
-          <dd className="font-display-soft text-lg font-semibold">{v}</dd>
+          <dd className="type-display text-lg font-semibold">{v}</dd>
         </div>
       ))}
     </dl>
@@ -54,7 +54,7 @@ function StoryCard({ recipe }: { recipe: Recipe }) {
         {recipe.story.map((s, i) => (
           <figure key={i} className="flex flex-col gap-3">
             <figcaption className="text-ink-muted">{s.prompt}</figcaption>
-            <blockquote className="font-display-soft text-2xl leading-snug font-normal italic">“{s.answer}”</blockquote>
+            <blockquote className="type-display text-2xl leading-snug font-normal italic">“{s.answer}”</blockquote>
             {s.audioId && <AudioPlayer id={s.audioId} label={t.ui.recipe.voiceNote(i + 1)} />}
           </figure>
         ))}
@@ -74,7 +74,7 @@ function InHerWords({ transcript }: { transcript: string }) {
         >
           <Icon name="wave" className="text-accent-text" />
           <span className="flex-1">
-            <span className="block font-display-soft text-xl">{t.ui.recipe.inHerWords}</span>
+            <span className="block type-display text-xl">{t.ui.recipe.inHerWords}</span>
             <span className="block text-sm text-ink-muted">{t.ui.recipe.inHerWordsHint}</span>
           </span>
           <Icon name="chevronDown" className="transition-transform group-data-[expanded]:rotate-180" />
@@ -82,7 +82,7 @@ function InHerWords({ transcript }: { transcript: string }) {
       </Heading>
       <DisclosurePanel>
         <p
-          className="px-5 pb-6 font-display-soft text-xl leading-[2.1rem] italic [font-variation-settings:'SOFT'_100,'WONK'_1]"
+          className="px-5 pb-6 type-handwritten text-xl leading-[2.1rem] italic"
           style={{
             backgroundImage:
               'repeating-linear-gradient(to bottom, transparent 0, transparent calc(2.1rem - 1px), var(--line) calc(2.1rem - 1px), var(--line) 2.1rem)',
@@ -238,7 +238,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
         )}
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl sm:text-4xl">{recipe.title}</h1>
-          {recipe.author && <p className="font-display-soft text-xl text-ink-muted italic">{t.ui.common.fromKitchen(recipe.author)}</p>}
+          {recipe.author && <p className="type-display text-xl text-ink-muted italic">{t.ui.common.fromKitchen(recipe.author)}</p>}
         </div>
         {recipe.description && <p className="max-w-[60ch] text-lg">{recipe.description}</p>}
         <Meta recipe={recipe} />
@@ -300,7 +300,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
           <ol className="flex flex-col gap-7">
             {recipe.steps.map((s, i) => (
               <li key={s.id} className="print-avoid-break grid grid-cols-[2.5rem_1fr] gap-x-3">
-                <span aria-hidden className="font-display-soft text-2xl leading-none font-semibold text-accent-text">
+                <span aria-hidden className="type-display text-2xl leading-none font-semibold text-accent-text">
                   {i + 1}
                 </span>
                 <div className="flex flex-col gap-3">
@@ -318,7 +318,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
               <h2 id="tips-h" className="mb-2 font-body text-base font-bold">
                 {t.ui.recipe.tips}
               </h2>
-              <p className="font-display-soft text-xl whitespace-pre-line italic">{recipe.tips}</p>
+              <p className="type-display text-xl whitespace-pre-line italic">{recipe.tips}</p>
             </aside>
           )}
         </section>
@@ -377,7 +377,7 @@ export function RecipeDetailPage() {
   if (!recipe)
     return (
       <div className="flex flex-col items-start gap-4 py-10">
-        <p className="font-display-soft text-2xl">{t.ui.common.recipeNotFound}</p>
+        <p className="type-display text-2xl">{t.ui.common.recipeNotFound}</p>
         <ButtonLink href="/" variant="secondary" icon="book">
           {t.ui.common.goHome}
         </ButtonLink>

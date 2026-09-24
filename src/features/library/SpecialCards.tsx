@@ -53,7 +53,7 @@ export function RequestCard({ request }: { request: RecipeRequest }) {
         </p>
         <Link
           href={`/requests#${request.id}`}
-          className="font-display-soft text-xl font-semibold text-ink no-underline outline-none data-[focus-visible]:outline-3"
+          className="type-display text-xl font-semibold text-ink no-underline outline-none data-[focus-visible]:outline-3"
         >
           {request.title}
         </Link>

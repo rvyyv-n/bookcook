@@ -1,0 +1,124 @@
+/*
+ * DESIGN TOKENS: the only file with design values (colour, type, space, radius, shadow, motion).
+ * The current values are a PLACEHOLDER built from docs/design-brief.md. Replace this
+ * file with the design handoff, keeping the variable names (see src/design/README.md).
+ */
+
+/* Colour: light */
+:root {
+  --paper: #fbf7f0; /* app background */
+  --surface: #ffffff; /* cards, sheets */
+  --sunk: #f4ede2; /* recessed areas: inputs, slips, sidebar */
+  --ink: #1f1b16; /* body text */
+  --ink-muted: #5a5148; /* secondary text */
+  --line: #e8e0d4; /* hairlines */
+  --line-strong: #cfc3b2; /* control borders */
+  --accent: #f0b429; /* primary actions, mic */
+  --accent-strong: #e0a114; /* accent hover */
+  --accent-soft: #fbe7b4; /* highlights, ingredient mentions */
+  --accent-ink: #1f1b16; /* text on accent */
+  --accent-text: #7a4e00; /* accent used as text on paper */
+  --success: #3f6b3a;
+  --success-soft: #e3eedf;
+  --danger: #a63d2f;
+  --danger-soft: #f6e0dc;
+  --focus: #1f1b16; /* focus ring */
+  --shadow-color: 38 28 12; /* r g b used by shadows */
+  color-scheme: light;
+}
+
+/* Colour: dark */
+:root[data-theme='dark'] {
+  --paper: #171411;
+  --surface: #211d19;
+  --sunk: #1c1916;
+  --ink: #f3ede4;
+  --ink-muted: #b9afa3;
+  --line: #332d27;
+  --line-strong: #4a4239;
+  --accent: #f2bc3f;
+  --accent-strong: #f6ca63;
+  --accent-soft: #3d3016;
+  --accent-ink: #1f1b16;
+  --accent-text: #f2bc3f;
+  --success: #8dbf84;
+  --success-soft: #223020;
+  --danger: #e58b7c;
+  --danger-soft: #3a211d;
+  --focus: #f2bc3f;
+  --shadow-color: 0 0 0;
+  color-scheme: dark;
+}
+
+/* Type families and variable-font settings */
+:root {
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-display-settings: 'SOFT' 100, 'WONK' 0;
+  --font-display-weight: 560;
+  --font-body: 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  /* "In her words" transcript: a softer, handwritten-adjacent display style */
+  --font-handwritten: var(--font-display);
+  --font-handwritten-settings: 'SOFT' 100, 'WONK' 1;
+
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 220ms;
+}
+
+/* Scale, radius, shadow and motion (Tailwind theme: sizes are rem, 1rem = 18px at Normal text size) */
+@theme {
+  --spacing: 0.2222rem; /* 4px grid */
+
+  --text-sm: 0.7778rem; /* 14 */
+  --text-sm--line-height: 1.4;
+  --text-base: 1rem; /* 18 body */
+  --text-base--line-height: 1.55;
+  --text-lg: 1.2222rem; /* 22 */
+  --text-lg--line-height: 1.4;
+  --text-xl: 1.5556rem; /* 28 */
+  --text-xl--line-height: 1.25;
+  --text-2xl: 2rem; /* 36 */
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 2.6667rem; /* 48 */
+  --text-3xl--line-height: 1.1;
+  --text-4xl: 3.5556rem; /* 64 cook-mode step */
+  --text-4xl--line-height: 1.08;
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem; /* cards, sheets */
+  --radius-xl: 1.5rem;
+
+  --shadow-paper: 0 1px 0 rgb(var(--shadow-color) / 0.04), 0 10px 30px -18px rgb(var(--shadow-color) / 0.35);
+  --shadow-lift: 0 2px 0 rgb(var(--shadow-color) / 0.05), 0 18px 40px -20px rgb(var(--shadow-color) / 0.45);
+
+  --animate-breathe: breathe 2.4s var(--ease-out) infinite; /* mic while listening */
+  --animate-rise: rise var(--dur) var(--ease-out) both; /* sheets, toasts */
+  --animate-pop: pop 320ms var(--ease-out) both; /* check-offs */
+
+  @keyframes breathe {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.55;
+    }
+    50% {
+      transform: scale(1.18);
+      opacity: 0.15;
+    }
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(0.5rem);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @keyframes pop {
+    40% {
+      transform: scale(1.25);
+    }
+  }
+}

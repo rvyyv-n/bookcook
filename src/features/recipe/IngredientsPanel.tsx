@@ -88,7 +88,7 @@ export function IngredientList({
     <div className="flex flex-col gap-5">
       {groupBySection(ingredients).map((g, gi) => (
         <section key={gi} aria-label={g.section}>
-          {g.section && <h3 className="mb-1 font-display-soft text-lg text-ink-muted italic">{g.section}</h3>}
+          {g.section && <h3 className="mb-1 type-display text-lg text-ink-muted italic">{g.section}</h3>}
           <ul className={cx('flex flex-col', !onToggle && 'divide-y divide-line')}>
             {g.items.map((i) =>
               onToggle ? (

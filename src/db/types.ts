@@ -66,6 +66,10 @@ export interface Draft {
   recipeId?: string;
   /** For drafts started from a request. */
   requestId?: string;
+  /** Ingredient lines exactly as typed (the editor's source of truth). */
+  ingredientLines?: { id: string; text: string }[];
+  /** Guided-capture progress that isn't part of the recipe (e.g. the story prompt being answered). */
+  progress?: Record<string, unknown>;
   updatedAt: number;
 }
 

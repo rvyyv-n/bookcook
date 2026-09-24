@@ -6,7 +6,6 @@ import { ShortcutList } from '../../app/shortcuts';
 import { Segmented, Switch } from '../../ui/Controls';
 import { TextField } from '../../ui/Field';
 import { SpeechSettings } from './SpeechSettings';
-import { BackupSection } from './BackupSection';
 
 export function SettingsSection({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
   return (
@@ -57,7 +56,7 @@ export function SettingsPage() {
         />
       </SettingsSection>
 
-      <SettingsSection title={t.ui.recipe.ingredients}>
+      <SettingsSection title={ts.people}>
         <TextField
           label={ts.defaultAuthor}
           description={ts.defaultAuthorHint}
@@ -82,8 +81,6 @@ export function SettingsPage() {
         </Switch>
         <SpeechSettings />
       </SettingsSection>
-
-      <BackupSection />
 
       <SettingsSection title={ts.language}>
         <p>English</p>

@@ -15,7 +15,7 @@ const FOCUSED = ['/new/:mode', '/r/:id/edit', '/import'];
 
 function Wordmark() {
   return (
-    <span className="font-display-soft text-2xl font-semibold tracking-tight">
+    <span className="type-display text-2xl font-semibold tracking-tight">
       Book<span className="text-accent-text italic">cook</span>
     </span>
   );
@@ -212,7 +212,7 @@ export function LibraryHome() {
     <div className="grid h-full place-items-center">
       <div className="flex max-w-sm flex-col items-center gap-4 text-center">
         <Wordmark />
-        <p className="font-display-soft text-2xl text-ink-muted italic">{t.ui.library.selectRecipe}</p>
+        <p className="type-display text-2xl text-ink-muted italic">{t.ui.library.selectRecipe}</p>
       </div>
     </div>
   );

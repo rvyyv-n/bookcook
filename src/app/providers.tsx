@@ -21,9 +21,10 @@ function Appearance() {
     root.dataset.textSize = textSize;
     root.dataset.theme = resolved;
     root.lang = lang;
-    const meta = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
-    meta.forEach((m) => {
-      m.content = resolved === 'dark' ? '#171411' : '#FBF7F0';
+    // Browser chrome follows the design's paper colour.
+    const paper = getComputedStyle(root).getPropertyValue('--paper').trim();
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => {
+      m.content = paper;
       m.removeAttribute('media');
     });
   }, [textSize, resolved, lang]);

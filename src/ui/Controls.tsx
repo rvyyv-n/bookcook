@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import {
   Button as AriaButton,
   Checkbox as AriaCheckbox,
-  Label,
   Switch as AriaSwitch,
   ToggleButton,
   ToggleButtonGroup,
@@ -101,7 +100,7 @@ export function Stepper({
         >
           <Icon name="minus" />
         </AriaButton>
-        <output aria-live="polite" className="min-w-10 text-center font-display-soft text-2xl tabular-nums">
+        <output aria-live="polite" className="min-w-10 text-center type-display text-2xl tabular-nums">
           {format(value)}
         </output>
         <AriaButton
@@ -188,8 +187,4 @@ export function Chip({
       {count !== undefined && <span className={cx('text-sm font-normal', isSelected ? 'text-paper/80' : 'text-ink-muted')}>{count}</span>}
     </AriaButton>
   );
-}
-
-export function FieldLabel({ children }: { children: ReactNode }) {
-  return <Label className="font-bold">{children}</Label>;
 }

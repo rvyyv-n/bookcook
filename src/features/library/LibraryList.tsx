@@ -33,7 +33,7 @@ export function RecipeRow({ recipe, active }: { recipe: Recipe; active?: boolean
       >
         <div className="min-w-0 flex-1">
           <h3 className="text-xl text-ink">{recipe.title}</h3>
-          {recipe.author && <p className="mt-0.5 font-display-soft text-ink-muted italic">{t.ui.common.fromKitchen(recipe.author)}</p>}
+          {recipe.author && <p className="mt-0.5 type-display text-ink-muted italic">{t.ui.common.fromKitchen(recipe.author)}</p>}
           {meta.length > 0 && <p className="mt-1 text-sm text-ink-muted">{meta.join(' · ')}</p>}
           {recipe.forkedFromId && <p className="mt-1 text-sm text-accent-text">{t.ui.recipe.versionBy(recipe.author || '…')}</p>}
         </div>
@@ -49,7 +49,7 @@ function EmptyCookbook() {
   const [busy, setBusy] = useState(false);
   return (
     <section className="flex flex-col items-start gap-6 py-10">
-      <p className="font-display-soft text-4xl leading-[1.05] font-medium tracking-tight text-balance">{t.ui.library.emptyTitle}</p>
+      <p className="type-display text-4xl leading-[1.05] font-medium tracking-tight text-balance">{t.ui.library.emptyTitle}</p>
       <p className="max-w-[34ch] text-lg text-ink-muted">{t.ui.library.emptyBody}</p>
       <ButtonLink href="/new" variant="primary" size="xl" icon="plus">
         {t.ui.library.emptyAction}
@@ -94,7 +94,7 @@ export function LibraryList({ compact = false }: { compact?: boolean }) {
       {!compact && (
         <header className="pt-2">
           <h1 className="text-3xl">{t.ui.library.greeting(new Date().getHours())}</h1>
-          {settings.cookbookTitle && <p className="font-display-soft text-lg text-ink-muted italic">{settings.cookbookTitle}</p>}
+          {settings.cookbookTitle && <p className="type-display text-lg text-ink-muted italic">{settings.cookbookTitle}</p>}
         </header>
       )}
 
@@ -172,7 +172,7 @@ export function LibraryList({ compact = false }: { compact?: boolean }) {
             </ul>
           ) : (
             <div className="py-8">
-              <p className="font-display-soft text-xl">{filter.query ? t.ui.library.noResults(filter.query) : t.ui.library.emptyFilter}</p>
+              <p className="type-display text-xl">{filter.query ? t.ui.library.noResults(filter.query) : t.ui.library.emptyFilter}</p>
               {filtered && <p className="text-ink-muted">{t.ui.library.noResultsHint}</p>}
             </div>
           )}

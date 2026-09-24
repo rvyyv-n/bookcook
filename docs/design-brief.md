@@ -171,7 +171,31 @@ App shell (tab bar, desktop sidebar) · Buttons (primary, secondary, quiet, dest
 
 ## 9. What to hand back to engineering
 The build uses **React + Tailwind CSS v4 + React Aria Components**, so everything should be expressible as tokens and reusable components.
-1. **Design tokens** for colour (light and dark), type scale, font families, spacing, radius, shadow and motion. Named as in section 4, ideally as CSS custom properties.
+1. **Design tokens** as a single CSS file of custom properties, using exactly these names so it drops straight into the codebase (`src/design/tokens.css`):
+   ```css
+   :root {                       /* light */
+     --paper; --surface; --sunk;            /* background, cards/sheets, recessed inputs/sidebar */
+     --ink; --ink-muted;                    /* body text (AAA), secondary text (≥ 4.5:1) */
+     --line; --line-strong;                 /* hairlines, control borders */
+     --accent; --accent-strong; --accent-soft;  /* primary action + mic, hover, highlight */
+     --accent-ink; --accent-text;           /* text on accent, accent used as text on paper */
+     --success; --success-soft; --danger; --danger-soft;
+     --focus;                               /* focus ring */
+     --shadow-color;                        /* "r g b", used inside shadows */
+     --font-display; --font-display-settings; --font-display-weight;
+     --font-body; --font-handwritten; --font-handwritten-settings;  /* "In her words" */
+     --ease-out; --dur;
+   }
+   :root[data-theme='dark'] { /* the same colour tokens */ }
+   @theme {                      /* sizes in rem, 1rem = 18px */
+     --spacing;                             /* grid unit */
+     --text-sm … --text-4xl;                /* 14 18 22 28 36 48 64, each with --text-*--line-height */
+     --radius-sm; --radius-md; --radius-lg; --radius-xl;
+     --shadow-paper; --shadow-lift;
+     --animate-breathe; --animate-rise; --animate-pop;  /* mic listening, sheets/toasts, check-offs */
+   }
+   ```
+   Plus the font families to self-host.
 2. **Component sheet** (section 7) with all states: hover, focus, pressed, disabled, and the mic's listening state.
 3. **Final screens**, the ★ screens first, at 390px and 1440px (plus tablet-landscape cook mode), including the extra states listed.
 4. **One screen at "Huge" text size** and **cook mode in dark mode**.

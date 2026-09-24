@@ -320,6 +320,7 @@ export const en = {
     settings: {
       title: 'Settings',
       voiceSection: 'Voice',
+      people: 'About you',
       textSize: 'Text size',
       textSizes: { normal: 'Normal', large: 'Large', huge: 'Huge' },
       textPreview: 'Mix the chicken with the yogurt and all the spices, and leave it for at least 30 minutes.',

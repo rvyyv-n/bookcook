@@ -1,14 +1,15 @@
+/*
+ * Style entry. Design values live in src/design/ (replaceable); this file only wires them
+ * into Tailwind and holds app behaviour that doesn't change with the design.
+ */
 @import 'tailwindcss';
-@import '@fontsource-variable/fraunces/full.css';
-@import '@fontsource-variable/fraunces/full-italic.css';
-@import '@fontsource/atkinson-hyperlegible-next/400.css';
-@import '@fontsource/atkinson-hyperlegible-next/400-italic.css';
-@import '@fontsource/atkinson-hyperlegible-next/700.css';
-@import './tokens.css';
+@import '../design/fonts.css';
+@import '../design/tokens.css';
 @import './print.css';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
+/* Token contract → Tailwind utilities (bg-paper, text-ink, border-line, …). */
 @theme inline {
   --color-paper: var(--paper);
   --color-surface: var(--surface);
@@ -26,99 +27,45 @@
   --color-success-soft: var(--success-soft);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
-
   --font-display: var(--font-display);
   --font-body: var(--font-body);
 }
 
-@theme {
-  /* 4px at Normal size; scales with the text-size setting. */
-  --spacing: 0.2222rem;
-
-  --text-sm: 0.7778rem; /* 14 */
-  --text-sm--line-height: 1.4;
-  --text-base: 1rem; /* 18 */
-  --text-base--line-height: 1.55;
-  --text-lg: 1.2222rem; /* 22 */
-  --text-lg--line-height: 1.4;
-  --text-xl: 1.5556rem; /* 28 */
-  --text-xl--line-height: 1.25;
-  --text-2xl: 2rem; /* 36 */
-  --text-2xl--line-height: 1.15;
-  --text-3xl: 2.6667rem; /* 48 */
-  --text-3xl--line-height: 1.1;
-  --text-4xl: 3.5556rem; /* 64 */
-  --text-4xl--line-height: 1.08;
-
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem; /* cards, sheets (18px) */
-  --radius-xl: 1.5rem;
-
-  --shadow-paper: 0 1px 0 rgb(var(--shadow-color) / 0.04), 0 10px 30px -18px rgb(var(--shadow-color) / 0.35);
-  --shadow-lift: 0 2px 0 rgb(var(--shadow-color) / 0.05), 0 18px 40px -20px rgb(var(--shadow-color) / 0.45);
-
-  --animate-breathe: breathe 2.4s var(--ease-out) infinite;
-  --animate-rise: rise var(--dur) var(--ease-out) both;
-  --animate-pop: pop 320ms var(--ease-out) both;
-
-  @keyframes breathe {
-    0%,
-    100% {
-      transform: scale(1);
-      opacity: 0.55;
-    }
-    50% {
-      transform: scale(1.18);
-      opacity: 0.15;
-    }
-  }
-  @keyframes rise {
-    from {
-      transform: translateY(0.5rem);
-      opacity: 0;
-    }
-    to {
-      transform: none;
-      opacity: 1;
-    }
-  }
-  @keyframes pop {
-    0% {
-      transform: scale(1);
-    }
-    40% {
-      transform: scale(1.25);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
+/* Text-size setting (Normal / Large / Huge) scales rem, so type and spacing grow together. */
+:root {
+  --scale: 1;
+}
+:root[data-text-size='large'] {
+  --scale: 1.2;
+}
+:root[data-text-size='huge'] {
+  --scale: 1.45;
+}
+html {
+  font-size: calc(112.5% * var(--scale)); /* 1rem = 18px at Normal */
 }
 
 @layer base {
-  html {
-    -webkit-text-size-adjust: 100%;
-    background: var(--paper);
-  }
+  html,
   body {
     background: var(--paper);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
     color: var(--ink);
     font-family: var(--font-body);
     font-size: 1rem;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-variation-settings:
-      'SOFT' 100,
-      'WONK' 0;
-    font-weight: 560;
-    letter-spacing: -0.01em;
+    font-variation-settings: var(--font-display-settings);
+    font-weight: var(--font-display-weight);
     text-wrap: balance;
   }
   p {
@@ -128,11 +75,7 @@
     background: var(--accent-soft);
     color: var(--ink);
   }
-  :focus-visible {
-    outline: 3px solid var(--focus);
-    outline-offset: 3px;
-    border-radius: 0.25rem;
-  }
+  :focus-visible,
   [data-focus-visible] {
     outline: 3px solid var(--focus);
     outline-offset: 3px;
@@ -153,11 +96,16 @@
   }
 }
 
-@utility font-display-soft {
+/* Display face outside headings (quotes, titles in lists). */
+@utility type-display {
   font-family: var(--font-display);
-  font-variation-settings:
-    'SOFT' 100,
-    'WONK' 0;
+  font-variation-settings: var(--font-display-settings);
+}
+
+/* "In her words" transcript. */
+@utility type-handwritten {
+  font-family: var(--font-handwritten);
+  font-variation-settings: var(--font-handwritten-settings);
 }
 
 @utility safe-bottom {
