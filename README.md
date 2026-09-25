@@ -1,6 +1,8 @@
 # Bookcook
 
-Recipes in their own words. A local-first cookbook (PWA, later Android and desktop) for saving family recipes by talking or typing, then cooking from them hands-free. Everything is stored on the device in IndexedDB; there's no account or server.
+**A cookbook you can talk to.**
+
+Talk a recipe in. Cook it hands-free. A local-first cookbook (PWA, later Android and desktop): save recipes by talking or typing, then cook from them with voice commands. Everything is stored on the device in IndexedDB; there's no account or server.
 
 Status: in progress. See [`docs/bookcook-plan.md`](docs/bookcook-plan.md) for the full plan and build phases.
 
