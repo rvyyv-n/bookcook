@@ -92,7 +92,7 @@ Every creation path (Tell it, Type it, Paste it, From a link) writes into one **
 7. Optional **story prompts** (see feature 8).
 8. **Review:** large editable cards, tap anything to fix it, then Save.
 
-**Just-talk:** a free-flowing monologue while cooking. The full transcript is kept, `classify.ts` sorts sentences into ingredients and steps, and everything is fixed on the review screen.
+**Just-talk (secondary mode):** a free-flowing monologue while cooking, producing a rough draft; guided Tell it is the reliable path. The full transcript is kept, `classify.ts` sorts sentences into ingredients and steps, and everything is fixed on the review screen.
 
 - **Mic modes:** **tap to talk** (default, most reliable) and a **hands-free** toggle (continuous listening that restarts itself when recognition times out).
 - The raw transcript is always saved as "**In her words**".
@@ -252,7 +252,7 @@ The current `src/design/` values are a placeholder built from the brief so the a
     - README with screenshots and GIFs, the parser accuracy figure and Lighthouse scores.
     - A case-study outline in `docs/case-study.md` (problem → testing with Mom → what changed) for the user to fill in alongside a demo video.
 
-**Later, not in this build:** meal planning, OCR scanning of printed recipes, optional accounts and cloud sync (Supabase free tier, shared family cookbooks with invite codes), more languages, and optional AI cleanup with a user-supplied API key.
+**Later, not in this build:** meal planning, OCR scanning of printed recipes, optional accounts and cloud sync (Supabase free tier, shared family cookbooks with invite codes), more languages, and optional AI cleanup with a user-supplied API key (which would make just-talk genuinely reliable).
 
 ## Known platform limits (design around them)
 - Web Speech recognition works in **Chrome, Edge and Android Chrome**. Safari support is partial and Firefox has none, so those get the typing path. Chrome streams audio to Google (free, but it needs internet). The APK uses Android's recognizer, which can work offline with language packs.

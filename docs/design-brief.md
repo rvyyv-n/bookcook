@@ -96,8 +96,8 @@ One question at a time, like a gentle interview.
 - Also show the steps question, where each spoken step becomes a card and "10 minutes" becomes a **timer chip**.
 - Also show the tips question with **Record a voice note**, and one **story prompt** ("Who taught you this?").
 
-### 1b. Voice capture: "Just talk"
-The alternative to the guided interview: one free-flowing monologue while cooking. A big mic button, a running live transcript, a timer showing how long they've been talking, and a **Done** button that goes to Review. It should feel relaxed, not like a form.
+### 1b. Voice capture: "Just talk" (secondary mode)
+A secondary option, not a hero screen: keep it simple and reuse the Tell it components. The app sorts the monologue into a rough draft, so set expectations honestly ("Just talk. We'll sort it out, then you check it."). The alternative to the guided interview: one free-flowing monologue while cooking. A big mic button, a running live transcript, a timer showing how long they've been talking, and a **Done** button that goes to Review. It should feel relaxed, not like a form.
 
 ### ★2. Cook mode (hero screen)
 Hands-free, readable from 1–2 metres away.
