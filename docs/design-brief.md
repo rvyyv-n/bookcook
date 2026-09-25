@@ -2,12 +2,21 @@
 
 > Paste or upload this whole file into the design tool. It describes the product, the visual direction, every screen to design, and what to hand back to engineering.
 
+## 0. How to work through this brief
+Don't design everything at once. Work in this order, and ask me any questions you need before starting each stage:
+1. **Directions:** show **3 distinct visual directions** for just **cook mode** and **recipe detail**, at phone size. Offer the accent (tomato vs saffron) as a tweak rather than separate designs. I'll pick one.
+2. **Design system:** turn the chosen direction into tokens (named exactly as in section 9) and the component sheet (section 7), with every state.
+3. **Hero screens:** the three ★ screens in section 6, phone first, then desktop and tablet.
+4. **Remaining screens**, then the stress tests: Huge text, dark cook mode, empty and error states.
+
+Treat the accessibility rules in section 4 and the sample content in section 8 as standing rules for every screen.
+
 ---
 
 ## 1. The product in one paragraph
 **Bookcook** is a modern, minimal cookbook app for recipes that only live in someone's head. Anyone can **say** a recipe out loud or **type** it naturally, and the app turns it into a clean, structured recipe. Later, they cook from it **hands-free**: the app reads each step aloud and listens for "next". It began as a way to save one mom's recipes before they're lost, so it is designed **first for older, non-technical users** while staying beautiful and fast for everyone. It keeps the *person* as well as the recipe: their name, their voice notes, their exact words, and the story behind each dish.
 
-**Tagline:** *Recipes in their own words.*
+**Tagline:** *A cookbook you can talk to.*
 
 ## 2. Who it's for
 - **Primary: "Mom," 55–75.** Cooks from memory and doesn't write recipes down. Comfortable with WhatsApp and not much else. Reading glasses. Busy hands in the kitchen.
@@ -31,6 +40,7 @@ The warmth of a beautifully printed cookbook, with the calm and restraint of Thi
 - **Mood words:** warm, calm, heirloom, generous whitespace, confident type, tactile paper.
 
 ### Colour (starting point; refine freely, but keep AAA text contrast)
+These values are only a starting point: propose better ones if the direction calls for it. The full list of colour tokens the code expects is in section 9.
 | Token | Light | Dark | Use |
 |---|---|---|---|
 | `paper` | `#FBF7F0` | `#171411` | App background |
@@ -44,7 +54,7 @@ The warmth of a beautifully printed cookbook, with the calm and restraint of Thi
 
 ### Typography
 - **Display and titles:** **Fraunces** (soft serif; use its optical size and "soft" axes).
-- **Everything else:** **Atkinson Hyperlegible** (designed for low-vision readers).
+- **Everything else:** **Atkinson Hyperlegible Next** (designed for low-vision readers).
 - **Base body size is 18px, not 16px.** Suggested scale: 14 (caption, rare) · 18 (body) · 22 · 28 · 36 · 48 · 64 (cook-mode step).
 - **Text size setting:** Normal / Large (×1.2) / Huge (×1.45). Show at least one screen at **Huge** to prove the layout holds.
 
@@ -84,6 +94,10 @@ One question at a time, like a gentle interview.
 - **Secondary controls:** a "Hands-free" toggle, "Undo last", and "Type instead".
 - **States to show:** idle · **listening** · processing · mic permission denied (friendly help) · speech not supported (points to typing).
 - Also show the steps question, where each spoken step becomes a card and "10 minutes" becomes a **timer chip**.
+- Also show the tips question with **Record a voice note**, and one **story prompt** ("Who taught you this?").
+
+### 1b. Voice capture: "Just talk"
+The alternative to the guided interview: one free-flowing monologue while cooking. A big mic button, a running live transcript, a timer showing how long they've been talking, and a **Done** button that goes to Review. It should feel relaxed, not like a form.
 
 ### ★2. Cook mode (hero screen)
 Hands-free, readable from 1–2 metres away.
@@ -134,6 +148,9 @@ Four large, equal choices with one-line explanations:
 - 📋 **Paste it**: "From WhatsApp, notes or email."
 - 🔗 **From a link**: "Import from a recipe website."
 
+### 6b. Paste it and From a link
+**Paste it:** one large text area ("Paste a recipe from WhatsApp, notes or email") and a **Tidy it up** button that goes to Review. **From a link:** a URL field, a loading state, and a friendly failure ("We couldn't read that page. Try Paste it instead").
+
 ### 7. Review (after voice, paste or link import)
 Large editable cards grouped as Details / Ingredients / Steps / Tips. Rows the parser was unsure about get a gentle "Check this" marker. Primary action: **Save recipe**.
 
@@ -144,7 +161,7 @@ Items grouped by aisle (Produce, Spices, Dairy…), merged quantities ("3 onions
 A list of wished-for recipes (title, requested by, note), plus "Send request" (share link) and "Tell it now" actions. Fulfilled requests show a small celebratory state.
 
 ### 10. Settings
-The **Text size** control with a **live preview** paragraph, Theme (Light / Dark / System), Read steps aloud, Speech speed, Default author, Backup ("Last backup: 34 days ago" with a gentle nudge), and Keyboard shortcuts.
+The **Text size** control with a **live preview** paragraph, Theme (Light / Dark / System), About you (your name, default author, cookbook title), Voice (read steps aloud, speak the questions, speech speed, voice), Backup ("Last backup: 34 days ago" with a gentle nudge, plus Restore), and Keyboard shortcuts.
 
 ### 11. Print: the family cookbook (nice to have)
 A **cover page** ("Mom's Kitchen", an optional photo, the year), a contents page, and one recipe page and one story page, at A4/Letter in print-friendly black on white.
@@ -201,4 +218,4 @@ The build uses **React + Tailwind CSS v4 + React Aria Components**, so everythin
 4. **One screen at "Huge" text size** and **cook mode in dark mode**.
 5. Short notes on anything non-obvious: animations, what the mic ring does, how parse previews appear.
 
-Export using the design tool's handoff if available; otherwise export the files or screenshots and paste them into the build thread.
+Export the handoff bundle, and also download the zip as a backup.
