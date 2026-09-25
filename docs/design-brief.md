@@ -143,10 +143,12 @@ It must feel smart and fast, never like a plain form.
 
 ### 6. New recipe chooser (sheet or full screen)
 Four large, equal choices with one-line explanations:
-- 🎙 **Tell it**: "Just talk. We'll write it down."
+- 🎙 **Tell it**: "Answer a few questions out loud. We'll write it down."
 - ⌨ **Type it**: "Type it the way you'd say it."
 - 📋 **Paste it**: "From WhatsApp, notes or email."
 - 🔗 **From a link**: "Import from a recipe website."
+
+Below the four, a small secondary link: **"Or just talk freely"**, which opens Just talk (1b). It is deliberately quieter than the main choices.
 
 ### 6b. Paste it and From a link
 **Paste it:** one large text area ("Paste a recipe from WhatsApp, notes or email") and a **Tidy it up** button that goes to Review. **From a link:** a URL field, a loading state, and a friendly failure ("We couldn't read that page. Try Paste it instead").

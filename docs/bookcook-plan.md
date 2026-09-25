@@ -47,7 +47,7 @@ The full visual brief is [`design-brief.md`](design-brief.md) ("warm editorial m
 **Routes:** `/` library · `/r/:id` recipe detail · `/r/:id/edit` editor · `/r/:id/cook` cook mode · `/new` new recipe chooser · `/new/tell` guided voice · `/new/talk` just-talk · `/new/type` typed editor · `/new/paste` · `/new/link` · `/grocery` · `/requests` · `/settings` · `/import#<payload>` share-link import.
 
 - **Phone and tablet (< 1024px):** a bottom tab bar: **Cookbook · Grocery · [ + ] · Requests · Settings**.
-  - The large centre **+** opens **New recipe**: four big choices, **🎙 Tell it**, **⌨ Type it**, **📋 Paste it**, **🔗 From a link**. This is also the "quick add" (Things 3 style).
+  - The large centre **+** opens **New recipe**: four big choices, **🎙 Tell it**, **⌨ Type it**, **📋 Paste it**, **🔗 From a link**, plus a quieter "Or just talk freely" link to just-talk. This is also the "quick add" (Things 3 style).
   - The library is one column of large cards; detail is a full screen.
 - **Desktop (≥ 1024px):** three panes.
   - **Left sidebar:** New recipe, Cookbook, Collections, Tags, Grocery, Requests, Settings.
