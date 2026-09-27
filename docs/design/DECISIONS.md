@@ -6,7 +6,7 @@ The other files in this folder are copied verbatim from the design handoff. The 
 
 - **`src/design` is adopted unchanged.** `tokens.css`, `theme.css`, `skin.ts` and `icons.ts` are byte-identical to the handoff, and the app adapts to them.
 - **Folder layout stays ours** (`src/db`, `src/lib/parse`, `src/features/*`), not the handoff's suggested `src/data`.
-- **Base text size is `112.5%`**, not the tokens' fixed `18px`, so the browser's font-size setting still applies. It's set in `src/styles/index.css` and still multiplied by `--text-scale`.
+- **Base text size is `100%`** (16px at the browser default), not the tokens' fixed `18px`: a conventional reading size, and the browser's font-size setting still applies. It's set in `src/styles/index.css` and still multiplied by `--text-scale`, so Large is about 19px and Huge about 23px. Everything sized in rem is about 11% smaller than the mocks, which are drawn at 18px.
 - **Tomato stays as designed** (white on tomato is 5.7:1, AA). The darker #9E3521 that would reach AAA isn't used.
 - **The default skin is Quiet** (The Quiet Page).
 - **Cookbook cards: one column at Large and Huge on phones** (two columns at Normal, as in the mocks).
@@ -34,3 +34,14 @@ The other files in this folder are copied verbatim from the design handoff. The 
 - **No results without a matching request** still offers Tell it and Ask for it, with a hint to try a shorter word.
 - **Share sends the recipe as text** (the system share sheet, or the clipboard where there isn't one) until share links arrive in phase 10.
 - **Tags aren't cookbook chips any more**; they have their own pages (`/t`, `/t/:tag`), reached from the sidebar and the recipe's tag links.
+
+## Review changes after Phase 5
+
+Asked for in the review of the build, so they depart from the mocks on purpose.
+
+- **The story moves into the recipe header**, as a quote under the meta line and tags, at body-lg size in the regular (not bold) italic. It's no longer a card below the actions.
+- **Example recipes get pixel-art pictures** (`src/features/library/pixelArt.ts`), stored as SVG photos. SVGs fill their box without cropping, so the drawing stays centred in any shape.
+- **Collections and tags have icons**, from lucide like the rest (`src/ui/TopicIcon.tsx`). A tag's icon is guessed from its name; a collection's too, unless one is picked in Edit (stored as the optional `icon` field, which isn't indexed, so no schema version).
+- **Collections and Tags are tiles** with thumbnails, followed by the recipes not yet in a collection or not tagged.
+- **Cookbook list rows don't show "Made N times".**
+- **The logo is a pixel-art pot** (`src/ui/logoMarks.ts`), matching the recipe pictures: `rice` beside the wordmark in light mode, `dark` in dark mode, `lid` as `public/favicon.svg`.

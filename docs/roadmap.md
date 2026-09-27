@@ -25,16 +25,17 @@ A cookbook you can browse in the handoff's design: the phone cookbook and the de
 
 ## Next
 
-### Phase 5 follow-up: match the handoff exactly
+### Phase 5 follow-up: review fixes
 
-Feedback on the Phase 5 build: the cookbook and recipe detail must look **exactly** like the handoff screenshots (`design_handoff/…/screenshots/home` and `cook`), and everything currently feels **a bit too big**.
+From the marked-up review of the Phase 5 build. Phase 5 is complete once these land.
 
-- [ ] Compare side by side with the screenshots at the same viewport (390×844 phone, 1280×800 desktop) in every skin, and fix each difference in size, spacing, weight and layout.
-- [ ] Sizing: check why things read larger than the mocks. Candidates: the 112.5% base (it equals the mocks' 18px only at the browser's default 16px), `min-h`/padding values rounded up to the 4px grid, the desktop body cap, and the browser zoom used when viewing.
-- [ ] Recheck the collection chips and the selected list row in Spice Tin against the mock.
-- [ ] Collection chips: make them more concise (tighter padding and height, smaller gaps) so they sit on fewer lines, matching the mock's proportions.
-- [ ] Default text size: make Normal a conventional 16px (a 100% root instead of 112.5%), then update the text-size labels in Settings and the "1rem = 18px" notes in the docs.
-- [ ] Go through the marked-up screenshots of the build for the remaining fixes and comments.
+- [x] Text size: Normal is a conventional 16px (a 100% root), Large about 19px, Huge about 23px. The text-size control is a pill like the others.
+- [x] Cookbook list: shorter search field, smaller collection chips, more room between the header, chips and rows, no "Made N times" on rows.
+- [x] Recipe detail: the story sits in the header as a smaller quote instead of a big card; "Make Mine".
+- [x] Pixel-art pictures for the example recipes, used until someone adds a photo.
+- [x] Collections: tiles with an icon, count and thumbnails; Edit to rename, pick an icon or delete; the recipes not in a collection below.
+- [x] Tags: tiles with matching icons; the untagged recipes below.
+- [x] Logo: a pixel-art pot on a rounded tile beside the wordmark (a cream rice pot on tomato in light mode, a tomato pot on ink in dark), and a plainer lidded pot as the favicon. The PWA icons in phase 10 use the same marks.
 
 ### Phase 6: Speech and cook mode (handoff step 3)
 

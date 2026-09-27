@@ -16,6 +16,10 @@ export async function renameCollection(id: string, name: string): Promise<void> 
   await db.collections.update(id, { name: name.trim() });
 }
 
+export async function setCollectionIcon(id: string, icon: string): Promise<void> {
+  await db.collections.update(id, { icon });
+}
+
 /** Delete a collection and take it off every recipe. Returns what's needed for Undo. */
 export async function deleteCollection(id: string): Promise<{ collection: Collection; recipeIds: string[] } | undefined> {
   return db.transaction('rw', db.collections, db.recipes, async () => {

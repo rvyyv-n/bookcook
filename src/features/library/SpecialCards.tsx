@@ -74,13 +74,13 @@ export function DeskPromptCard({ request, draft }: { request?: RecipeRequest; dr
   );
   if (!request)
     return (
-      <div className="mx-5 my-1.5 flex flex-col gap-1 rounded-[min(var(--radius-md),18px)] bg-sunk px-3.5 py-3">
+      <div className="mx-6 my-2 flex flex-col gap-1 rounded-[min(var(--radius-md),18px)] bg-sunk px-3.5 py-3">
         <span className="font-bold">{t.ui.library.continueDraft}</span>
         {draftLine}
       </div>
     );
   return (
-    <div className="mx-5 my-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 rounded-[min(var(--radius-md),18px)] bg-accent-soft px-3.5 py-3">
+    <div className="mx-6 my-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-1 rounded-[min(var(--radius-md),18px)] bg-accent-soft px-3.5 py-3">
       <span>
         <Asker request={request} /> {t.ui.library.wouldLove} <b>{request.title}</b>
       </span>

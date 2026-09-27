@@ -14,7 +14,7 @@ import { Icon } from './Icon';
 
 /**
  * Segmented control: one choice from a few (Metric / Imperial, text size, theme). A radio group.
- * L is the 56px pill; XL is the 64px row used for text size.
+ * L is the standard pill; XL is the taller pill used for text size.
  */
 export function Segmented<K extends string>({
   label,
@@ -33,7 +33,6 @@ export function Segmented<K extends string>({
   className?: string;
   labelHidden?: boolean;
 }) {
-  const round = size === 'L' ? 'rounded-full' : 'rounded-md';
   return (
     <RadioGroup
       value={value}
@@ -46,7 +45,7 @@ export function Segmented<K extends string>({
         className={cx(
           'grid auto-cols-fr grid-flow-col p-1 bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
           size === 'L' ? 'min-h-14' : 'min-h-16',
-          round,
+          'rounded-full',
         )}
       >
         {options.map((o) => (
@@ -56,7 +55,7 @@ export function Segmented<K extends string>({
             className={cx(
               'flex min-w-20 cursor-pointer items-center justify-center px-3 text-center leading-tight font-bold text-ink transition-colors duration-(--dur)',
               'data-[hovered]:bg-(--control-fill-hover) data-[selected]:bg-ink data-[selected]:text-paper',
-              round,
+              'rounded-full',
               o.className,
             )}
           >
@@ -186,8 +185,8 @@ export function Chip({
       onPress={onPress}
       aria-pressed={isSelected}
       className={cx(
-        'inline-flex min-h-14 shrink-0 items-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors duration-(--dur)',
-        small ? 'px-4 text-[0.8889rem]' : 'px-[1.1rem] text-base',
+        'inline-flex shrink-0 items-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors duration-(--dur)',
+        small ? 'min-h-11 px-3.5 text-[0.8333rem]' : 'min-h-12 px-4 text-[0.8889rem]',
         isSelected
           ? 'bg-ink text-paper'
           : 'bg-(--control-fill) text-ink shadow-[inset_0_0_0_1.5px_var(--line-strong)] data-[hovered]:bg-(--control-fill-hover)',

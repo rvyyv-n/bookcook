@@ -120,6 +120,8 @@ export interface Collection {
   id: string;
   name: string;
   order: number;
+  /** A topic icon name (src/ui/TopicIcon.tsx) picked for it. Without one, it's guessed from the name. */
+  icon?: string;
 }
 
 export type MediaKind = 'photo' | 'audio';

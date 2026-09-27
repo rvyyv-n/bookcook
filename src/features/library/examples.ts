@@ -6,6 +6,7 @@ import { saveRecipe, updateRecipe } from '../../db/recipes';
 import type { Recipe } from '../../db/types';
 import { parseIngredient } from '../../lib/parse/ingredient';
 import { stepTimer } from '../../lib/parse/timers';
+import { examplePicture } from './pixelArt';
 
 type Example = Omit<Partial<Recipe>, 'ingredients' | 'steps'> & {
   title: string;
@@ -122,7 +123,6 @@ export async function addExampleRecipes(): Promise<void> {
     if (!collectionIds.has(name)) collectionIds.set(name, (await addCollection(name)).id);
   }
   const now = Date.now();
-  const saved: Recipe[] = [];
   for (const [i, ex] of EXAMPLES.entries()) {
     const { collections, ingredients, steps, ...rest } = ex;
     let section: string | undefined;
@@ -143,23 +143,14 @@ export async function addExampleRecipes(): Promise<void> {
       ingredients: ings,
       steps: steps.map((text) => ({ id: crypto.randomUUID(), text, timerSeconds: stepTimer(text) })),
     });
-    saved.push(recipe);
+    const picture = examplePicture(recipe.title);
+    if (picture) await updateRecipe(recipe.id, { photoIds: [await putMedia(picture, 'photo', recipe.id)] });
   }
-  if (import.meta.env.DEV) await addDevExtras(saved);
+  if (import.meta.env.DEV) await addDevExtras();
 }
 
-/**
- * Local development only: dress the examples like the handoff mocks, with the biryani photo from the
- * gitignored design_handoff/ folder (watermarked stock, never shipped), a request and a draft. Does
- * nothing when the folder isn't there.
- */
-async function addDevExtras(recipes: Recipe[]): Promise<void> {
-  const biryani = recipes.find((r) => r.title.includes('Biryani'));
-  const res = await fetch('/design_handoff/design_handoff_bookcook/design/assets/biryani.jpg').catch(() => undefined);
-  if (biryani && res?.ok && res.headers.get('content-type')?.startsWith('image/')) {
-    const id = await putMedia(await res.blob(), 'photo', biryani.id);
-    await updateRecipe(biryani.id, { photoIds: [id] });
-  }
+/** Local development only: a request and a draft, so the cookbook looks like the handoff mocks. */
+async function addDevExtras(): Promise<void> {
   await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Rayyan' });
   await createDraft('type', { title: 'Chicken Karahi' });
 }

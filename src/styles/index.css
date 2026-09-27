@@ -13,11 +13,11 @@
 }
 
 /*
- * Base text size: 112.5% of the browser's default (18px at the usual 16px), so a larger browser
- * font setting still makes the app larger. The Normal / Large / Huge setting multiplies it.
+ * Base text size: the browser's default (16px usually), so a larger browser font setting still makes
+ * the app larger. The Normal / Large / Huge setting multiplies it (about 16, 19 and 23px).
  */
 :root {
-  font-size: calc(112.5% * var(--text-scale));
+  font-size: calc(100% * var(--text-scale));
 }
 
 @layer base {

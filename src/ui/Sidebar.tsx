@@ -2,9 +2,10 @@ import { Keyboard, Link } from 'react-aria-components';
 import { ButtonLink } from './Button';
 import { cx } from './cx';
 import { Icon } from './Icon';
+import { Logo } from './Logo';
 import type { NavItem } from './TabBar';
 
-/** Desktop navigation: wordmark, the New recipe button, then one 56px row per destination. */
+/** Desktop navigation: logo and wordmark, the New recipe button, then one 56px row per destination. */
 export function Sidebar({
   label,
   wordmark,
@@ -24,7 +25,12 @@ export function Sidebar({
       aria-label={label}
       className="no-print flex h-full w-[252px] flex-none flex-col gap-1 overflow-y-auto border-r border-line bg-sunk px-3.5 py-5"
     >
-      <Link href="/" className="type-display self-start rounded-sm px-2.5 pt-1 pb-4.5 text-xl leading-none text-ink no-underline">
+      <Link
+        href="/"
+        className="type-display flex items-center gap-2.5 self-start rounded-sm px-2 pt-0.5 pb-4 text-xl leading-none text-ink no-underline"
+      >
+        <Logo variant="rice" className="size-9 shrink-0 dark:hidden" />
+        <Logo variant="dark" className="hidden size-9 shrink-0 dark:block" />
         {wordmark}
       </Link>
       <ButtonLink href={newItem.href} variant="primary" icon="add" className="mb-2.5 gap-1.5 text-base!">

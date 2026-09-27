@@ -38,11 +38,11 @@ export function SettingsPage() {
           size="XL"
           value={s.textSize}
           onChange={(v) => setSetting('textSize', v)}
-          // Each label is drawn at the size it picks (18, 21, 25px), independent of the current setting.
+          // Each label is drawn at the size it picks (16, 19, 23px), independent of the current setting.
           options={[
-            { id: 'normal', label: ts.textSizes.normal, className: 'text-[18px]' },
-            { id: 'large', label: ts.textSizes.large, className: 'text-[21px]' },
-            { id: 'huge', label: ts.textSizes.huge, className: 'text-[25px]' },
+            { id: 'normal', label: ts.textSizes.normal, className: 'text-[16px]' },
+            { id: 'large', label: ts.textSizes.large, className: 'text-[19px]' },
+            { id: 'huge', label: ts.textSizes.huge, className: 'text-[23px]' },
           ]}
         />
         <p className="rounded-lg bg-surface p-5 text-lg shadow-paper" aria-live="polite">

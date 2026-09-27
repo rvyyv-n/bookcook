@@ -245,25 +245,16 @@ function SectionHeading({ id, children, desk }: { id: string; children: ReactNod
   );
 }
 
-/** The story card: the question, the answer as a quote, and its voice note. */
-function StoryCard({ recipe, compact }: { recipe: Recipe; compact?: boolean }) {
+/** The story, in the header under the title: the answer as a quiet quote, and its voice note. */
+function StoryQuote({ recipe, center }: { recipe: Recipe; center?: boolean }) {
   const t = useT();
   if (!recipe.story?.length) return null;
   return (
-    <section aria-label={t.ui.recipe.story} className="flex flex-col gap-3 rounded-lg bg-surface p-5 shadow-paper">
+    <section aria-label={t.ui.recipe.story} className={cx('flex flex-col gap-2 pt-1', center && 'items-center')}>
       {recipe.story.map((s, i) => (
-        <figure key={i} className={cx('flex gap-3', compact ? 'items-center' : 'flex-col')}>
-          {!compact && (
-            <figcaption className="font-bold text-ink-muted">
-              {t.ui.recipe.story} · {s.prompt}
-            </figcaption>
-          )}
-          <blockquote
-            className={cx(
-              'type-display flex-1 font-[calc(var(--font-display-weight)-30)] italic',
-              compact ? 'text-lg leading-[1.3]' : 'text-xl leading-[1.22]',
-            )}
-          >
+        <figure key={i} className={cx('flex flex-wrap items-center gap-x-3 gap-y-2', center && 'justify-center')}>
+          <figcaption className="sr-only">{s.prompt}</figcaption>
+          <blockquote className="max-w-[40rem] font-(family-name:--font-display) text-lg leading-[1.35] font-normal italic">
             “{s.answer}”
           </blockquote>
           {s.audioId && (
@@ -272,7 +263,7 @@ function StoryCard({ recipe, compact }: { recipe: Recipe; compact?: boolean }) {
               label={t.ui.recipe.voiceNote(i + 1)}
               playLabel={t.ui.recipe.play}
               pauseLabel={t.ui.recipe.pause}
-              compact={compact}
+              compact
               className="shrink-0"
             />
           )}
@@ -531,6 +522,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
       {!onField && <Eyebrow recipe={recipe} />}
       {meta.length > 0 && <p className={onField ? undefined : 'text-ink-muted'}>{meta.join(' · ')}</p>}
       <TagLinks tags={recipe.tags} onField={onField} className={center ? 'justify-center' : undefined} />
+      <StoryQuote recipe={recipe} center={center} />
     </div>
   );
 
@@ -580,7 +572,6 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
       </div>
 
       <div className={cx('flex flex-col gap-7.5 pt-6.5', pane ? 'px-8' : 'px-5')}>
-        <StoryCard recipe={recipe} />
         <Ingredients adj={adj} />
         <Steps recipe={recipe} />
         <TipsAndSources recipe={recipe} />
@@ -608,6 +599,7 @@ function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
             {meta.length > 0 && recipe.tags.length > 0 && <span aria-hidden>·</span>}
             <TagLinks tags={recipe.tags} className="font-normal" />
           </div>
+          <StoryQuote recipe={recipe} />
           <div className="no-print flex max-w-[48rem] flex-col gap-3 pt-3">
             <BasedOn recipe={recipe} />
             <div className="flex flex-wrap gap-2">
@@ -622,7 +614,6 @@ function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
         <div className="grid max-w-[64rem] grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] gap-11 px-10 pt-7">
           <Ingredients adj={adj} desk />
           <div className="flex flex-col gap-4.5">
-            <StoryCard recipe={recipe} compact />
             <Steps recipe={recipe} desk />
             <TipsAndSources recipe={recipe} desk />
           </div>

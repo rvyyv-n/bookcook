@@ -5,15 +5,11 @@ import { formatMinutes, totalMinutes } from '../../lib/format';
 import { cx } from '../../ui/cx';
 import { Photo } from '../../ui/Photo';
 
-/** "Mom · 1 hr 45 min" and "Made 12 times" / "Based on Mom's Pasta". */
+/** "Mom · 1 hr 45 min", and "Based on Mom's Pasta" for a version. */
 function useCardLines(recipe: Recipe, parentTitle: string | undefined) {
   const t = useT();
   const meta = [recipe.author, formatMinutes(totalMinutes(recipe))].filter(Boolean).join(' · ');
-  const extra = parentTitle
-    ? t.ui.library.basedOnTitle(parentTitle)
-    : recipe.cookedCount
-      ? t.ui.common.madeTimes(recipe.cookedCount)
-      : undefined;
+  const extra = parentTitle ? t.ui.library.basedOnTitle(parentTitle) : undefined;
   return { meta, extra };
 }
 
@@ -44,7 +40,7 @@ export function RecipeCard({ recipe, parentTitle }: { recipe: Recipe; parentTitl
 export const cardGridClass =
   'grid grid-cols-[repeat(auto-fill,minmax(min(100%,9rem),1fr))] gap-x-3.5 gap-y-5.5 desk:grid-cols-[repeat(auto-fill,minmax(13rem,1fr))]';
 
-/** Desktop list-pane row: a 64px thumbnail, the title, and one line of detail. The selected row is lifted. */
+/** Desktop list-pane row: a thumbnail, the title, and one line of detail. The selected row is lifted. */
 export function RecipeRow({
   recipe,
   parentTitle,
@@ -63,13 +59,13 @@ export function RecipeRow({
         to={href}
         aria-current={selected ? 'true' : undefined}
         className={cx(
-          'grid grid-cols-[64px_minmax(0,1fr)] items-center gap-3.5 rounded-[min(var(--radius-md),18px)] px-3 py-2.5 text-ink no-underline',
+          'grid grid-cols-[56px_minmax(0,1fr)] items-center gap-4 rounded-[min(var(--radius-md),18px)] px-3 py-3 text-ink no-underline',
           selected ? 'bg-surface shadow-paper' : 'hover:bg-sunk',
         )}
       >
-        <Photo id={recipe.photoIds[0]} alt="" className="size-16 rounded-sm" />
-        <span className="flex min-w-0 flex-col gap-0.5">
-          <span className="type-display text-lg leading-[1.1]">{recipe.title}</span>
+        <Photo id={recipe.photoIds[0]} alt="" className="size-14 rounded-sm" />
+        <span className="flex min-w-0 flex-col gap-1">
+          <span className="type-display text-lg leading-[1.15]">{recipe.title}</span>
           <span className="text-[0.8333rem] text-ink-muted">{[meta, extra].filter(Boolean).join(' · ')}</span>
         </span>
       </Link>

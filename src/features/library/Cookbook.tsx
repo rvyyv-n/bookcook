@@ -69,7 +69,7 @@ function Search({ desktop }: { desktop?: boolean }) {
       placeholder={t.ui.library.searchPlaceholder}
       value={filter.query}
       onChange={(query) => filter.set({ query })}
-      compact={desktop}
+      compact
       shortcut={desktop ? '/' : undefined}
     />
   );
@@ -238,7 +238,7 @@ function CookbookDesktop() {
         aria-label={t.ui.library.recipes}
         className="no-print flex w-[380px] flex-none flex-col overflow-y-auto border-r border-line"
       >
-        <div className="flex flex-col gap-3.5 px-5 pt-5.5 pb-2.5">
+        <div className="flex flex-col gap-4.5 px-6 pt-7 pb-4">
           <Greeting className="text-2xl" />
           <Search desktop />
           <CollectionChips data={data} desktop />
@@ -246,13 +246,13 @@ function CookbookDesktop() {
         {!searching && <DeskPromptCard request={data.openRequests[0]} draft={data.draft} />}
         {list && list.length > 0 ? (
           <>
-            <div className="flex items-center justify-between gap-2 pt-2 pr-3 pl-5">
+            <div className="flex items-center justify-between gap-2 pt-4 pr-4 pl-6">
               <h2 className="type-heading text-lg" aria-live="polite">
                 {data.listTitle}
               </h2>
               {!searching && <SortMenu />}
             </div>
-            <ul className="flex flex-col px-3 pt-1 pb-6" aria-label={t.ui.library.recipes}>
+            <ul className="flex flex-col gap-1 px-3 pt-2.5 pb-6" aria-label={t.ui.library.recipes}>
               {list.map((r) => (
                 <RecipeRow key={r.id} recipe={r} parentTitle={data.parentTitle(r)} href={`/?r=${r.id}`} selected={r.id === selected?.id} />
               ))}

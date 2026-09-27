@@ -11,7 +11,7 @@ A voice-first family recipe app: React 19, TypeScript, Vite, Tailwind v4, React 
 ## Rules
 
 - **Design values live only in `src/design/`.** `tokens.css`, `theme.css`, `skin.ts` and `icons.ts` stay byte-identical to the handoff; adapt the app to them. Component styling lives in `src/ui/`; screens compose `src/ui` and don't style controls themselves. See `src/design/README.md`.
-- Size in rem (1rem = 18px at Normal) so Large and Huge text reflow. Borders are inset box-shadows.
+- Size in rem (1rem = 16px at Normal) so Large and Huge text reflow. Borders are inset box-shadows.
 - One primary button per screen. Icons render through `src/ui/Icon.tsx`.
 - Every user-facing string goes in `src/i18n/en.ts`.
 - IndexedDB is only touched through the repositories in `src/db/`. Schema changes need a new Dexie version with an upgrade.

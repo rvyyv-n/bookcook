@@ -26,15 +26,20 @@ export function useSettings(): Settings {
 
 /** Object URLs by media id. Media is immutable, so one URL per id lives for the session. */
 const urlCache = new Map<string, string>();
+/** URLs of SVG pictures (the example recipes' pixel art), which scale to fit instead of cropping. */
+const vectorUrls = new Set<string>();
 
 export function mediaUrl(id: string, blob: Blob): string {
   let url = urlCache.get(id);
   if (!url) {
     url = URL.createObjectURL(blob);
     urlCache.set(id, url);
+    if (blob.type === 'image/svg+xml') vectorUrls.add(url);
   }
   return url;
 }
+
+export const isVectorUrl = (url: string) => vectorUrls.has(url);
 
 /** An object URL for a stored photo or recording. */
 export function useMediaUrl(id: string | undefined): string | undefined {

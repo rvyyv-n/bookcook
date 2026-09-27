@@ -138,7 +138,7 @@ Keep a **fixture corpus** (`src/lib/parse/__fixtures__/`) of realistic spoken, t
   - Hero photo, "From *author*'s kitchen", times and servings.
   - **The story** (if any) near the top, then ingredients (with the scaler and unit toggle) and steps.
   - Tips, voice notes, "In her words", the **original card photo**, the cook log and "Based on…" (for forks).
-- **My version:** a "Make mine" button forks the recipe (`forkedFromId`). The fork shows "Based on Mom's Biryani", and the original lists its versions.
+- **My version:** a "Make Mine" button forks the recipe (`forkedFromId`). The fork shows "Based on Mom's Biryani", and the original lists its versions.
 
 ### 8. Family keepsake features
 - **The story behind the dish:** optional prompts ("Who taught you this?", "When do you make it?", "Any memory with this dish?"), answered by voice or text, with optional audio. They appear in guided capture and in the editor.

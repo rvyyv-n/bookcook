@@ -192,7 +192,7 @@ export function SearchField({
   return (
     <AriaSearchField {...rest} value={value} onChange={onChange} className={cx('group', className)}>
       <Label className="sr-only">{label}</Label>
-      <div className={cx(fieldBoxClass, 'items-center', compact && 'min-h-14', speak.speaking && fieldBoxSpeaking)}>
+      <div className={cx(fieldBoxClass, 'items-center', compact && 'min-h-13!', speak.speaking && fieldBoxSpeaking)}>
         <Icon name="search" className="pointer-events-none ml-[0.7778rem] shrink-0 text-ink-muted group-focus-within:text-ink" />
         <Input
           placeholder={placeholder}

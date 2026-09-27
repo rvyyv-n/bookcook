@@ -14,7 +14,7 @@ Everything visual that comes from the design handoff lives here. The handoff doc
 ## How it's wired
 
 - `src/styles/index.css` imports `theme.css`, then adds app behaviour that doesn't change with the design: heading defaults, the `type-display` / `type-handwritten` / `type-action` utilities, the `desk:` breakpoint (900px) and print rules.
-- **Text size:** the tokens set `html { font-size: 18px × --text-scale }`. We override the base to **112.5%** (18px at the browser default, larger if the user has raised their browser font size), still multiplied by `--text-scale`. 1rem = 18px at Normal. Size everything in rem so Large and Huge reflow.
+- **Text size:** the tokens set `html { font-size: 18px × --text-scale }`. We override the base to **100%** (16px at the browser default, larger if the user has raised their browser font size), still multiplied by `--text-scale`. 1rem = 16px at Normal. Size everything in rem so Large and Huge reflow.
 - **Switches:** `<html data-skin data-theme data-accent data-text-size data-spice>` are written by `applyAppearance()` from the settings table, in `src/app/providers.tsx`. `System` theme is resolved with `prefers-color-scheme` and follows it live.
 - Local switches: `data-surface="field"` (colour-field cook mode and detail header) and `data-spice-group="1..4"` (ingredient section, mention, timer).
 - The browser's `theme-color` is read from `--paper` at runtime.
