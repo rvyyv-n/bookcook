@@ -2,64 +2,69 @@ import type { ReactNode } from 'react';
 import {
   Button as AriaButton,
   Checkbox as AriaCheckbox,
+  Label,
+  Radio,
+  RadioGroup,
   Switch as AriaSwitch,
-  ToggleButton,
-  ToggleButtonGroup,
   type CheckboxProps,
-  type Key,
   type SwitchProps,
 } from 'react-aria-components';
 import { cx } from './cx';
-import { Icon, type IconName } from './Icon';
+import { Icon } from './Icon';
 
-/** Segmented control: Metric / Imperial, text size, theme. */
+/**
+ * Segmented control: one choice from a few (Metric / Imperial, text size, theme). A radio group.
+ * L is the 56px pill; XL is the 64px row used for text size.
+ */
 export function Segmented<K extends string>({
   label,
   value,
   onChange,
   options,
+  size = 'L',
   className,
   labelHidden,
 }: {
   label: string;
   value: K;
   onChange: (value: K) => void;
-  options: { id: K; label: ReactNode; icon?: IconName }[];
+  options: { id: K; label: ReactNode; className?: string }[];
+  size?: 'L' | 'XL';
   className?: string;
   labelHidden?: boolean;
 }) {
+  const round = size === 'L' ? 'rounded-full' : 'rounded-md';
   return (
-    <div className={cx('flex flex-col gap-1.5', className)}>
-      <span className={cx('font-bold', labelHidden && 'sr-only')} id={`seg-${label}`}>
-        {label}
-      </span>
-      <ToggleButtonGroup
-        aria-labelledby={`seg-${label}`}
-        selectionMode="single"
-        disallowEmptySelection
-        selectedKeys={[value]}
-        onSelectionChange={(keys: Set<Key>) => {
-          const [k] = [...keys];
-          if (k !== undefined) onChange(k as K);
-        }}
-        className="inline-flex w-full rounded-full bg-sunk p-1"
+    <RadioGroup
+      value={value}
+      onChange={(v) => onChange(v as K)}
+      orientation="horizontal"
+      className={cx('flex flex-col gap-1.5', className)}
+    >
+      <Label className={cx('font-bold', labelHidden && 'sr-only')}>{label}</Label>
+      <div
+        className={cx(
+          'grid auto-cols-fr grid-flow-col p-1 bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
+          size === 'L' ? 'min-h-14' : 'min-h-16',
+          round,
+        )}
       >
         {options.map((o) => (
-          <ToggleButton
+          <Radio
             key={o.id}
-            id={o.id}
+            value={o.id}
             className={cx(
-              'flex min-h-12 flex-1 items-center justify-center gap-2 rounded-full px-4 font-bold text-ink-muted transition-colors outline-none',
-              'data-[hovered]:text-ink data-[selected]:bg-surface data-[selected]:text-ink data-[selected]:shadow-paper',
-              'data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)',
+              'flex min-w-20 cursor-pointer items-center justify-center px-3 text-center leading-tight font-bold text-ink transition-colors duration-(--dur)',
+              'data-[hovered]:bg-(--control-fill-hover) data-[selected]:bg-ink data-[selected]:text-paper',
+              round,
+              o.className,
             )}
           >
-            {o.icon && <Icon name={o.icon} size="1.15em" />}
             {o.label}
-          </ToggleButton>
+          </Radio>
         ))}
-      </ToggleButtonGroup>
-    </div>
+      </div>
+    </RadioGroup>
   );
 }
 
@@ -98,7 +103,7 @@ export function Stepper({
           isDisabled={value <= min}
           onPress={() => onChange(Math.max(min, value - 1))}
         >
-          <Icon name="minus" />
+          <Icon name="remove" />
         </AriaButton>
         <output aria-live="polite" className="min-w-10 text-center type-display text-2xl tabular-nums">
           {format(value)}
@@ -109,29 +114,38 @@ export function Stepper({
           isDisabled={value >= max}
           onPress={() => onChange(Math.min(max, value + 1))}
         >
-          <Icon name="plus" />
+          <Icon name="add" />
         </AriaButton>
       </div>
     </div>
   );
 }
 
+/** A settings row with a 52×32 switch. The whole row is the target. */
 export function Switch({
   children,
+  description,
   className,
   ...rest
-}: { children: ReactNode; className?: string } & Omit<SwitchProps, 'children' | 'className'>) {
+}: { children: ReactNode; description?: ReactNode; className?: string } & Omit<SwitchProps, 'children' | 'className'>) {
   return (
-    <AriaSwitch {...rest} className={cx('group flex min-h-14 cursor-pointer items-center justify-between gap-4 outline-none', className)}>
-      <span className="flex-1">{children}</span>
+    <AriaSwitch
+      {...rest}
+      className={cx('group flex min-h-16 cursor-pointer items-center gap-3 border-b border-line px-0.5 py-1.5 text-ink', className)}
+    >
+      <span className="flex flex-1 flex-col">
+        <span className="font-bold">{children}</span>
+        {description && <span className="text-[0.8889rem] text-ink-muted">{description}</span>}
+      </span>
       <span
+        aria-hidden
         className={cx(
-          'relative inline-flex h-9 w-16 shrink-0 items-center rounded-full border-2 border-line-strong bg-sunk transition-colors',
-          'group-data-[selected]:border-ink group-data-[selected]:bg-ink',
-          'group-data-[focus-visible]:outline-3 group-data-[focus-visible]:outline-offset-2 group-data-[focus-visible]:outline-(--focus)',
+          'flex h-8 w-13 shrink-0 items-center rounded-full p-0.75 shadow-[inset_0_0_0_2px_var(--line-control)] transition-colors duration-(--dur)',
+          'group-data-[selected]:bg-accent group-data-[selected]:shadow-none',
+          'group-data-[focus-visible]:outline-3 group-data-[focus-visible]:outline-offset-3 group-data-[focus-visible]:outline-focus',
         )}
       >
-        <span className="ml-1 size-6 rounded-full bg-surface shadow-paper transition-transform duration-200 group-data-[selected]:translate-x-7 group-data-[selected]:bg-accent" />
+        <span className="size-6.5 rounded-full bg-(--line-control) transition-transform duration-(--dur) group-data-[selected]:translate-x-5 group-data-[selected]:bg-accent-ink" />
       </span>
     </AriaSwitch>
   );
@@ -152,7 +166,7 @@ export function CheckItem({
           'group-data-[focus-visible]:outline-3 group-data-[focus-visible]:outline-offset-2 group-data-[focus-visible]:outline-(--focus)',
         )}
       >
-        <Icon name="check" size={20} strokeWidth={3} className="opacity-0 group-data-[selected]:opacity-100" />
+        <Icon name="check" size={20} current className="opacity-0 group-data-[selected]:opacity-100" />
       </span>
       <span className="flex-1 transition-colors group-data-[selected]:text-ink-muted group-data-[selected]:line-through group-data-[selected]:decoration-2">
         {children}

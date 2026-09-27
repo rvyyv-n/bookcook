@@ -48,10 +48,10 @@ export function AudioPlayer({ id, label, className }: { id: string; label: strin
             setPlaying(true);
           }
         }}
-        className="inline-flex min-h-14 items-center gap-3 rounded-full bg-ink py-2 pr-5 pl-2 font-bold text-paper outline-none data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-2 data-[focus-visible]:outline-(--focus)"
+        className="inline-flex min-h-14 items-center gap-3 rounded-full bg-ink py-2 pr-5 pl-2 font-bold text-paper outline-none data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-2 data-[focus-visible]:outline-focus"
       >
         <span className="grid size-10 place-items-center rounded-full bg-accent text-accent-ink">
-          <Icon name={playing ? 'pause' : 'play'} size={20} strokeWidth={2.4} />
+          <Icon name={playing ? 'pause' : 'play'} size={20} filled />
         </span>
         {label}
       </AriaButton>

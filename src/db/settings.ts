@@ -1,11 +1,19 @@
+import { skinConfig, type Accent, type Skin, type TextSize, type ThemeMode } from '../design/skin';
 import { db } from './db';
 
-export type TextSize = 'normal' | 'large' | 'huge';
-export type Theme = 'light' | 'dark' | 'system';
+export type { Accent, Skin, TextSize };
+export type Theme = ThemeMode;
 
 export interface Settings {
   textSize: TextSize;
   theme: Theme;
+  /** Visual style (see src/design/skin.ts). */
+  skin: Skin;
+  accent: Accent;
+  /** Colour ingredient sections, mentions and timers. */
+  spiceColours: boolean;
+  /** Show step photos in cook mode. */
+  stepPhoto: boolean;
   /** Read cook-mode steps aloud automatically. */
   readAloud: boolean;
   /** Speech rate for read-aloud (1 is normal; the default is a little slower). */
@@ -30,6 +38,10 @@ export interface Settings {
 export const DEFAULT_SETTINGS: Settings = {
   textSize: 'normal',
   theme: 'system',
+  skin: 'quiet',
+  accent: 'tomato',
+  spiceColours: skinConfig.quiet.spiceDefault,
+  stepPhoto: true,
   readAloud: true,
   speechRate: 0.9,
   voiceURI: null,
@@ -64,4 +76,9 @@ export async function setSetting<K extends keyof Settings>(key: K, value: Settin
 
 export async function setSettings(patch: Partial<Settings>): Promise<void> {
   await db.settings.bulkPut(Object.entries(patch).map(([key, value]) => ({ key, value })));
+}
+
+/** Choose a skin. Ingredient colours reset to that skin's default; the user can change them after. */
+export async function setSkin(skin: Skin): Promise<void> {
+  await setSettings({ skin, spiceColours: skinConfig[skin].spiceDefault });
 }

@@ -5,10 +5,9 @@ export function listCollections(): Promise<Collection[]> {
   return db.collections.orderBy('order').toArray();
 }
 
-export async function addCollection(name: string, emoji?: string): Promise<Collection> {
+export async function addCollection(name: string): Promise<Collection> {
   const last = await db.collections.orderBy('order').last();
   const c: Collection = { id: newId(), name: name.trim(), order: (last?.order ?? 0) + 1 };
-  if (emoji) c.emoji = emoji;
   await db.collections.add(c);
   return c;
 }

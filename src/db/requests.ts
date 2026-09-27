@@ -45,11 +45,11 @@ function key(s: string): string {
     .join(' ');
 }
 
-/** Open requests whose title matches a recipe title ("Mom's biryani" ~ "Chicken Biryani"). */
+/** Open requests asked of you whose title matches a recipe title ("Mom's biryani" ~ "Chicken Biryani"). */
 export async function findOpenRequestsFor(title: string): Promise<RecipeRequest[]> {
   const t = key(title);
   if (!t) return [];
-  const open = (await db.requests.toArray()).filter((r) => !r.fulfilledRecipeId);
+  const open = (await db.requests.toArray()).filter((r) => r.direction === 'incoming' && !r.fulfilledRecipeId);
   return open.filter((r) => {
     const k = key(r.title);
     return k !== '' && (t.includes(k) || k.includes(t));

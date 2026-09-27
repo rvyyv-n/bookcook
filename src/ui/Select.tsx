@@ -25,13 +25,13 @@ export function SelectField<K extends string>({
       <Button
         className={cx(
           'inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-line bg-surface px-4 font-bold text-ink outline-none',
-          'data-[hovered]:border-line-strong data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)',
+          'data-[hovered]:border-line-strong data-[focus-visible]:outline-3 data-[focus-visible]:outline-focus',
         )}
       >
         {icon && <Icon name={icon} size="1.1em" />}
         {labelHidden && <span className="sr-only">{label}:</span>}
         <SelectValue className="flex-1 text-left whitespace-nowrap" />
-        <Icon name="chevronDown" size="1.1em" />
+        <Icon name="chevron" size="1.1em" className="rotate-90" />
       </Button>
       <Popover className="min-w-(--trigger-width) rounded-lg border border-line bg-surface p-1.5 shadow-lift data-[entering]:animate-rise">
         <ListBox className="outline-none">

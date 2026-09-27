@@ -186,6 +186,8 @@ export const en = {
       goHome: 'Go to your cookbook',
       recipeNotFound: 'This recipe isn’t in your cookbook. It may have been deleted.',
       keyboardShortcuts: 'Keyboard shortcuts',
+      speak: 'Speak',
+      stop: 'Stop',
     },
     nav: {
       cookbook: 'Cookbook',
@@ -197,6 +199,8 @@ export const en = {
       tags: 'Tags',
       main: 'Main',
       add: 'New',
+      /** "Press ? for shortcuts", split around the key. */
+      shortcutsHint: ['Press', 'for shortcuts'],
     },
     library: {
       greeting: (hour: number) => (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'),
@@ -278,43 +282,13 @@ export const en = {
       rating: (n: number) => `${n} out of 5`,
     },
     shortcuts: {
-      groups: [
-        {
-          title: 'Anywhere',
-          items: [
-            ['/', 'Search recipes'],
-            ['n', 'New recipe'],
-            ['g', 'Grocery list'],
-            ['?', 'Show these shortcuts'],
-          ],
-        },
-        {
-          title: 'On a recipe',
-          items: [
-            ['e', 'Edit'],
-            ['c', 'Start cooking'],
-          ],
-        },
-        {
-          title: 'In the editor',
-          items: [
-            ['Enter', 'Next line or step'],
-            ['Ctrl ↑', 'Move line up'],
-            ['Ctrl ↓', 'Move line down'],
-            ['Ctrl S', 'Save recipe'],
-            ['Ctrl Z', 'Undo'],
-          ],
-        },
-        {
-          title: 'Cooking',
-          items: [
-            ['←', 'Previous step'],
-            ['→', 'Next step'],
-            ['Space', 'Read the step aloud'],
-            ['t', 'Start the step’s timer'],
-            ['i', 'Show ingredients'],
-          ],
-        },
+      items: [
+        ['N', 'New recipe'],
+        ['/', 'Search'],
+        ['C', 'Start cooking'],
+        ['E', 'Edit recipe'],
+        ['← →', 'Steps in cook mode'],
+        ['Ctrl+S', 'Save'],
       ],
     },
     settings: {
@@ -325,7 +299,16 @@ export const en = {
       textSizes: { normal: 'Normal', large: 'Large', huge: 'Huge' },
       textPreview: 'Mix the chicken with the yogurt and all the spices, and leave it for at least 30 minutes.',
       theme: 'Theme',
-      themes: { light: 'Light', dark: 'Dark', system: 'Match my device' },
+      themes: { light: 'Light', dark: 'Dark', system: 'System' },
+      look: 'Look',
+      style: 'Style',
+      accent: 'Accent',
+      accents: { tomato: 'Tomato', saffron: 'Saffron' },
+      accentFixed: 'Tomato (fixed)',
+      spiceColours: 'Ingredient colours',
+      spiceColoursHint: 'A colour for each part of the recipe',
+      stepPhotos: 'Step photos',
+      stepPhotosHint: 'Show “It should look like this”',
       readAloud: 'Read steps aloud when cooking',
       speakQuestions: 'Speak the questions in “Tell it”',
       speechRate: 'Speaking speed',

@@ -9,10 +9,10 @@
     --line: #bbb;
     --accent-text: #000;
     --accent-soft: transparent;
-    --scale: 1 !important;
+    --text-scale: 1 !important;
   }
-  html {
-    font-size: 11pt;
+  :root {
+    font-size: 11pt !important; /* beats the screen text-size rule */
   }
   body {
     background: #fff;

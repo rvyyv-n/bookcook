@@ -58,6 +58,7 @@ export function normalizeRecipe(input: Partial<Recipe>, now = Date.now()): Recip
     'sourceUrl',
     'forkedFromId',
     'lastCookedAt',
+    'tipsAudioId',
   ] as const;
   for (const key of optional) {
     const v = input[key];
@@ -74,6 +75,7 @@ export function mediaIdsOf(r: Partial<Recipe>): string[] {
     ...(r.photoIds ?? []),
     ...(r.originalCardPhotoIds ?? []),
     ...(r.voiceNoteIds ?? []),
+    ...(r.tipsAudioId && !r.voiceNoteIds?.includes(r.tipsAudioId) ? [r.tipsAudioId] : []),
     ...(r.steps ?? []).flatMap((s) => (s.photoId ? [s.photoId] : [])),
     ...(r.story ?? []).flatMap((s) => (s.audioId ? [s.audioId] : [])),
   ];
@@ -162,6 +164,7 @@ export async function forkRecipe(id: string, author: string): Promise<Recipe> {
       steps: original.steps.map((s) => ({ ...s, id: newId(), photoId: remap(s.photoId) })),
       // Keepsakes (voice notes, card photos, transcript, story) belong to the original.
       voiceNoteIds: [],
+      tipsAudioId: undefined,
       originalCardPhotoIds: [],
       transcript: undefined,
       story: undefined,

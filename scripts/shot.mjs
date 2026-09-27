@@ -1,5 +1,5 @@
 // Dev helper: screenshot the running app with Playwright.
-// node scripts/shot.mjs '{"path":"/","width":390,"height":844,"theme":"dark","textSize":"huge","actions":[{"click":"text=Try an example"}],"out":"shots/x.png"}'
+// node scripts/shot.mjs '{"path":"/","width":390,"height":844,"theme":"dark","textSize":"huge","settings":{"skin":"heirloom"},"actions":[{"click":"text=Try an example"}],"out":"shots/x.png"}'
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -34,19 +34,23 @@ if (plan.reset) {
   });
   await page.goto(base + (plan.path ?? '/'));
 }
-if (plan.textSize) {
+// Settings to store before the shot, e.g. {"skin":"heirloom","accent":"saffron"}. `textSize` is a shorthand.
+const settings = { ...plan.settings, ...(plan.textSize ? { textSize: plan.textSize } : {}) };
+if (Object.keys(settings).length) {
   await page.evaluate(
-    (s) =>
+    (entries) =>
       new Promise((res) => {
         const open = indexedDB.open('bookcook');
         open.onsuccess = () => {
           const tx = open.result.transaction('settings', 'readwrite');
-          tx.objectStore('settings').put({ key: 'textSize', value: s });
+          for (const [key, value] of entries) tx.objectStore('settings').put({ key, value });
           tx.oncomplete = () => res();
         };
       }),
-    plan.textSize,
+    Object.entries(settings),
   );
+  // Dexie doesn't see writes made outside it, so reload to pick them up.
+  await page.reload();
 }
 await page.waitForTimeout(400);
 for (const a of plan.actions ?? []) {

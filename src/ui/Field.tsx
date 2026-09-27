@@ -1,5 +1,6 @@
-import type { ReactNode, Ref } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import {
+  Button as AriaButton,
   FieldError,
   Input,
   Label,
@@ -10,13 +11,26 @@ import {
   type SearchFieldProps,
   type TextFieldProps as AriaTextFieldProps,
 } from 'react-aria-components';
+import { useT } from '../i18n';
 import { cx } from './cx';
+import { useDictation } from './dictation';
 import { Icon } from './Icon';
 
-export const inputClass =
-  'w-full min-h-14 rounded-md border-2 border-line bg-surface px-4 py-3 text-base text-ink placeholder:text-ink-muted/80 ' +
-  'transition-colors outline-none data-[hovered]:border-line-strong data-[focused]:border-ink ' +
-  'data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-2 data-[focus-visible]:outline-(--focus) data-[invalid]:border-danger';
+/**
+ * The field box. Its border is an inset shadow so focus and error don't shift the layout, and its
+ * radius is capped because the Tin skins make --radius-md a pill.
+ */
+export const fieldBoxClass =
+  'relative flex min-h-16 rounded-[min(var(--radius-md),18px)] bg-surface text-ink shadow-[inset_0_0_0_1.5px_var(--line-control)] ' +
+  'transition-shadow duration-(--dur) focus-within:shadow-[inset_0_0_0_2px_var(--ink)] ' +
+  'has-[[data-focus-visible]]:outline-3 has-[[data-focus-visible]]:outline-offset-3 has-[[data-focus-visible]]:outline-focus';
+
+const fieldBoxInvalid = 'shadow-[inset_0_0_0_2px_var(--danger)] focus-within:shadow-[inset_0_0_0_2px_var(--danger)]';
+const fieldBoxSpeaking = 'shadow-[inset_0_0_0_2px_var(--accent-mark)] focus-within:shadow-[inset_0_0_0_2px_var(--accent-mark)]';
+const fieldBoxDisabled = 'bg-sunk text-ink-muted shadow-[inset_0_0_0_1px_var(--line)]';
+
+const inputBase =
+  'min-w-0 flex-1 bg-transparent px-[0.7778rem] text-base text-inherit outline-none placeholder:text-ink-muted data-[disabled]:cursor-not-allowed';
 
 export interface TextFieldProps extends Omit<AriaTextFieldProps, 'children' | 'className'> {
   label: ReactNode;
@@ -28,11 +42,70 @@ export interface TextFieldProps extends Omit<AriaTextFieldProps, 'children' | 'c
   className?: string;
   inputClassName?: string;
   labelHidden?: boolean;
-  /** Extra control shown next to the input (e.g. the dictate button). */
-  accessory?: ReactNode;
+  /** Show the Speak button inside the field (when speech is available and the field is controlled). */
+  dictate?: boolean;
   inputRef?: Ref<HTMLInputElement & HTMLTextAreaElement>;
 }
 
+/** The Speak button and its listening state. Final words are appended to the field's value. */
+function useSpeak(value: string | undefined, onChange: ((v: string) => void) | undefined) {
+  const dictation = useDictation();
+  const [session, setSession] = useState<{ stop(): void } | null>(null);
+  const [partial, setPartial] = useState('');
+  const latest = useRef(value ?? '');
+  const live = useRef(session);
+  useEffect(() => {
+    latest.current = value ?? '';
+    live.current = session;
+  });
+  // Stop listening if the field goes away mid-sentence.
+  useEffect(() => () => live.current?.stop(), []);
+
+  const available = !!dictation && value !== undefined && !!onChange;
+  function toggle() {
+    if (session) {
+      session.stop();
+      return;
+    }
+    if (!dictation || !onChange) return;
+    setSession(
+      dictation.listen({
+        onPartial: setPartial,
+        onFinal: (text) => {
+          setPartial('');
+          const before = latest.current;
+          onChange(before && text ? `${before.trimEnd()} ${text.trim()}` : before || text.trim());
+        },
+        onEnd: () => {
+          setPartial('');
+          setSession(null);
+        },
+      }),
+    );
+  }
+  return { available, speaking: !!session, partial, toggle };
+}
+
+function SpeakButton({ speaking, onPress, isDisabled }: { speaking: boolean; onPress: () => void; isDisabled?: boolean }) {
+  const t = useT();
+  return (
+    <AriaButton
+      onPress={onPress}
+      isDisabled={isDisabled}
+      aria-pressed={speaking}
+      className={cx(
+        'flex min-h-16 min-w-16 shrink-0 flex-col items-center justify-center self-stretch rounded-[min(var(--radius-md),18px)] text-[0.6667rem] leading-tight font-bold',
+        'data-[hovered]:bg-sunk',
+        speaking ? 'text-accent-text' : 'text-ink',
+      )}
+    >
+      <Icon name={speaking ? 'stop' : 'mic'} size="1.3rem" filled={speaking} />
+      {speaking ? t.ui.common.stop : t.ui.common.speak}
+    </AriaButton>
+  );
+}
+
+/** A labelled text field. The label always sits above the field, never as the placeholder. */
 export function TextField({
   label,
   description,
@@ -43,32 +116,50 @@ export function TextField({
   className,
   inputClassName,
   labelHidden,
-  accessory,
+  dictate = true,
   inputRef,
   ...rest
 }: TextFieldProps) {
+  const speak = useSpeak(rest.value, rest.onChange);
+  const showSpeak = dictate && speak.available;
   return (
-    <AriaTextField {...rest} className={cx('flex flex-col gap-1.5', className)}>
-      <Label className={cx('font-bold text-ink', labelHidden && 'sr-only')}>{label}</Label>
-      <div className="flex items-start gap-2">
+    <AriaTextField {...rest} className={cx('group flex flex-col gap-1.5', className)}>
+      <Label className={cx('font-bold text-ink group-data-[disabled]:text-ink-muted', labelHidden && 'sr-only')}>{label}</Label>
+      <div
+        className={cx(
+          fieldBoxClass,
+          multiline ? 'items-start' : 'items-center',
+          rest.isInvalid && fieldBoxInvalid,
+          speak.speaking && fieldBoxSpeaking,
+          rest.isDisabled && fieldBoxDisabled,
+        )}
+      >
         {multiline ? (
           <TextArea
             ref={inputRef}
             rows={rows}
             placeholder={placeholder}
-            className={cx(inputClass, 'resize-y leading-relaxed', inputClassName)}
+            className={cx(inputBase, 'resize-y self-stretch py-3', inputClassName)}
           />
         ) : (
-          <Input ref={inputRef} placeholder={placeholder} className={cx(inputClass, inputClassName)} />
+          <Input ref={inputRef} placeholder={placeholder} className={cx(inputBase, 'self-stretch', inputClassName)} />
         )}
-        {accessory}
+        {showSpeak && <SpeakButton speaking={speak.speaking} onPress={speak.toggle} isDisabled={rest.isDisabled} />}
       </div>
+      {speak.partial && (
+        <p aria-live="polite" className="text-ink-muted">
+          {speak.partial}
+        </p>
+      )}
       {description && (
-        <Text slot="description" className="text-sm text-ink-muted">
+        <Text slot="description" className="text-ink-muted">
           {description}
         </Text>
       )}
-      <FieldError className="text-sm font-bold text-danger">{errorMessage}</FieldError>
+      <FieldError className="flex items-center gap-1.5 font-bold text-danger">
+        <Icon name="checkThis" size="1.2rem" className="shrink-0" />
+        {errorMessage}
+      </FieldError>
     </AriaTextField>
   );
 }
@@ -80,13 +171,12 @@ export function SearchField({
   ...rest
 }: { label: string; placeholder?: string; className?: string } & Omit<SearchFieldProps, 'className'>) {
   return (
-    <AriaSearchField {...rest} className={cx('group relative', className)}>
+    <AriaSearchField {...rest} className={cx('group', className)}>
       <Label className="sr-only">{label}</Label>
-      <Icon name="search" className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-ink-muted" />
-      <Input
-        placeholder={placeholder}
-        className={cx(inputClass, 'rounded-full bg-sunk pr-12 pl-12 [&::-webkit-search-cancel-button]:hidden')}
-      />
+      <div className={cx(fieldBoxClass, 'items-center')}>
+        <Icon name="search" className="pointer-events-none ml-[0.7778rem] shrink-0 text-ink-muted" />
+        <Input placeholder={placeholder} className={cx(inputBase, 'self-stretch [&::-webkit-search-cancel-button]:hidden')} />
+      </div>
     </AriaSearchField>
   );
 }

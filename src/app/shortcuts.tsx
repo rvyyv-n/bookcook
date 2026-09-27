@@ -12,36 +12,24 @@ export function isTypingTarget(el: EventTarget | null): boolean {
 export function ShortcutList() {
   const t = useT();
   return (
-    <div className="flex flex-col gap-6">
-      {t.ui.shortcuts.groups.map((g) => (
-        <section key={g.title}>
-          <h3 className="mb-2 font-body text-base font-bold">{g.title}</h3>
-          <dl className="grid grid-cols-[auto_1fr] items-center gap-x-5 gap-y-2">
-            {g.items
-              .map((item) => item as readonly [string, string])
-              .map(([keys, label]) => (
-                <div key={label} className="contents">
-                  <dt>
-                    {keys.split(' ').map((k) => (
-                      <Keyboard
-                        key={k}
-                        className="mr-1 inline-grid min-w-9 place-items-center rounded-md border-2 border-b-4 border-line-strong bg-surface px-2 py-0.5 font-bold"
-                      >
-                        {k}
-                      </Keyboard>
-                    ))}
-                  </dt>
-                  <dd>{label}</dd>
-                </div>
-              ))}
-          </dl>
-        </section>
-      ))}
-    </div>
+    <dl className="flex flex-col">
+      {t.ui.shortcuts.items
+        .map((item) => item as readonly [string, string])
+        .map(([keys, label]) => (
+          <div key={label} className="grid grid-cols-[6rem_minmax(0,1fr)] items-center gap-3 border-b border-line py-1.5">
+            <dt>
+              <Keyboard className="rounded-[6px] font-[inherit] px-2 py-0.5 font-bold shadow-[inset_0_0_0_1.5px_var(--line-strong)]">
+                {keys}
+              </Keyboard>
+            </dt>
+            <dd>{label}</dd>
+          </div>
+        ))}
+    </dl>
   );
 }
 
-/** Desktop keyboard shortcuts: / search, n new, e edit, c cook, g grocery, ? help. */
+/** Desktop keyboard shortcuts: / search, n new, e edit, c cook, ? help. */
 export function Shortcuts() {
   const t = useT();
   const navigate = useNavigate();
@@ -69,9 +57,6 @@ export function Shortcuts() {
         case 'c':
           if (recipe) navigate(`/r/${recipe.params.id}/cook`);
           break;
-        case 'g':
-          navigate('/grocery');
-          break;
         case '?':
           setHelp((h) => !h);
           break;
@@ -84,7 +69,7 @@ export function Shortcuts() {
   }, [navigate, pathname]);
 
   return (
-    <Sheet isOpen={help} onOpenChange={setHelp} title={t.ui.common.keyboardShortcuts}>
+    <Sheet isOpen={help} onOpenChange={setHelp} title={t.ui.common.keyboardShortcuts} placement="corner">
       <ShortcutList />
     </Sheet>
   );

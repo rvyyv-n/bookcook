@@ -23,7 +23,7 @@ export function TimerChip({ seconds, text, onPress, label }: { seconds: number; 
       className={cx(
         chip,
         'cursor-pointer border-2 border-transparent outline-none data-[hovered]:border-accent-strong data-[pressed]:scale-95',
-        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)',
+        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-focus',
       )}
     >
       {content}

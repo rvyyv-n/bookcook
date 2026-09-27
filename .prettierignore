@@ -4,3 +4,9 @@ android
 node_modules
 package-lock.json
 docs
+
+# Design handoff drop-in: kept byte-identical to the handoff
+src/design/tokens.css
+src/design/theme.css
+src/design/skin.ts
+src/design/icons.ts

@@ -1,4 +1,4 @@
-import type { Quantity } from '../lib/parse/types';
+import type { ParseCheck, Quantity } from '../lib/parse/types';
 
 export type RecipeSource = 'voice' | 'typed' | 'pasted' | 'web' | 'imported';
 
@@ -9,6 +9,8 @@ export interface Ingredient {
   name: string;
   note?: string;
   section?: string;
+  /** Drafts only: set by the parser for Review, dropped when the recipe is saved. */
+  check?: ParseCheck;
 }
 
 export interface Step {
@@ -16,6 +18,8 @@ export interface Step {
   text: string;
   timerSeconds?: number;
   photoId?: string;
+  /** Drafts only: set by the parser for Review, dropped when the recipe is saved. */
+  check?: ParseCheck;
 }
 
 export interface StoryAnswer {
@@ -44,6 +48,8 @@ export interface Recipe {
   photoIds: string[];
   originalCardPhotoIds: string[];
   voiceNoteIds: string[];
+  /** The voice note recorded for the tips (one of `voiceNoteIds`). */
+  tipsAudioId?: string;
   source: RecipeSource;
   sourceUrl?: string;
   /** "My version": the recipe this one was forked from. */
@@ -85,7 +91,8 @@ export interface CookLog {
 export interface GroceryItem {
   id: string;
   name: string;
-  quantity?: number;
+  /** Ranges are kept: "1–2 lemons" + "1 lemon" = "2–3 lemons". */
+  quantity?: Quantity;
   unit?: string;
   aisle?: string;
   checked: boolean;
@@ -93,10 +100,17 @@ export interface GroceryItem {
   order: number;
 }
 
+export type RequestDirection = 'incoming' | 'outgoing';
+
 export interface RecipeRequest {
   id: string;
   title: string;
+  /** incoming: someone wants this recipe from you. outgoing: you asked someone for it. */
+  direction: RequestDirection;
+  /** Incoming: who asked. */
   requestedBy?: string;
+  /** Outgoing: who you asked. */
+  askedOf?: string;
   note?: string;
   createdAt: number;
   fulfilledRecipeId?: string;
@@ -105,7 +119,6 @@ export interface RecipeRequest {
 export interface Collection {
   id: string;
   name: string;
-  emoji?: string;
   order: number;
 }
 

@@ -4,7 +4,7 @@
 
 Talk a recipe in. Cook it hands-free. A local-first cookbook (PWA, later Android and desktop): save recipes by talking or typing, then cook from them with voice commands. Everything is stored on the device in IndexedDB; there's no account or server.
 
-Status: in progress. See [`docs/bookcook-plan.md`](docs/bookcook-plan.md) for the full plan and build phases.
+Status: in progress. [`docs/roadmap.md`](docs/roadmap.md) tracks what's built and what's next; [`docs/bookcook-plan.md`](docs/bookcook-plan.md) is the full plan.
 
 ## Scripts
 
@@ -29,17 +29,17 @@ src/
   features/   library, recipe, editor, settings
   lib/parse/  rule-based recipe parser (pure TypeScript, fixture-tested)
   db/         Dexie schema and repositories (the only database access)
-  design/     replaceable design layer: tokens.css, fonts.css
+  design/     design handoff drop-in: tokens, theme, skins, icons
   ui/         shared components (React Aria)
   i18n/       UI strings and voice phrases
   styles/     Tailwind entry and print styles
-docs/         plan and design brief
+docs/         plan, roadmap, design brief; design/ holds the handoff docs
 scripts/      parser scoring, screenshot helper
 ```
 
 ## Design
 
-The visual design comes from the design tool, briefed by [`docs/design-brief.md`](docs/design-brief.md). The current look is a placeholder. The handoff replaces `src/design/`; see [`src/design/README.md`](src/design/README.md) for the token contract and import steps.
+The visual design comes from a design handoff: five skins, light and dark, two accents and three text sizes. Its docs (screens, components, themes, acceptance checklist) are in [`docs/design/`](docs/design/), with the decisions taken on it in [`DECISIONS.md`](docs/design/DECISIONS.md). The design values live only in `src/design/`; see [`src/design/README.md`](src/design/README.md) for how they're wired.
 
 ## Parser
 

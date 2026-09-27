@@ -1,64 +1,29 @@
 /*
- * Style entry. Design values live in src/design/ (replaceable); this file only wires them
- * into Tailwind and holds app behaviour that doesn't change with the design.
+ * Style entry. Design values live in src/design/ (theme.css brings in Tailwind, the fonts and the
+ * tokens); this file only holds app behaviour that doesn't change with the design.
  */
-@import 'tailwindcss';
-@import '../design/fonts.css';
-@import '../design/tokens.css';
+@import '../design/theme.css';
 @import './print.css';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
-/* Token contract → Tailwind utilities (bg-paper, text-ink, border-line, …). */
-@theme inline {
-  --color-paper: var(--paper);
-  --color-surface: var(--surface);
-  --color-sunk: var(--sunk);
-  --color-ink: var(--ink);
-  --color-ink-muted: var(--ink-muted);
-  --color-line: var(--line);
-  --color-line-strong: var(--line-strong);
-  --color-accent: var(--accent);
-  --color-accent-strong: var(--accent-strong);
-  --color-accent-soft: var(--accent-soft);
-  --color-accent-ink: var(--accent-ink);
-  --color-accent-text: var(--accent-text);
-  --color-success: var(--success);
-  --color-success-soft: var(--success-soft);
-  --color-danger: var(--danger);
-  --color-danger-soft: var(--danger-soft);
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
+/* App shell breakpoint: tab bar below 900px, sidebar from 900px (media-query rem is always 16px). */
+@theme {
+  --breakpoint-desk: 56.25rem;
 }
 
-/* Text-size setting (Normal / Large / Huge) scales rem, so type and spacing grow together. */
+/*
+ * Base text size: 112.5% of the browser's default (18px at the usual 16px), so a larger browser
+ * font setting still makes the app larger. The Normal / Large / Huge setting multiplies it.
+ */
 :root {
-  --scale: 1;
-}
-:root[data-text-size='large'] {
-  --scale: 1.2;
-}
-:root[data-text-size='huge'] {
-  --scale: 1.45;
-}
-html {
-  font-size: calc(112.5% * var(--scale)); /* 1rem = 18px at Normal */
+  font-size: calc(112.5% * var(--text-scale));
 }
 
 @layer base {
-  html,
-  body {
-    background: var(--paper);
-  }
   html {
     -webkit-text-size-adjust: 100%;
-  }
-  body {
-    color: var(--ink);
-    font-family: var(--font-body);
-    font-size: 1rem;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
+    background-color: var(--paper);
   }
   h1,
   h2,
@@ -75,7 +40,6 @@ html {
     background: var(--accent-soft);
     color: var(--ink);
   }
-  :focus-visible,
   [data-focus-visible] {
     outline: 3px solid var(--focus);
     outline-offset: 3px;
@@ -100,14 +64,28 @@ html {
 @utility type-display {
   font-family: var(--font-display);
   font-variation-settings: var(--font-display-settings);
+  font-weight: var(--font-display-weight);
 }
 
 /* "In her words" transcript. */
 @utility type-handwritten {
   font-family: var(--font-handwritten);
   font-variation-settings: var(--font-handwritten-settings);
+  font-weight: var(--handwritten-weight);
+}
+
+/* Primary button labels: the body face in the quiet skins, the display face in the Tin skins. */
+@utility type-action {
+  font-family: var(--action-font);
+  font-variation-settings: var(--action-settings);
+  font-weight: var(--action-weight);
 }
 
 @utility safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Toasts sit above the phone tab bar (64px items plus its padding). */
+:root:has([data-tab-bar]) {
+  --toast-offset: calc(3.5556rem + 2.25rem);
 }

@@ -8,31 +8,39 @@ import {
 import { cx } from './cx';
 import { Icon, type IconName } from './Icon';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'quiet' | 'danger' | 'ink';
-export type ButtonSize = 'md' | 'lg' | 'xl';
+/** primary: the one accent action per screen. ink: a strong action on a tinted card (Continue, Tell it now). */
+export type ButtonVariant = 'primary' | 'secondary' | 'quiet' | 'destructive' | 'ink';
+/** L is 56px, XL is 64px. */
+export type ButtonSize = 'L' | 'XL';
 
 const base =
-  'inline-flex items-center justify-center gap-2.5 rounded-full font-bold select-none text-center ' +
-  'transition-[background-color,box-shadow,transform,color] duration-150 ease-out ' +
-  'data-[pressed]:scale-[0.97] data-[disabled]:opacity-45 data-[disabled]:cursor-not-allowed ' +
-  'outline-none data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-(--focus)';
+  'inline-flex items-center justify-center rounded-md font-bold text-center select-none ' +
+  'transition-[background-color,transform] duration-(--dur) ease-(--ease-out) data-[pressed]:scale-[.97] ' +
+  'data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted';
 
 const variants: Record<ButtonVariant, string> = {
-  primary: 'bg-accent text-accent-ink shadow-paper data-[hovered]:bg-accent-strong',
-  secondary: 'bg-surface text-ink border-2 border-line-strong data-[hovered]:border-ink',
-  quiet: 'bg-transparent text-ink data-[hovered]:bg-sunk',
-  danger: 'bg-transparent text-danger border-2 border-danger/40 data-[hovered]:bg-danger-soft',
-  ink: 'bg-ink text-paper data-[hovered]:opacity-90',
+  primary: 'type-action bg-accent text-accent-ink data-[hovered]:bg-accent-strong data-[pressed]:bg-accent-strong data-[disabled]:bg-sunk',
+  secondary:
+    'bg-(--control-fill) text-ink shadow-[inset_0_0_0_var(--control-border)_var(--line-strong)] data-[hovered]:bg-(--control-fill-hover) ' +
+    'data-[pressed]:bg-line data-[disabled]:bg-transparent data-[disabled]:shadow-[inset_0_0_0_1px_var(--line)]',
+  quiet: 'bg-transparent text-ink data-[hovered]:bg-sunk data-[pressed]:bg-line',
+  destructive:
+    'bg-transparent text-danger shadow-[inset_0_0_0_1.5px_var(--danger)] data-[hovered]:bg-danger-soft data-[pressed]:bg-danger-soft ' +
+    'data-[disabled]:bg-transparent data-[disabled]:shadow-[inset_0_0_0_1px_var(--line)]',
+  ink: 'bg-ink text-paper data-[hovered]:opacity-90 data-[disabled]:bg-sunk',
 };
 
 const sizes: Record<ButtonSize, string> = {
-  md: 'min-h-14 px-5 text-base',
-  lg: 'min-h-16 px-7 text-lg',
-  xl: 'min-h-20 px-8 text-xl',
+  L: 'min-h-14 gap-2 px-[1rem]',
+  XL: 'min-h-16 gap-[.6rem] px-[1.4rem] text-lg',
 };
 
-export function buttonClass(variant: ButtonVariant = 'secondary', size: ButtonSize = 'md', extra?: string) {
-  return cx(base, variants[variant], sizes[size], extra);
+const iconSize: Record<ButtonSize, string> = { L: '1.3333rem', XL: '1.6rem' };
+
+export function buttonClass(variant: ButtonVariant = 'secondary', size: ButtonSize = 'L', extra?: string) {
+  // Primary labels use the skin's action size (the display face is larger in the Tin skins).
+  const text = size === 'L' ? (variant === 'primary' ? 'text-(length:--action-size)' : 'text-base') : '';
+  return cx(base, variants[variant], sizes[size], text, extra);
 }
 
 interface Common {
@@ -44,6 +52,17 @@ interface Common {
   className?: string;
 }
 
+function Content({ icon, iconEnd, size = 'L', children }: Pick<Common, 'icon' | 'iconEnd' | 'size' | 'children'>) {
+  return (
+    <>
+      {icon && <Icon name={icon} size={iconSize[size]} className="shrink-0" />}
+      <span>{children}</span>
+      {iconEnd && <Icon name={iconEnd} size={iconSize[size]} className="shrink-0" />}
+    </>
+  );
+}
+
+/** A button. The label is always shown; the icon is optional and decorative. */
 export function Button({
   variant,
   size,
@@ -55,9 +74,9 @@ export function Button({
 }: Common & Omit<AriaButtonProps, 'children' | 'className'>) {
   return (
     <AriaButton {...rest} className={buttonClass(variant, size, className)}>
-      {icon && <Icon name={icon} size="1.25em" />}
-      <span>{children}</span>
-      {iconEnd && <Icon name={iconEnd} size="1.25em" />}
+      <Content icon={icon} iconEnd={iconEnd} size={size}>
+        {children}
+      </Content>
     </AriaButton>
   );
 }
@@ -74,14 +93,14 @@ export function ButtonLink({
 }: Common & Omit<AriaLinkProps, 'children' | 'className'>) {
   return (
     <AriaLink {...rest} className={buttonClass(variant, size, cx('no-underline', className))}>
-      {icon && <Icon name={icon} size="1.25em" />}
-      <span>{children}</span>
-      {iconEnd && <Icon name={iconEnd} size="1.25em" />}
+      <Content icon={icon} iconEnd={iconEnd} size={size}>
+        {children}
+      </Content>
     </AriaLink>
   );
 }
 
-/** A compact labelled icon button (label always visible, stacked or inline). */
+/** A quiet labelled icon button, the icon above the label (Tell it controls, Speak) or beside it. */
 export function ToolButton({
   icon,
   children,
@@ -93,14 +112,13 @@ export function ToolButton({
     <AriaButton
       {...rest}
       className={cx(
-        'inline-flex min-h-14 min-w-14 items-center justify-center rounded-lg px-3 font-bold text-ink transition-colors outline-none',
-        'data-[hovered]:bg-sunk data-[pressed]:bg-line data-[disabled]:opacity-45',
-        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)',
+        'inline-flex min-h-14 min-w-14 items-center justify-center rounded-md px-3 font-bold text-ink transition-colors duration-(--dur)',
+        'data-[hovered]:bg-sunk data-[pressed]:bg-line data-[disabled]:text-ink-muted',
         stacked ? 'flex-col gap-1 text-sm' : 'gap-2 text-base',
         className,
       )}
     >
-      <Icon name={icon} size={stacked ? 26 : '1.25em'} />
+      <Icon name={icon} size={stacked ? '1.4444rem' : '1.3333rem'} className="shrink-0" />
       <span>{children}</span>
     </AriaButton>
   );

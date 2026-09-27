@@ -27,7 +27,7 @@ export function RecipeRow({ recipe, active }: { recipe: Recipe; active?: boolean
         aria-current={active ? 'page' : undefined}
         className={cx(
           'group -mx-3 flex items-center gap-4 rounded-lg px-3 py-4 no-underline transition-colors outline-none',
-          'hover:bg-sunk focus-visible:outline-3 focus-visible:outline-(--focus)',
+          'hover:bg-sunk',
           active && 'bg-accent-soft hover:bg-accent-soft',
         )}
       >
@@ -49,9 +49,9 @@ function EmptyCookbook() {
   const [busy, setBusy] = useState(false);
   return (
     <section className="flex flex-col items-start gap-6 py-10">
-      <p className="type-display text-4xl leading-[1.05] font-medium tracking-tight text-balance">{t.ui.library.emptyTitle}</p>
+      <p className="type-display text-4xl leading-[1.05] tracking-tight text-balance">{t.ui.library.emptyTitle}</p>
       <p className="max-w-[34ch] text-lg text-ink-muted">{t.ui.library.emptyBody}</p>
-      <ButtonLink href="/new" variant="primary" size="xl" icon="plus">
+      <ButtonLink href="/new" variant="primary" size="XL" icon="add">
         {t.ui.library.emptyAction}
       </ButtonLink>
       <Button
@@ -82,7 +82,7 @@ export function LibraryList({ compact = false }: { compact?: boolean }) {
   const settings = useSettings();
   const filter = useLibraryFilter();
   const list = useFilteredRecipes(recipes, filter);
-  const openRequests = (requests ?? []).filter((r) => !r.fulfilledRecipeId).slice(0, 2);
+  const openRequests = (requests ?? []).filter((r) => r.direction === 'incoming' && !r.fulfilledRecipeId).slice(0, 2);
 
   if (recipes === undefined) return <p className="p-6 text-ink-muted">{t.ui.common.loading}</p>;
 
@@ -116,9 +116,9 @@ export function LibraryList({ compact = false }: { compact?: boolean }) {
             onChange={(query) => filter.set({ query })}
             id="library-search"
           />
-          {!compact && (collections?.length || tags?.length) ? (
+          {collections?.length || tags?.length ? (
             <div
-              className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none]"
+              className={cx('flex gap-2', compact ? 'flex-wrap' : '-mx-5 overflow-x-auto px-5 pb-1 [scrollbar-width:none]')}
               role="group"
               aria-label={t.ui.nav.collections}
             >
@@ -131,7 +131,6 @@ export function LibraryList({ compact = false }: { compact?: boolean }) {
                   isSelected={filter.collectionId === c.id}
                   onPress={() => filter.set({ collectionId: filter.collectionId === c.id ? null : c.id, tag: null })}
                 >
-                  {c.emoji && <span aria-hidden>{c.emoji}</span>}
                   {c.name}
                 </Chip>
               ))}

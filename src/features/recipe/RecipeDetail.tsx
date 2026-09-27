@@ -46,8 +46,8 @@ function StoryCard({ recipe }: { recipe: Recipe }) {
   if (!recipe.story?.length) return null;
   return (
     <section aria-labelledby="story-h" className="rounded-xl bg-surface p-6 shadow-paper sm:p-8">
-      <h2 id="story-h" className="mb-4 flex items-center gap-2 font-body text-base font-bold text-accent-text">
-        <Icon name="quote" size={22} />
+      <h2 id="story-h" className="mb-4 flex items-center gap-2 font-text text-base font-bold text-accent-text">
+        <Icon name="transcript" size={22} />
         {t.ui.recipe.story}
       </h2>
       <div className="flex flex-col gap-6">
@@ -68,16 +68,13 @@ function InHerWords({ transcript }: { transcript: string }) {
   return (
     <Disclosure className="group rounded-xl border-2 border-line">
       <Heading>
-        <AriaButton
-          slot="trigger"
-          className="flex min-h-16 w-full items-center gap-3 rounded-xl px-5 text-left outline-none data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)"
-        >
-          <Icon name="wave" className="text-accent-text" />
+        <AriaButton slot="trigger" className="flex min-h-16 w-full items-center gap-3 rounded-xl px-5 text-left ">
+          <Icon name="transcript" className="text-accent-text" />
           <span className="flex-1">
             <span className="block type-display text-xl">{t.ui.recipe.inHerWords}</span>
             <span className="block text-sm text-ink-muted">{t.ui.recipe.inHerWordsHint}</span>
           </span>
-          <Icon name="chevronDown" className="transition-transform group-data-[expanded]:rotate-180" />
+          <Icon name="collapse" className="rotate-180 transition-transform group-data-[expanded]:rotate-0" />
         </AriaButton>
       </Heading>
       <DisclosurePanel>
@@ -102,7 +99,7 @@ function CollectionsEditor({ recipe }: { recipe: Recipe }) {
   if (!collections?.length) return null;
   return (
     <section aria-labelledby="col-h" className="flex flex-col gap-3">
-      <h2 id="col-h" className="font-body text-base font-bold">
+      <h2 id="col-h" className="font-text text-base font-bold">
         {t.ui.recipe.collections}
       </h2>
       <div className="flex flex-wrap gap-2">
@@ -179,7 +176,7 @@ function Lineage({ recipe }: { recipe: Recipe }) {
       )}
       {forks && forks.length > 0 && (
         <div>
-          <h2 className="font-body text-base font-bold">{t.ui.recipe.versions}</h2>
+          <h2 className="font-text text-base font-bold">{t.ui.recipe.versions}</h2>
           <ul className="mt-1 flex flex-col gap-1">
             {forks.map((f) => (
               <li key={f.id}>
@@ -210,7 +207,7 @@ function CardPhotos({ recipe }: { recipe: Recipe }) {
             key={id}
             onPress={() => setOpen(id)}
             aria-label={`${t.ui.recipe.originalCard} ${i + 1}`}
-            className="overflow-hidden rounded-lg shadow-paper outline-none data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)"
+            className="overflow-hidden rounded-lg shadow-paper "
           >
             <Photo id={id} alt="" className="h-48 w-40 -rotate-1" />
           </AriaButton>
@@ -252,14 +249,14 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
           </ul>
         )}
         <div className="no-print flex flex-wrap items-center gap-2">
-          <ButtonLink href={`/r/${recipe.id}/cook`} variant="primary" size="lg" icon="flame">
+          <ButtonLink href={`/r/${recipe.id}/cook`} variant="primary" size="XL" icon="startCooking">
             {t.ui.recipe.startCooking}
           </ButtonLink>
           <ToolButton icon="edit" onPress={() => navigate(`/r/${recipe.id}/edit`)}>
             {t.ui.common.edit}
           </ToolButton>
           <ToolButton
-            icon="cartAdd"
+            icon="addToGrocery"
             onPress={async () => {
               await addToGrocery(adj.ingredients, recipe.id);
               toast.show({ message: t.ui.recipe.addedToGrocery(adj.ingredients.length), tone: 'success' });
@@ -268,7 +265,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
             {t.ui.recipe.addToGrocery}
           </ToolButton>
           <ToolButton
-            icon="fork"
+            icon="myVersion"
             onPress={async () => {
               const fork = await forkRecipe(recipe.id, settings.myName || recipe.author);
               toast.show({ message: t.ui.recipe.forked, tone: 'success' });
@@ -315,7 +312,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
           </ol>
           {recipe.tips && (
             <aside aria-labelledby="tips-h" className="mt-4 rounded-xl bg-accent-soft p-6">
-              <h2 id="tips-h" className="mb-2 font-body text-base font-bold">
+              <h2 id="tips-h" className="mb-2 font-text text-base font-bold">
                 {t.ui.recipe.tips}
               </h2>
               <p className="type-display text-xl whitespace-pre-line italic">{recipe.tips}</p>
@@ -353,8 +350,7 @@ export function RecipeView({ recipe }: { recipe: Recipe }) {
         )}
         <div>
           <Button
-            variant="danger"
-            icon="trash"
+            variant="destructive"
             onPress={async () => {
               const snap = await deleteRecipe(recipe.id);
               navigate('/');
@@ -378,7 +374,7 @@ export function RecipeDetailPage() {
     return (
       <div className="flex flex-col items-start gap-4 py-10">
         <p className="type-display text-2xl">{t.ui.common.recipeNotFound}</p>
-        <ButtonLink href="/" variant="secondary" icon="book">
+        <ButtonLink href="/" variant="secondary" icon="cookbook">
           {t.ui.common.goHome}
         </ButtonLink>
       </div>

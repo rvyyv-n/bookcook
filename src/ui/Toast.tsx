@@ -1,7 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 import { useT } from '../i18n';
-import { cx } from './cx';
 import { Icon } from './Icon';
 
 export interface ToastOptions {
@@ -18,7 +17,7 @@ interface ToastItem extends ToastOptions {
 
 interface ToastApi {
   show: (t: ToastOptions) => void;
-  /** Show "<message> · Undo" (the app uses undo instead of confirm dialogs). */
+  /** Show "<message> · Undo" (the app uses undo instead of confirm dialogs, so destructive actions act at once). */
   undo: (message: string, onUndo: () => void | Promise<void>) => void;
 }
 
@@ -31,6 +30,8 @@ export function useToast(): ToastApi {
 }
 
 let nextId = 1;
+/** Toasts stay 6 seconds (paused while hovered or focused). */
+const TOAST_MS = 6000;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const t = useT();
@@ -44,7 +45,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const api = useMemo<ToastApi>(
     () => ({
       show,
-      undo: (message, onUndo) => show({ message, action: { label: t.ui.common.undo, onAction: onUndo }, timeout: 8000 }),
+      undo: (message, onUndo) => show({ message, action: { label: t.ui.common.undo, onAction: onUndo } }),
     }),
     [show, t],
   );
@@ -54,7 +55,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       <div
         role="region"
         aria-label={t.ui.common.notifications}
-        className="no-print pointer-events-none fixed inset-x-0 bottom-[calc(6.5rem+env(safe-area-inset-bottom))] z-50 flex flex-col items-center gap-2 px-4 lg:bottom-8"
+        className="no-print pointer-events-none fixed inset-x-0 bottom-[calc(var(--toast-offset,1.5rem)+env(safe-area-inset-bottom))] z-50 flex flex-col items-center gap-2 px-4 desk:bottom-8"
       >
         <div aria-live="polite" className="contents">
           {items.map((item) => (
@@ -67,12 +68,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 }
 
 function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
-  const t = useT();
   const [paused, setPaused] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => {
     if (paused) return;
-    timer.current = setTimeout(onDismiss, item.timeout ?? 5000);
+    timer.current = setTimeout(onDismiss, item.timeout ?? TOAST_MS);
     return () => clearTimeout(timer.current);
   }, [paused, item.timeout, onDismiss]);
 
@@ -83,31 +83,22 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      className={cx(
-        'pointer-events-auto flex w-full max-w-lg animate-rise items-center gap-3 rounded-lg py-2 pr-2 pl-5 text-base shadow-lift',
-        'bg-ink text-paper',
-      )}
+      className="pointer-events-auto flex min-h-16 w-full max-w-[23.3333rem] animate-rise items-center gap-3 rounded-md bg-ink py-1.5 pr-1.5 pl-4 text-paper shadow-lift"
     >
       {item.tone === 'success' && <Icon name="check" className="shrink-0" />}
-      <p className="flex-1 py-2">{item.message}</p>
+      <p className="flex-1 py-2 font-bold">{item.message}</p>
       {item.action && (
         <AriaButton
           onPress={async () => {
             onDismiss();
             await item.action!.onAction();
           }}
-          className="min-h-12 rounded-md bg-accent px-4 font-bold text-accent-ink outline-none data-[focus-visible]:outline-3 data-[focus-visible]:outline-paper"
+          className="flex min-h-14 shrink-0 items-center gap-1.5 rounded-md pr-[1.1rem] pl-[0.8rem] font-bold text-paper shadow-[inset_0_0_0_1.5px_var(--paper)] data-[focus-visible]:outline-paper data-[hovered]:bg-[rgb(255_255_255/.12)]"
         >
+          <Icon name="undo" className="shrink-0" />
           {item.action.label}
         </AriaButton>
       )}
-      <AriaButton
-        onPress={onDismiss}
-        aria-label={t.ui.common.dismiss}
-        className="grid min-h-12 min-w-12 place-items-center rounded-md text-paper/80 outline-none data-[hovered]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-paper"
-      >
-        <Icon name="close" size={20} />
-      </AriaButton>
     </div>
   );
 }

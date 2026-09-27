@@ -1,11 +1,12 @@
 import { aisleFor, ingredientKey, type Aisle } from './aisles';
-import { quantityMax } from './numbers';
+import { mapQuantity } from './numbers';
 import { roundForUnit } from './scale';
+import type { Quantity } from './types';
 import { getUnit } from './units';
 
 export interface MergeableItem {
   name: string;
-  quantity?: number;
+  quantity?: Quantity;
   unit?: string;
   aisle?: Aisle | string;
   fromRecipeIds: string[];
@@ -13,7 +14,7 @@ export interface MergeableItem {
 
 export interface IncomingIngredient {
   name: string;
-  quantity?: number | [number, number];
+  quantity?: Quantity;
   unit?: string;
 }
 
@@ -30,15 +31,26 @@ export function compatible(a: string | undefined, b: string | undefined): boolea
   return dimension(a) === dimension(b);
 }
 
-function add(aQty: number | undefined, aUnit: string | undefined, bQty: number | undefined, bUnit: string | undefined) {
+/** Add two amounts end by end, so a range stays a range: 1–2 + 1 = 2–3. */
+function sum(a: Quantity, b: Quantity): Quantity {
+  if (!Array.isArray(a) && !Array.isArray(b)) return a + b;
+  const [a0, a1] = Array.isArray(a) ? a : [a, a];
+  const [b0, b1] = Array.isArray(b) ? b : [b, b];
+  return [a0 + b0, a1 + b1];
+}
+
+function add(aQty: Quantity | undefined, aUnit: string | undefined, bQty: Quantity | undefined, bUnit: string | undefined) {
   if (aQty === undefined || bQty === undefined) return { quantity: aQty ?? bQty, unit: aUnit ?? bUnit };
   const ua = getUnit(aUnit);
   const ub = getUnit(bUnit);
-  if (!ua?.toBase || !ub?.toBase || ua.id === ub.id) return { quantity: roundForUnit(aQty + bQty, aUnit), unit: aUnit };
+  if (!ua?.toBase || !ub?.toBase || ua.id === ub.id) {
+    return { quantity: mapQuantity(sum(aQty, bQty), (n) => roundForUnit(n, aUnit)), unit: aUnit };
+  }
   // Express the sum in the larger of the two units.
   const big = ua.toBase >= ub.toBase ? ua : ub;
-  const total = (aQty * ua.toBase + bQty * ub.toBase) / big.toBase!;
-  return { quantity: roundForUnit(total, big.id), unit: big.id };
+  const inBig = (q: Quantity, factor: number) => mapQuantity(q, (n) => (n * factor) / big.toBase!);
+  const total = sum(inBig(aQty, ua.toBase), inBig(bQty, ub.toBase));
+  return { quantity: mapQuantity(total, (n) => roundForUnit(n, big.id)), unit: big.id };
 }
 
 /**
@@ -54,7 +66,7 @@ export function mergeIntoList<T extends MergeableItem>(
   const result = list.map((i) => ({ ...i }));
   for (const ing of incoming) {
     if (!ing.name.trim()) continue;
-    const qty = ing.quantity === undefined ? undefined : quantityMax(ing.quantity);
+    const qty = ing.quantity;
     const unit = getUnit(ing.unit)?.vague ? undefined : ing.unit;
     const key = ingredientKey(ing.name);
     const match = result.find((r) => ingredientKey(r.name) === key && compatible(r.unit, unit) && !('checked' in r && r.checked));

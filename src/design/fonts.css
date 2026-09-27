@@ -1,6 +1,0 @@
-/* Self-hosted fonts for the current design. Replace alongside tokens.css if the design changes typefaces. */
-@import '@fontsource-variable/fraunces/full.css';
-@import '@fontsource-variable/fraunces/full-italic.css';
-@import '@fontsource/atkinson-hyperlegible-next/400.css';
-@import '@fontsource/atkinson-hyperlegible-next/400-italic.css';
-@import '@fontsource/atkinson-hyperlegible-next/700.css';

@@ -27,6 +27,23 @@ export class BookcookDB extends Dexie {
       media: 'id, recipeId, kind',
       settings: 'key',
     });
+    // Design handoff: collections lose their emoji; requests gain a direction (old ones were all asked of you).
+    this.version(2)
+      .stores({})
+      .upgrade(async (tx) => {
+        await tx
+          .table('collections')
+          .toCollection()
+          .modify((c: Record<string, unknown>) => {
+            delete c.emoji;
+          });
+        await tx
+          .table('requests')
+          .toCollection()
+          .modify((r: Partial<RecipeRequest>) => {
+            r.direction ??= 'incoming';
+          });
+      });
   }
 }
 

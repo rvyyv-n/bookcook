@@ -121,7 +121,7 @@ describe('drafts', () => {
   });
 
   it('fulfils the request a draft was started from', async () => {
-    const req = await addRequest({ title: 'Nihari', requestedBy: 'Rayyan' });
+    const req = await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Rayyan' });
     const d = await createDraft('tell', { title: 'Nihari' }, { requestId: req.id });
     const recipe = await commitDraft(d.id);
     expect((await listRequests())[0]!.fulfilledRecipeId).toBe(recipe.id);
@@ -159,6 +159,16 @@ describe('grocery', () => {
     expect(list[1]).toMatchObject({ quantity: 1.5, unit: 'kg', aisle: 'Meat & fish' });
   });
 
+  it('keeps ranges when merging', async () => {
+    await addToGrocery([{ name: 'lemons', quantity: [1, 2] }], 'a');
+    await addToGrocery([{ name: 'lemon', quantity: 1 }], 'b');
+    await addToGrocery([{ name: 'milk', quantity: 500, unit: 'ml' }], 'a');
+    await addToGrocery([{ name: 'milk', quantity: [1, 2], unit: 'l' }], 'b');
+    const [lemons, milk] = await listGrocery();
+    expect(lemons).toMatchObject({ quantity: [2, 3] });
+    expect(milk).toMatchObject({ quantity: [1.5, 2.5], unit: 'l' });
+  });
+
   it('adds manual items and clears checked ones with undo', async () => {
     await addManualItem('2 lemons');
     await addManualItem('bin bags');
@@ -174,8 +184,9 @@ describe('grocery', () => {
 
 describe('requests', () => {
   it('matches open requests to a recipe title', async () => {
-    await addRequest({ title: "Mom's biryani", requestedBy: 'Rayyan' });
-    await addRequest({ title: 'Nihari' });
+    await addRequest({ title: "Mom's biryani", direction: 'incoming', requestedBy: 'Rayyan' });
+    await addRequest({ title: 'Nihari', direction: 'incoming' });
+    await addRequest({ title: "Nani's biryani", direction: 'outgoing', askedOf: 'Nani' });
     expect((await findOpenRequestsFor('Chicken Biryani')).map((r) => r.title)).toEqual(["Mom's biryani"]);
     expect(await findOpenRequestsFor('Pancakes')).toEqual([]);
   });

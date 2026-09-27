@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react';
 import { RouterProvider as AriaRouterProvider } from 'react-aria-components';
 import { useHref, useNavigate, type NavigateOptions } from 'react-router';
 import { useSettings } from '../db/hooks';
+import { applyAppearance } from '../design/skin';
 import { ToastProvider } from '../ui/Toast';
 import { usePrefersDark } from './useMediaQuery';
 
@@ -11,15 +12,13 @@ declare module 'react-aria-components' {
   }
 }
 
-/** Applies text size and theme to <html> so tokens.css can react. */
+/** Writes the appearance settings onto <html> (data-skin, data-theme, …) so tokens.css can react. */
 function Appearance() {
-  const { textSize, theme, lang } = useSettings();
-  const prefersDark = usePrefersDark();
-  const resolved = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
+  const { skin, theme, accent, textSize, spiceColours, stepPhoto, lang } = useSettings();
+  const systemDark = usePrefersDark();
   useEffect(() => {
     const root = document.documentElement;
-    root.dataset.textSize = textSize;
-    root.dataset.theme = resolved;
+    applyAppearance({ skin, theme, accent, textSize, spiceColours, stepPhoto }, systemDark, root);
     root.lang = lang;
     // Browser chrome follows the design's paper colour.
     const paper = getComputedStyle(root).getPropertyValue('--paper').trim();
@@ -27,7 +26,7 @@ function Appearance() {
       m.content = paper;
       m.removeAttribute('media');
     });
-  }, [textSize, resolved, lang]);
+  }, [skin, theme, accent, textSize, spiceColours, stepPhoto, systemDark, lang]);
   return null;
 }
 
