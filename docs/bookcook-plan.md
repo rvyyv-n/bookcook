@@ -1,6 +1,6 @@
 # Bookcook: recipes in their own words (implementation plan)
 
-> This is the full handoff for a fresh implementation thread. Build it phase by phase, making one commit (or more) per phase, and check each phase with the steps in **Verification** before moving on.
+> The product and architecture spec. Build order and status live in [`roadmap.md`](roadmap.md). Make one commit (or more) per phase, and check each phase with the steps in **Verification** before moving on.
 
 ## Context
 The author's mom cooks from memory and has never written her recipes down. **Bookcook** lets someone **say** a recipe out loud or **type** it naturally and get a clean, structured recipe. They can then cook from it later **hands-free**, with the app reading each step aloud and listening for "next". It's designed first for older users (big type, one clear action per screen, voice first), but it's a general, minimal, modern cookbook anyone can use. It's also a portfolio piece, so polish, accessibility and measurable engineering quality matter.
@@ -14,7 +14,7 @@ The author's mom cooks from memory and has never written her recipes down. **Boo
 - **Design comes from a separate design handoff** (the user makes it in parallel; see "Design workflow"). Until it arrives, build the parts that don't depend on visuals.
 
 ### Environment
-- Repo: empty, on branch `master` with no commits. Rename it to `main` on the first commit (the expected main branch).
+- Repo: the default branch is `main`.
 - Windows 11, Node 24, npm 11, Python 3.13. Android SDK/JDK status unknown; check it in phase 9.
 - Check current major versions of every library at install time rather than assuming them.
 
@@ -25,7 +25,7 @@ The author's mom cooks from memory and has never written her recipes down. **Boo
 |---|---|---|
 | App | **Vite + React + TypeScript** (strict) SPA | Static output, so one build serves the PWA, Capacitor and desktop |
 | Components | **React Aria Components** | Unstyled and accessible (keyboard, focus, screen readers), so the look stays ours |
-| Styling | **Tailwind CSS v4** + CSS variables in `src/styles/tokens.css` | Tokens for colour, type scale, spacing, radius and motion; the root font-scale variable drives the text-size setting |
+| Styling | **Tailwind CSS v4** + CSS variables in `src/design/tokens.css` | Tokens for colour, type scale, spacing, radius and motion; the root font-scale variable drives the text-size setting |
 | Routing | react-router | |
 | Storage | **Dexie (IndexedDB)** + `dexie-react-hooks` (`useLiveQuery`) | Local-first, stores Blobs, reactive; no global store needed |
 | Search | MiniSearch | Fuzzy search that runs locally |
@@ -40,21 +40,21 @@ The author's mom cooks from memory and has never written her recipes down. **Boo
 ---
 
 ## Design direction
-The full visual brief is [`design-brief.md`](design-brief.md) ("warm editorial minimalism": AAA contrast, 18px base text, a Normal / Large / Huge text-size setting, 56px tap targets, labelled icons, undo toasts, plain-language labels). The code side of the design lives in `src/design/` (see its README for the token contract).
+The visual design is the design handoff in [`design/`](design/): screens, components, themes, copy and the [`ACCEPTANCE.md`](design/ACCEPTANCE.md) checklist, with the decisions taken on it in [`DECISIONS.md`](design/DECISIONS.md). Where the handoff and this plan differ on anything visual or on UI copy, the handoff wins. [`design-brief.md`](design-brief.md) is the brief that produced it ("warm editorial minimalism"). The code side lives in `src/design/` (see its README).
 - **Heart:** recipes show "*From Mom's kitchen*" (the author's name) and can keep her **voice notes**, "**In her words**" transcript, **story** and **original card photo**. The app preserves a person, not just instructions.
 
 ## Information architecture and layouts
-**Routes:** `/` library · `/r/:id` recipe detail · `/r/:id/edit` editor · `/r/:id/cook` cook mode · `/new` new recipe chooser · `/new/tell` guided voice · `/new/talk` just-talk · `/new/type` typed editor · `/new/paste` · `/new/link` · `/grocery` · `/requests` · `/settings` · `/import#<payload>` share-link import.
+**Routes:** as listed in [`design/screen-map.md`](design/screen-map.md) and implemented in `src/app/App.tsx`, plus `/import#<payload>` for share-link import.
 
-- **Phone and tablet (< 1024px):** a bottom tab bar: **Cookbook · Grocery · [ + ] · Requests · Settings**.
-  - The large centre **+** opens **New recipe**: four big choices, **🎙 Tell it**, **⌨ Type it**, **📋 Paste it**, **🔗 From a link**, plus a quieter "Or just talk freely" link to just-talk. This is also the "quick add" (Things 3 style).
-  - The library is one column of large cards; detail is a full screen.
-- **Desktop (≥ 1024px):** three panes.
+- **Phone and tablet (< 900px):** a bottom tab bar: **Cookbook · Grocery · [ + ] · Requests · Settings**.
+  - The large centre **+** opens **New recipe**: four big choices, **Tell it**, **Type it**, **Paste it**, **From a link**, plus a quieter "Or just talk freely" link to just-talk. This is also the "quick add" (Things 3 style).
+  - The library shows recipe cards in two columns at Normal text size and one column at Large and Huge; detail is a full screen.
+- **Desktop (≥ 900px):** three panes.
   - **Left sidebar:** New recipe, Cookbook, Collections, Tags, Grocery, Requests, Settings.
   - **Middle:** a searchable recipe list.
   - **Right:** the selected recipe or the editor.
   - The editor shows ingredients and steps side by side.
-  - Shortcuts: `/` search, `n` new, `e` edit, `c` cook, `g` grocery; in cook mode `←` `→`, `Space` (read aloud), `t` (timer). Shortcuts are listed under `?`.
+  - Shortcuts: `/` search, `n` new, `e` edit, `c` cook, `Ctrl/⌘+S` save; in cook mode `←` `→`, `Space` (read), `t` (timers). Shortcuts are listed under `?`.
 - **Cook mode, desktop/tablet landscape:** a fixed ingredients checklist on the left and a huge current step on the right.
 
 ---
@@ -128,7 +128,7 @@ Keep a **fixture corpus** (`src/lib/parse/__fixtures__/`) of realistic spoken, t
 ### 6. Cook mode (hands-free)
 - One step at a time in huge text, with a progress bar and **Wake Lock**. Steps are read aloud automatically (this can be switched off).
 - **Voice commands:** next, back, repeat, ingredients (reads the list), start timer, "set a timer for 5 minutes", stop.
-- **Timers:** several can run at once, pinned at the top. When one ends there's a loud chime plus a spoken "Your 10 minute timer is done".
+- **Timers:** several can run at once, pinned at the top. When one ends there's a full-width alert, a repeating soft chime and a spoken "Your rice timer is done", until it's stopped (saying "stop" works too).
 - **Ingredients:** a checklist, a **servings scaler** (±) and a **metric ⇄ imperial** toggle. Tapping a highlighted ingredient in a step shows its amount. Step photos are shown inline.
 - **"I made it" log:** after the last step, a prompt asks for an optional rating, photo and note ("less chilli next time"). It updates `cookedCount` and `lastCookedAt`. Notes are private to the log and separate from the recipe text.
 
@@ -176,34 +176,14 @@ Text size, theme (light/dark/system), read steps aloud, speech rate and voice, d
 ---
 
 ## Data model (`src/db/`)
-```ts
-Recipe {
-  id, title, author, description?, servings?, prepMinutes?, cookMinutes?,
-  lang: 'en', tags: string[], collectionIds: string[],
-  ingredients: { id, quantity?: number | [number, number], unit?, name, note?, section? }[],
-  steps: { id, text, timerSeconds?: number, photoId? }[],
-  tips?: string,
-  transcript?: string,                                  // "In her words"
-  story?: { prompt: string, answer: string, audioId? }[],
-  photoIds: string[], originalCardPhotoIds: string[], voiceNoteIds: string[],
-  source: 'voice' | 'typed' | 'pasted' | 'web' | 'imported', sourceUrl?,
-  forkedFromId?,                                        // "My version"
-  cookedCount, lastCookedAt?, createdAt, updatedAt
-}
-Draft        { id, mode: 'tell' | 'talk' | 'type' | 'paste' | 'link', recipe: Partial<Recipe>, step?, updatedAt }
-CookLog      { id, recipeId, cookedAt, rating?, note?, photoId? }
-GroceryItem  { id, name, quantity?, unit?, aisle?, checked, fromRecipeIds: string[], order }
-RecipeRequest{ id, title, requestedBy?, note?, createdAt, fulfilledRecipeId? }
-Collection   { id, name, emoji?, order }
-Media        { id, recipeId?, kind: 'photo' | 'audio', blob, mime, createdAt }
-Setting      { key, value }
-```
-All access goes through **repositories** (`src/db/recipes.ts`, `drafts.ts`, `grocery.ts`, `requests.ts`, `media.ts`, `settings.ts`). The UI never touches Dexie directly, which keeps a clean path to cloud sync later. Dexie schema versions must be migrated, never edited in place.
+The types are in `src/db/types.ts`, the source of truth: `Recipe`, `Draft`, `CookLog`, `GroceryItem`, `RecipeRequest`, `Collection`, `Media` and `Setting`, one Dexie table each.
+
+All access goes through **repositories** (`src/db/recipes.ts`, `drafts.ts`, `grocery.ts`, `requests.ts`, `collections.ts`, `media.ts`, `settings.ts`). The UI never touches Dexie directly, which keeps a clean path to cloud sync later. Dexie schema versions must be migrated, never edited in place.
 
 ## Project structure
 ```
 src/
-  app/            routes, MobileShell, DesktopShell, providers, shortcuts
+  app/            routes, shell (phone tab bar, desktop sidebar), providers, shortcuts
   features/
     library/      list, search, collections, draft + request cards
     recipe/       detail, editor (typed entry), story, forks
@@ -220,7 +200,7 @@ src/
   db/             dexie schema + repositories
   ui/             Button, BigMicButton, Card, Sheet, TextField, Toast(Undo), TimerChip, Icon …
   i18n/           en.ts (UI strings + voice command phrases + story prompts)
-  design/         tokens.css, fonts.css: the replaceable design layer (see its README)
+  design/         tokens.css, theme.css, skin.ts, icons.ts: the design handoff drop-in (see its README)
   styles/         tailwind entry (maps tokens to utilities), print.css
 functions/api/    import.ts (Cloudflare Pages Function)
 android/          generated by Capacitor
@@ -228,15 +208,14 @@ android/          generated by Capacitor
 
 ---
 
-## Design workflow: design first, then code
-1. **The user** explores directions in the design tool using [`design-brief.md`](design-brief.md), then picks one and refines it.
-2. **Meanwhile the implementer** builds work that doesn't depend on visuals (data, parser, speech, editor logic). Before any visual work, ask whether the handoff is ready; don't fall back to the brief unless told to.
-3. **Handoff:** the design's tokens replace `src/design/tokens.css` (same names), its fonts replace `src/design/fonts.css`, then `src/ui/` and the screens are restyled against it. Steps are in `src/design/README.md`.
-4. **Optional:** the `/design-sync` skill can later push the coded component library back into the design tool's design-system project.
+## Design workflow
+The design handoff was made from [`design-brief.md`](design-brief.md). Its docs are in [`design/`](design/), and its four code files sit in `src/design/`, kept byte-identical (see `src/design/README.md`). `src/ui/` and the screens are restyled against it, and a screen is done when it passes [`design/ACCEPTANCE.md`](design/ACCEPTANCE.md). A later handoff replaces `src/design/` wholesale.
 
-The current `src/design/` values are a placeholder built from the brief so the app is usable until the handoff arrives.
+Optional: the `/design-sync` skill can later push the coded component library back into the design tool's design-system project.
 
-## Build phases (each one ends in a working, verified state)
+## Build phases
+The scope of each area of work. The order they're built in, and their status, are in [`roadmap.md`](roadmap.md); each phase ends in a working, verified state.
+
 1. **Scaffold and data:** Vite + React + TS (strict), Tailwind v4, React Aria, react-router, Dexie schema and all repositories (with `fake-indexeddb` tests), i18n scaffolding, a bare shell with every route stubbed, ESLint/Prettier, and Vitest.
 2. **Parser:** every `lib/parse` module, the fixture corpus and `npm run parse:score`.
 3. **Design system and library:** tokens, self-hosted fonts, text-size scale, dark mode, core `ui/` components, MobileShell and DesktopShell, library (search, collections, tags, sorting) and recipe detail. Seed 2–3 sample recipes behind "Try an example".
@@ -263,7 +242,7 @@ The current `src/design/` values are a placeholder built from the brief so the a
 
 ## Verification
 - **Unit:** `npm run test` (parser modules and repositories); `npm run parse:score` above the agreed baseline (aim for ≥ 90%).
-- **Visual:** `npm run build && npm run preview`, then the preview tools at **390px, 820px and 1440px**. Screenshot library, detail, editor, capture, cook mode, grocery and requests in light and dark and at all three text sizes.
+- **Visual:** `npm run build && npm run preview`, then check each screen against [`design/ACCEPTANCE.md`](design/ACCEPTANCE.md) at **390px and 1280px** (cook mode also at 1180px). Screenshot library, detail, editor, capture, cook mode, grocery and requests in light and dark and at all three text sizes.
 - **Typed run:** build a full recipe with the keyboard only on desktop; paste a messy WhatsApp-style recipe and check the split; reload mid-edit and confirm the draft is restored. Repeat at 390px.
 - **Voice run (Chrome):** record a recipe with guided Tell it and with just-talk, fix it on review, save, then cook it hands-free with "next", "repeat" and "set a timer for 1 minute".
 - **Extras:**

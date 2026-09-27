@@ -1,6 +1,6 @@
 # Bookcook — Design Brief
 
-> Paste or upload this whole file into the design tool. It describes the product, the visual direction, every screen to design, and what to hand back to engineering.
+> The original brief given to the design tool. The design handoff it produced, in [`design/`](design/), supersedes it wherever they differ (copy, sizes, icons, components).
 
 ## 0. How to work through this brief
 Don't design everything at once. Work in this order, and ask me any questions you need before starting each stage:
