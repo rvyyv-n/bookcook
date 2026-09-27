@@ -81,6 +81,24 @@
   font-weight: var(--action-weight);
 }
 
+/* Section headings follow the skin: weight, small caps and tracking come from the heading tokens. */
+@utility type-heading {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-display-settings);
+  font-weight: var(--heading-weight);
+  font-variant-caps: var(--heading-case);
+  letter-spacing: var(--heading-tracking);
+  line-height: 1.1;
+}
+
+/* Eyebrows: "From Mom's kitchen", "Your cookbook is empty". */
+@utility type-eyebrow {
+  font-family: var(--font-display);
+  font-variation-settings: var(--font-display-settings);
+  font-weight: var(--eyebrow-weight);
+  font-style: italic;
+}
+
 @utility safe-bottom {
   padding-bottom: env(safe-area-inset-bottom);
 }

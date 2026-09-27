@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Keyboard } from 'react-aria-components';
-import { matchPath, useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useT } from '../i18n';
 import { Sheet } from '../ui/Sheet';
 
@@ -40,11 +40,12 @@ export function Shortcuts() {
     function onKey(e: KeyboardEvent) {
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey || isTypingTarget(e.target)) return;
       if (document.querySelector('[role="dialog"]') && e.key !== '?') return;
-      const recipe = matchPath('/r/:id', pathname);
+      // The open recipe: the detail page, or the one selected in the desktop cookbook.
+      const recipe = document.querySelector<HTMLElement>('[data-recipe-id]')?.dataset.recipeId;
       switch (e.key) {
         case '/': {
           e.preventDefault();
-          if (pathname !== '/' && !recipe) navigate('/');
+          if (!document.getElementById('library-search')) navigate('/');
           requestAnimationFrame(() => document.getElementById('library-search')?.focus());
           break;
         }
@@ -52,10 +53,10 @@ export function Shortcuts() {
           navigate('/new');
           break;
         case 'e':
-          if (recipe) navigate(`/r/${recipe.params.id}/edit`);
+          if (recipe) navigate(`/r/${recipe}/edit`);
           break;
         case 'c':
-          if (recipe) navigate(`/r/${recipe.params.id}/cook`);
+          if (recipe) navigate(`/r/${recipe}/cook`);
           break;
         case '?':
           setHelp((h) => !h);

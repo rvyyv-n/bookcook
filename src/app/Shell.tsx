@@ -1,7 +1,5 @@
 import { matchPath, Outlet, useLocation } from 'react-router';
-import { useRecipes } from '../db/hooks';
 import { LibraryFilterProvider } from '../features/library/filter';
-import { LibraryList } from '../features/library/LibraryList';
 import { useT } from '../i18n';
 import { cx } from '../ui/cx';
 import type { IconName } from '../ui/Icon';
@@ -13,8 +11,9 @@ import { useIsDesktop } from './useMediaQuery';
 /** Routes that take over the phone screen (no tab bar): editors and guided capture. */
 const FOCUSED = ['/new/:mode/:draftId', '/r/:id/edit', '/import'];
 
-/** Routes that show the recipe list pane on desktop. */
-const LIBRARY = ['/', '/r/:id', '/c/:id', '/t/:tag'];
+/** Routes that lay themselves out edge to edge: the cookbook panes and the recipe's photo hero. */
+const BLEED = ['/r/:id'];
+const DESK_BLEED = ['/', '/r/:id'];
 
 type Section = 'cookbook' | 'collections' | 'tags' | 'grocery' | 'requests' | 'settings';
 
@@ -41,13 +40,15 @@ function PhoneShell() {
   const nav = useNavItems();
   const { pathname } = useLocation();
   const focused = matches(FOCUSED, pathname);
+  const bleed = matches(BLEED, pathname);
   return (
     <div className="min-h-dvh">
       <main
         id="main"
         className={cx(
-          'mx-auto w-full max-w-3xl px-5 pt-[max(1.25rem,env(safe-area-inset-top))]',
-          focused ? 'pb-8' : 'pb-[calc(3.5556rem+3rem+env(safe-area-inset-bottom))]',
+          'mx-auto w-full max-w-3xl',
+          !bleed && 'px-5 pt-[max(1.25rem,env(safe-area-inset-top))]',
+          focused ? 'pb-8' : 'pb-[calc(3.5556rem+1.5rem+env(safe-area-inset-bottom))]',
         )}
       >
         <Outlet />
@@ -67,7 +68,7 @@ function DesktopShell() {
   const t = useT();
   const nav = useNavItems();
   const { pathname } = useLocation();
-  const library = matches(LIBRARY, pathname);
+  const bleed = matches(DESK_BLEED, pathname);
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar
@@ -77,25 +78,15 @@ function DesktopShell() {
         items={[nav.cookbook, nav.collections, nav.tags, nav.grocery, nav.requests, nav.settings]}
         shortcutsHint={t.ui.nav.shortcutsHint as readonly [string, string]}
       />
-      {library ? (
-        <>
-          <section
-            aria-label={t.ui.library.recipes}
-            className="no-print w-[380px] flex-none overflow-y-auto border-r border-line px-6 py-6"
-          >
-            <LibraryList compact />
-          </section>
-          <main id="main" className="min-w-0 flex-1 overflow-y-auto px-10 py-8">
-            <Outlet />
-          </main>
-        </>
-      ) : (
-        <main id="main" className="min-w-0 flex-1 overflow-y-auto px-10 py-8">
-          <div className="mx-auto max-w-4xl">
+      <main id="main" className="min-w-0 flex-1 overflow-y-auto">
+        {bleed ? (
+          <Outlet />
+        ) : (
+          <div className="mx-auto max-w-5xl px-10 py-8">
             <Outlet />
           </div>
-        </main>
-      )}
+        )}
+      </main>
     </div>
   );
 }
@@ -107,19 +98,5 @@ export function AppShell() {
       <Shortcuts />
       {desktop ? <DesktopShell /> : <PhoneShell />}
     </LibraryFilterProvider>
-  );
-}
-
-/** Home: the library on phones; on desktop the list is in its own pane, so show a gentle prompt. */
-export function LibraryHome() {
-  const t = useT();
-  const desktop = useIsDesktop();
-  const recipes = useRecipes();
-  if (!desktop) return <LibraryList />;
-  if (!recipes?.length) return null;
-  return (
-    <div className="grid h-full place-items-center">
-      <p className="type-display max-w-sm text-center text-2xl text-ink-muted italic">{t.ui.library.selectRecipe}</p>
-    </div>
   );
 }

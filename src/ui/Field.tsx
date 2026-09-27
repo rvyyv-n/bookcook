@@ -164,19 +164,58 @@ export function TextField({
   );
 }
 
+/**
+ * The recipe search. Speak sits at the right when speech is available; once there's text, Clear takes
+ * its place. `shortcut` shows the key that focuses it (desktop). `compact` is the 56px desktop size.
+ */
 export function SearchField({
   label,
   placeholder,
   className,
+  shortcut,
+  compact = false,
+  value,
+  onChange,
   ...rest
-}: { label: string; placeholder?: string; className?: string } & Omit<SearchFieldProps, 'className'>) {
+}: {
+  label: string;
+  placeholder?: string;
+  className?: string;
+  shortcut?: string;
+  compact?: boolean;
+  value: string;
+  onChange: (v: string) => void;
+} & Omit<SearchFieldProps, 'className' | 'value' | 'onChange'>) {
+  const t = useT();
+  const speak = useSpeak(value, onChange);
+  const side = 'flex min-w-16 shrink-0 flex-col items-center justify-center self-stretch text-[0.6667rem] leading-tight font-bold';
   return (
-    <AriaSearchField {...rest} className={cx('group', className)}>
+    <AriaSearchField {...rest} value={value} onChange={onChange} className={cx('group', className)}>
       <Label className="sr-only">{label}</Label>
-      <div className={cx(fieldBoxClass, 'items-center')}>
-        <Icon name="search" className="pointer-events-none ml-[0.7778rem] shrink-0 text-ink-muted" />
-        <Input placeholder={placeholder} className={cx(inputBase, 'self-stretch [&::-webkit-search-cancel-button]:hidden')} />
+      <div className={cx(fieldBoxClass, 'items-center', compact && 'min-h-14', speak.speaking && fieldBoxSpeaking)}>
+        <Icon name="search" className="pointer-events-none ml-[0.7778rem] shrink-0 text-ink-muted group-focus-within:text-ink" />
+        <Input
+          placeholder={placeholder}
+          className={cx(inputBase, 'self-stretch [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden')}
+        />
+        {value ? (
+          <AriaButton className={cx(side, 'rounded-[min(var(--radius-md),18px)] text-ink data-[hovered]:bg-sunk')}>
+            <Icon name="close" size="1.3rem" />
+            {t.ui.common.clear}
+          </AriaButton>
+        ) : speak.available ? (
+          <SpeakButton speaking={speak.speaking} onPress={speak.toggle} />
+        ) : shortcut ? (
+          <kbd aria-hidden className="mr-3 font-[inherit] text-sm font-bold text-ink-muted">
+            {shortcut}
+          </kbd>
+        ) : null}
       </div>
+      {speak.partial && (
+        <p aria-live="polite" className="mt-1.5 text-ink-muted">
+          {speak.partial}
+        </p>
+      )}
     </AriaSearchField>
   );
 }

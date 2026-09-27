@@ -68,7 +68,7 @@ export function Segmented<K extends string>({
   );
 }
 
-/** − 4 + stepper for servings. */
+/** The servings stepper: a 56px pill, "− 6 servings +". The value is announced as it changes. */
 export function Stepper({
   label,
   value,
@@ -78,6 +78,7 @@ export function Stepper({
   decrementLabel,
   incrementLabel,
   format = (n) => String(n),
+  className,
 }: {
   label: string;
   value: number;
@@ -87,36 +88,29 @@ export function Stepper({
   decrementLabel: string;
   incrementLabel: string;
   format?: (n: number) => ReactNode;
+  className?: string;
 }) {
   const btn =
-    'grid size-14 place-items-center rounded-full bg-surface border-2 border-line-strong text-ink outline-none transition-colors ' +
-    'data-[hovered]:border-ink data-[pressed]:scale-95 data-[disabled]:opacity-40 data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)';
+    'grid size-14 shrink-0 place-items-center rounded-full text-ink transition-colors duration-(--dur) ' +
+    'data-[hovered]:bg-(--control-fill-hover) data-[pressed]:bg-line data-[disabled]:text-ink-muted data-[disabled]:opacity-50';
   return (
-    <div role="group" aria-label={label} className="flex flex-col gap-1.5">
-      <span className="font-bold" aria-hidden>
-        {label}
-      </span>
-      <div className="flex items-center gap-3">
-        <AriaButton
-          aria-label={decrementLabel}
-          className={btn}
-          isDisabled={value <= min}
-          onPress={() => onChange(Math.max(min, value - 1))}
-        >
-          <Icon name="remove" />
-        </AriaButton>
-        <output aria-live="polite" className="min-w-10 text-center type-display text-2xl tabular-nums">
-          {format(value)}
-        </output>
-        <AriaButton
-          aria-label={incrementLabel}
-          className={btn}
-          isDisabled={value >= max}
-          onPress={() => onChange(Math.min(max, value + 1))}
-        >
-          <Icon name="add" />
-        </AriaButton>
-      </div>
+    <div
+      role="group"
+      aria-label={label}
+      className={cx(
+        'inline-flex min-h-14 items-center self-start rounded-full bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
+        className,
+      )}
+    >
+      <AriaButton aria-label={decrementLabel} className={btn} isDisabled={value <= min} onPress={() => onChange(Math.max(min, value - 1))}>
+        <Icon name="remove" />
+      </AriaButton>
+      <output aria-live="polite" className="min-w-[5.4rem] text-center font-bold tabular-nums">
+        {format(value)}
+      </output>
+      <AriaButton aria-label={incrementLabel} className={btn} isDisabled={value >= max} onPress={() => onChange(Math.min(max, value + 1))}>
+        <Icon name="add" />
+      </AriaButton>
     </div>
   );
 }
@@ -175,30 +169,31 @@ export function CheckItem({
   );
 }
 
-/** A filter chip (collections, tags). */
+/** A filter chip (collections): a 56px pill, ink when selected. `small` is the desktop list pane's 15px label. */
 export function Chip({
   isSelected,
   onPress,
   children,
-  count,
+  small = false,
 }: {
   isSelected: boolean;
   onPress: () => void;
   children: ReactNode;
-  count?: number;
+  small?: boolean;
 }) {
   return (
     <AriaButton
       onPress={onPress}
       aria-pressed={isSelected}
       className={cx(
-        'inline-flex min-h-12 shrink-0 items-center gap-2 rounded-full border-2 px-4 font-bold whitespace-nowrap transition-colors outline-none',
-        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-(--focus)',
-        isSelected ? 'border-ink bg-ink text-paper' : 'border-line bg-surface text-ink data-[hovered]:border-line-strong',
+        'inline-flex min-h-14 shrink-0 items-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors duration-(--dur)',
+        small ? 'px-4 text-[0.8889rem]' : 'px-[1.1rem] text-base',
+        isSelected
+          ? 'bg-ink text-paper'
+          : 'bg-(--control-fill) text-ink shadow-[inset_0_0_0_1.5px_var(--line-strong)] data-[hovered]:bg-(--control-fill-hover)',
       )}
     >
       {children}
-      {count !== undefined && <span className={cx('text-sm font-normal', isSelected ? 'text-paper/80' : 'text-ink-muted')}>{count}</span>}
     </AriaButton>
   );
 }

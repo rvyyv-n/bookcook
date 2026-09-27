@@ -25,3 +25,12 @@ The other files in this folder are copied verbatim from the design handoff. The 
 ## Gaps found while building
 
 - `icons.ts` has no `info`, `delete` or chevron-down. Field errors use `checkThis` (a question-mark circle), destructive buttons have no icon, and the select arrow is `chevron` turned 90°.
+
+## Cookbook and recipe detail
+
+- **Desktop selection is `/?r=<id>`.** Rows in the list pane select a recipe into the right pane; `/r/:id` is the full-width detail page with no list pane, as in the detail mock.
+- **Desktop actions include Print** (the mock shows four). Older readers may not know Ctrl+P.
+- **The draft card has no Discard** ("each card has one action"). Discarding a draft belongs in the editor.
+- **No results without a matching request** still offers Tell it and Ask for it, with a hint to try a shorter word.
+- **Share sends the recipe as text** (the system share sheet, or the clipboard where there isn't one) until share links arrive in phase 10.
+- **Tags aren't cookbook chips any more**; they have their own pages (`/t`, `/t/:tag`), reached from the sidebar and the recipe's tag links.

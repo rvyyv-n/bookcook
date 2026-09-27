@@ -6,7 +6,7 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 ## Where the app is now
 
-A styled, browsable cookbook that only reads recipes. You can search, filter and open the example recipes, scale them and add them to the grocery list, and switch every appearance setting. You can't add your own recipe or cook from one yet, and nothing listens or speaks.
+A cookbook you can browse in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, and collection and tag pages. You can search, filter, sort, scale, share, print, fork and add to the grocery list. You can't add your own recipe or cook from one yet, and nothing listens or speaks.
 
 ## Done
 
@@ -18,47 +18,23 @@ A styled, browsable cookbook that only reads recipes. You can search, filter and
   - Base controls restyled: Button, TextField with a Speak slot, Segmented, Switch, Sheet, UndoToast.
   - The shell: the phone tab bar, the desktop sidebar with a three-pane cookbook, the `?` shortcuts sheet, and the handoff's routes.
   - Data model decisions: unsure-row checks, grocery ranges, request direction, a tips voice note, no collection emoji. See [`design/DECISIONS.md`](design/DECISIONS.md).
+- [x] **Phase 5: Cookbook and recipe detail** (handoff step 2).
+  - Cookbook: greeting, search with Speak / Clear, collection chips, draft and request cards, recipe cards (one column at Large and Huge), sort menu, empty and no-results states; the desktop list pane with the selected recipe beside it.
+  - Recipe detail by skin: photo or field-band hero, Start cooking, the grid / list / icon-row actions, story card, spice-coloured ingredient sections, steps, tips, In her words, original card, cook log; the desktop two-column page.
+  - Collections and Tags index and filtered pages.
 
 ## Next
 
-### Phase 5: Cookbook and recipe detail (handoff step 2)
+### Phase 5 follow-up: match the handoff exactly
 
-Turns the two screens that already work into the design. Mostly visual; the data is there.
+Feedback on the Phase 5 build: the cookbook and recipe detail must look **exactly** like the handoff screenshots (`design_handoff/…/screenshots/home` and `cook`), and everything currently feels **a bit too big**.
 
-**Cookbook, phone** (`/`)
-
-- [ ] Greeting ("Good evening", display 3xl) and a search field with Speak.
-- [ ] Collection chips in one horizontally scrolling row (56px pills, selected in ink).
-- [ ] DraftCard (`--sunk`: "Continue your draft", title, "Started 2 days ago", ink Continue) and RequestCard (`--accent-soft`: "Rayyan would love to learn", title, Tell it).
-- [ ] "All recipes · 5" with a Recent sort button, replacing the current dropdown.
-- [ ] RecipeCard: a 4:3 photo or a striped placeholder, the title in display lg, "Mom · 1 hr 45 min", then "Made 12 times" or "Based on Mom's Pasta". The whole card is one link.
-- [ ] Two columns of cards at Normal, **one column at Large and Huge**.
-- [ ] Empty state: "Your cookbook is empty", "Every family has a recipe worth keeping.", **Let's save your first recipe**.
-- [ ] No results: "No “nihari” here yet", and when an open request matches, "Rayan already asked for it…" with Tell it and Ask for it.
-
-**Cookbook, desktop**
-
-- [ ] The list pane: greeting, search with the "/" hint, wrapping chips, one combined request-and-draft card, and rows with 64px thumbnails. The selected row is surface with a shadow.
-- [ ] The detail pane shows the selected recipe.
-
-**Collections and Tags** (`/c`, `/c/:id`, `/t`, `/t/:tag`)
-
-- [ ] Index pages listing collections and tags, and filtered recipe lists for one of each, replacing the placeholders.
-
-**Recipe detail** (`/r/:id`)
-
-- [ ] Hero by skin: a 300px bleed photo with a floating Back, or in Colour field the title on the accent field band (`data-surface="field"`) with the photo below it.
-- [ ] Title block: display 3xl title, the "From Mom's kitchen" eyebrow, "Serves 6 · Prep 30 min · Cook 1 hr 15 min", tag links. Start-aligned or centred by skin.
-- [ ] **Start cooking** (XL, full width), then the secondary actions laid out by skin (2-column grid, ruled list, or icon row): Edit · Make my version · Add to grocery · Share · Print.
-- [ ] No photo or forked: no hero, and a "Based on **Mom's Pasta**" row above Start cooking.
-- [ ] Story card: the prompt, the quote in display italic xl, and a VoiceNotePlayer ("Play · 0:48").
-- [ ] Ingredients: ServingsStepper and Metric/Imperial restyled, section headings with spice colours (a dot and hairline in the quiet skins, coloured text in the Tin skins), **Add to grocery**.
-- [ ] Steps numbered at lg size, Tips, the collapsible **In her words** panel in the handwritten face, and the Original card photo.
-- [ ] "Made 12 times": cook log rows with date, rating and note.
-- [ ] Headings follow the skin's heading tokens (Heirloom centres them in small caps between rules).
-- [ ] Desktop: the title block (display 4xl) and actions beside a 420px photo, then ingredients (0.85fr) beside the story and steps (1.15fr).
-
-**Done when:** both screens match the handoff screenshots in every skin and pass the acceptance checklist.
+- [ ] Compare side by side with the screenshots at the same viewport (390×844 phone, 1280×800 desktop) in every skin, and fix each difference in size, spacing, weight and layout.
+- [ ] Sizing: check why things read larger than the mocks. Candidates: the 112.5% base (it equals the mocks' 18px only at the browser's default 16px), `min-h`/padding values rounded up to the 4px grid, the desktop body cap, and the browser zoom used when viewing.
+- [ ] Recheck the collection chips and the selected list row in Spice Tin against the mock.
+- [ ] Collection chips: make them more concise (tighter padding and height, smaller gaps) so they sit on fewer lines, matching the mock's proportions.
+- [ ] Default text size: make Normal a conventional 16px (a 100% root instead of 112.5%), then update the text-size labels in Settings and the "1rem = 18px" notes in the docs.
+- [ ] Go through the marked-up screenshots of the build for the remaining fixes and comments.
 
 ### Phase 6: Speech and cook mode (handoff step 3)
 

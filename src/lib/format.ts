@@ -24,6 +24,8 @@ export function relativeTime(ts: number, now = Date.now(), lang = 'en'): string 
   return rtf.format(Math.round(diff / (86_400 * 365)), 'year');
 }
 
-export function formatDate(ts: number, lang = 'en'): string {
-  return new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'long', year: 'numeric' }).format(ts);
+/** "12 August", with the year only when it isn't this year. */
+export function formatDay(ts: number, now = Date.now(), lang = 'en'): string {
+  const sameYear = new Date(ts).getFullYear() === new Date(now).getFullYear();
+  return new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'long', year: sameYear ? undefined : 'numeric' }).format(ts);
 }

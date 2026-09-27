@@ -1,10 +1,12 @@
 import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
+import { CollectionPage, CollectionsPage, TagPage, TagsPage } from '../features/library/Browse';
+import { CookbookPage } from '../features/library/Cookbook';
 import { RecipeDetailPage } from '../features/recipe/RecipeDetail';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { useT } from '../i18n';
 import { ButtonLink } from '../ui/Button';
 import { Providers } from './providers';
-import { AppShell, LibraryHome } from './Shell';
+import { AppShell } from './Shell';
 
 function Root() {
   return (
@@ -55,7 +57,7 @@ const router = createBrowserRouter([
       {
         element: <AppShell />,
         children: [
-          { path: '/', element: <LibraryHome /> },
+          { path: '/', element: <CookbookPage /> },
           { path: '/r/:id', element: <RecipeDetailPage /> },
           { path: '/r/:id/edit', element: <Placeholder title="Edit recipe" /> },
           { path: '/new', element: <Placeholder title="New recipe" /> },
@@ -65,10 +67,10 @@ const router = createBrowserRouter([
           { path: '/new/paste/:draftId', element: <Placeholder title="Paste it" /> },
           { path: '/new/link/:draftId', element: <Placeholder title="From a link" /> },
           { path: '/new/review/:draftId', element: <Placeholder title="Check your recipe" /> },
-          { path: '/c', element: <Placeholder title="Collections" /> },
-          { path: '/c/:id', element: <Placeholder title="Collection" /> },
-          { path: '/t', element: <Placeholder title="Tags" /> },
-          { path: '/t/:tag', element: <Placeholder title="Tag" /> },
+          { path: '/c', element: <CollectionsPage /> },
+          { path: '/c/:id', element: <CollectionPage /> },
+          { path: '/t', element: <TagsPage /> },
+          { path: '/t/:tag', element: <TagPage /> },
           { path: '/grocery', element: <Placeholder title="Grocery" /> },
           { path: '/requests', element: <Placeholder title="Requests" /> },
           { path: '/settings', element: <SettingsPage /> },

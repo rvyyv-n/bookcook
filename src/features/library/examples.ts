@@ -1,5 +1,8 @@
 import { addCollection, listCollections } from '../../db/collections';
-import { saveRecipe } from '../../db/recipes';
+import { createDraft } from '../../db/drafts';
+import { putMedia } from '../../db/media';
+import { addRequest } from '../../db/requests';
+import { saveRecipe, updateRecipe } from '../../db/recipes';
 import type { Recipe } from '../../db/types';
 import { parseIngredient } from '../../lib/parse/ingredient';
 import { stepTimer } from '../../lib/parse/timers';
@@ -119,6 +122,7 @@ export async function addExampleRecipes(): Promise<void> {
     if (!collectionIds.has(name)) collectionIds.set(name, (await addCollection(name)).id);
   }
   const now = Date.now();
+  const saved: Recipe[] = [];
   for (const [i, ex] of EXAMPLES.entries()) {
     const { collections, ingredients, steps, ...rest } = ex;
     let section: string | undefined;
@@ -130,14 +134,32 @@ export async function addExampleRecipes(): Promise<void> {
       }
       ings.push({ id: crypto.randomUUID(), ...parseIngredient(line), ...(section ? { section } : {}) });
     }
-    await saveRecipe({
+    const recipe = await saveRecipe({
       ...rest,
       lang: 'en',
-      createdAt: now - (EXAMPLES.length - i) * 86_400_000,
+      createdAt: now - (i + 1) * 86_400_000,
       lastCookedAt: rest.cookedCount ? now - (i + 2) * 86_400_000 : undefined,
       collectionIds: (collections ?? []).map((c) => collectionIds.get(c)!),
       ingredients: ings,
       steps: steps.map((text) => ({ id: crypto.randomUUID(), text, timerSeconds: stepTimer(text) })),
     });
+    saved.push(recipe);
   }
+  if (import.meta.env.DEV) await addDevExtras(saved);
+}
+
+/**
+ * Local development only: dress the examples like the handoff mocks, with the biryani photo from the
+ * gitignored design_handoff/ folder (watermarked stock, never shipped), a request and a draft. Does
+ * nothing when the folder isn't there.
+ */
+async function addDevExtras(recipes: Recipe[]): Promise<void> {
+  const biryani = recipes.find((r) => r.title.includes('Biryani'));
+  const res = await fetch('/design_handoff/design_handoff_bookcook/design/assets/biryani.jpg').catch(() => undefined);
+  if (biryani && res?.ok && res.headers.get('content-type')?.startsWith('image/')) {
+    const id = await putMedia(await res.blob(), 'photo', biryani.id);
+    await updateRecipe(biryani.id, { photoIds: [id] });
+  }
+  await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Rayyan' });
+  await createDraft('type', { title: 'Chicken Karahi' });
 }

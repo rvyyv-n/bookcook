@@ -39,19 +39,18 @@ const sorters: Record<LibraryFilter['sort'], (a: Recipe, b: Recipe) => number> =
   recentlyCooked: (a, b) => (b.lastCookedAt ?? 0) - (a.lastCookedAt ?? 0) || b.createdAt - a.createdAt,
 };
 
-/** Apply search, collection, tag and sort. Search results keep relevance order. */
+/** Apply search, collection and sort. Search results keep relevance order. */
 export function useFilteredRecipes(recipes: Recipe[] | undefined, filter: LibraryFilter): Recipe[] | undefined {
   const index = useMemo(() => (recipes ? buildIndex(recipes) : undefined), [recipes]);
   return useMemo(() => {
     if (!recipes || !index) return undefined;
     let list = recipes;
     if (filter.collectionId) list = list.filter((r) => r.collectionIds.includes(filter.collectionId!));
-    if (filter.tag) list = list.filter((r) => r.tags.includes(filter.tag!));
     const q = filter.query.trim();
     if (q) {
       const rank = new Map(index.search(q).map((hit, i) => [hit.id as string, i]));
       return list.filter((r) => rank.has(r.id)).sort((a, b) => rank.get(a.id)! - rank.get(b.id)!);
     }
     return [...list].sort(sorters[filter.sort]);
-  }, [recipes, index, filter.collectionId, filter.tag, filter.query, filter.sort]);
+  }, [recipes, index, filter.collectionId, filter.query, filter.sort]);
 }

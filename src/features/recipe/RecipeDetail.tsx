@@ -1,91 +1,361 @@
-import { useState } from 'react';
-import { Disclosure, DisclosurePanel, Button as AriaButton, Heading } from 'react-aria-components';
-import { Link, useNavigate, useParams } from 'react-router';
+import { useState, type ReactNode } from 'react';
+import { Button as AriaButton, Disclosure, DisclosurePanel, Heading, Link as AriaLink } from 'react-aria-components';
+import { useNavigate, useParams } from 'react-router';
+import { useIsDesktop } from '../../app/useMediaQuery';
+import { skinConfig } from '../../design/skin';
 import { setRecipeCollections } from '../../db/collections';
 import { addToGrocery } from '../../db/grocery';
 import { useCollections, useCookLogs, useForks, useRecipe, useSettings } from '../../db/hooks';
 import { deleteRecipe, forkRecipe, restoreRecipe } from '../../db/recipes';
 import type { Recipe } from '../../db/types';
 import { useT } from '../../i18n';
-import { formatDate, formatMinutes, totalMinutes } from '../../lib/format';
+import { formatDay, formatMinutes } from '../../lib/format';
 import { AudioPlayer } from '../../ui/AudioPlayer';
-import { Button, ButtonLink, ToolButton } from '../../ui/Button';
+import { Button, ButtonLink } from '../../ui/Button';
 import { Chip } from '../../ui/Controls';
-import { Icon } from '../../ui/Icon';
+import { cx } from '../../ui/cx';
+import { Icon, type IconName } from '../../ui/Icon';
 import { Photo } from '../../ui/Photo';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 import { IngredientControls, IngredientList } from './IngredientsPanel';
-import { StepText } from './StepText';
+import { shareRecipe } from './share';
 import { useAdjustedIngredients } from './useAdjusted';
-import { RecipeShareActions } from './RecipeShareActions';
 
-function Meta({ recipe }: { recipe: Recipe }) {
+/**
+ * phone: the handoff's phone detail, laid out by skin (hero, alignment, action style).
+ * desk: the full desktop page, title and actions beside a 420px photo, then two columns.
+ * pane: the desktop cookbook's right pane, a phone-style column with a desktop action row.
+ */
+type Layout = 'phone' | 'desk' | 'pane';
+type Adjusted = ReturnType<typeof useAdjustedIngredients>;
+
+interface Action {
+  id: string;
+  icon: IconName;
+  label: string;
+  short: string;
+  onPress: () => void;
+}
+
+function useActions(recipe: Recipe, adj: Adjusted): Action[] {
   const t = useT();
-  const items = [
-    recipe.prepMinutes ? [t.ui.recipe.prep, formatMinutes(recipe.prepMinutes)] : null,
-    recipe.cookMinutes ? [t.ui.recipe.cook, formatMinutes(recipe.cookMinutes)] : null,
-    recipe.prepMinutes && recipe.cookMinutes ? [t.ui.recipe.total, formatMinutes(totalMinutes(recipe))] : null,
-    recipe.servings ? [t.ui.recipe.servings, String(recipe.servings)] : null,
-  ].filter((x): x is [string, string] => x !== null);
-  if (!items.length) return null;
+  const navigate = useNavigate();
+  const toast = useToast();
+  const settings = useSettings();
+  const s = t.ui.recipe.short;
+  return [
+    { id: 'edit', icon: 'edit', label: t.ui.common.edit, short: s.edit, onPress: () => navigate(`/r/${recipe.id}/edit`) },
+    {
+      id: 'fork',
+      icon: 'myVersion',
+      label: t.ui.recipe.makeMyVersion,
+      short: s.myVersion,
+      onPress: async () => {
+        const fork = await forkRecipe(recipe.id, settings.myName || recipe.author);
+        toast.show({ message: t.ui.recipe.forked, tone: 'success' });
+        navigate(`/r/${fork.id}/edit`);
+      },
+    },
+    {
+      id: 'grocery',
+      icon: 'addToGrocery',
+      label: t.ui.recipe.addToGrocery,
+      short: s.grocery,
+      onPress: async () => {
+        await addToGrocery(adj.ingredients, recipe.id);
+        toast.show({ message: t.ui.recipe.addedToGrocery(adj.ingredients.length), tone: 'success' });
+      },
+    },
+    {
+      id: 'share',
+      icon: 'share',
+      label: t.ui.recipe.share,
+      short: s.share,
+      onPress: async () => {
+        if ((await shareRecipe(recipe)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
+      },
+    },
+    { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => window.print() },
+  ];
+}
+
+const outlined =
+  'bg-(--control-fill) text-ink shadow-[inset_0_0_0_var(--control-border)_var(--line-strong)] transition-colors duration-(--dur) data-[hovered]:bg-(--control-fill-hover)';
+
+/** The secondary actions, in the skin's layout: a 2-column grid, ruled rows, or round icons. */
+function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list' | 'iconRow' | 'row' }) {
+  const t = useT();
+  if (style === 'row')
+    return actions.map((a) => (
+      <AriaButton
+        key={a.id}
+        onPress={a.onPress}
+        className={cx('inline-flex min-h-16 items-center gap-1.5 rounded-md pr-4 pl-[.7rem] font-bold whitespace-nowrap', outlined)}
+      >
+        <Icon name={a.icon} className="shrink-0" />
+        {a.short}
+      </AriaButton>
+    ));
+  const cls = {
+    grid: 'grid grid-cols-2 gap-2',
+    list: 'flex flex-col border-t border-line-strong',
+    iconRow: 'grid grid-cols-[repeat(auto-fit,minmax(3.6rem,1fr))] gap-x-1 gap-y-2',
+  }[style];
   return (
-    <dl className="flex flex-wrap gap-x-8 gap-y-2">
-      {items.map(([k, v]) => (
-        <div key={k}>
-          <dt className="text-sm text-ink-muted">{k}</dt>
-          <dd className="type-display text-lg font-semibold">{v}</dd>
-        </div>
-      ))}
-    </dl>
+    <div role="group" aria-label={t.ui.recipe.actions} className={cls}>
+      {actions.map((a) =>
+        style === 'grid' ? (
+          <AriaButton
+            key={a.id}
+            onPress={a.onPress}
+            className={cx('flex min-h-14 items-center gap-2 rounded-md px-2.5 py-1.5 text-left leading-[1.15] font-bold', outlined)}
+          >
+            <Icon name={a.icon} className="shrink-0" />
+            {a.label}
+          </AriaButton>
+        ) : style === 'list' ? (
+          <AriaButton
+            key={a.id}
+            onPress={a.onPress}
+            className="flex min-h-14 items-center gap-3 border-b border-line px-1 text-left data-[hovered]:bg-sunk"
+          >
+            <Icon name={a.icon} className="shrink-0 text-accent-text" />
+            <span className="flex-1 font-semibold">{a.label}</span>
+            <Icon name="chevron" className="shrink-0 text-ink-muted" />
+          </AriaButton>
+        ) : (
+          <AriaButton
+            key={a.id}
+            onPress={a.onPress}
+            aria-label={a.label}
+            className="group flex min-h-20 flex-col items-center gap-1.5 text-center text-[min(var(--text-sm),16px)] leading-[1.15] font-bold"
+          >
+            <span className="grid size-14 place-items-center rounded-full bg-(--control-fill) transition-colors group-data-[hovered]:bg-(--control-fill-hover)">
+              <Icon name={a.icon} />
+            </span>
+            {a.short}
+          </AriaButton>
+        ),
+      )}
+    </div>
   );
 }
 
-function StoryCard({ recipe }: { recipe: Recipe }) {
+function StartCooking({ recipe, full }: { recipe: Recipe; full?: boolean }) {
+  const t = useT();
+  return (
+    <ButtonLink
+      href={`/r/${recipe.id}/cook`}
+      variant="primary"
+      size="XL"
+      icon="startCooking"
+      className={cx('text-lg', full ? 'w-full' : 'pr-[1.6rem] pl-[1.3rem]')}
+    >
+      {t.ui.recipe.startCooking}
+    </ButtonLink>
+  );
+}
+
+function BackButton({ floating }: { floating?: boolean }) {
+  const t = useT();
+  const navigate = useNavigate();
+  return (
+    <Button
+      variant="quiet"
+      icon="back"
+      onPress={() => ((window.history.state?.idx ?? 0) > 0 ? navigate(-1) : navigate('/'))}
+      className={cx('pr-4 pl-[.7rem]', floating && 'absolute top-3.5 left-3 bg-surface! shadow-lift')}
+    >
+      {t.ui.common.back}
+    </Button>
+  );
+}
+
+/** "Serves 6 · Prep 30 min · Cook 1 hr 15 min" */
+function metaLine(recipe: Recipe, t: ReturnType<typeof useT>): string[] {
+  const prep = formatMinutes(recipe.prepMinutes);
+  const cook = formatMinutes(recipe.cookMinutes);
+  return [
+    recipe.servings ? t.ui.common.serves(recipe.servings) : undefined,
+    prep && t.ui.recipe.prep(prep),
+    cook && t.ui.recipe.cook(cook),
+  ].filter((x): x is string => !!x);
+}
+
+function TagLinks({ tags, onField, className }: { tags: string[]; onField?: boolean; className?: string }) {
+  const t = useT();
+  if (!tags.length) return null;
+  return (
+    <ul aria-label={t.ui.recipe.tags} className={cx('flex flex-wrap gap-x-3.5 gap-y-1 font-bold', className)}>
+      {tags.map((tag) => (
+        <li key={tag}>
+          <AriaLink
+            href={`/t/${encodeURIComponent(tag)}`}
+            className={cx('underline underline-offset-2', onField ? 'text-ink' : 'text-accent-text data-[hovered]:text-ink')}
+          >
+            {tag}
+          </AriaLink>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Eyebrow({ recipe, onField }: { recipe: Recipe; onField?: boolean }) {
+  const t = useT();
+  const { myName } = useSettings();
+  if (!recipe.author) return null;
+  const mine = recipe.author === myName || recipe.author.toLowerCase() === 'me';
+  return (
+    <p className={cx('type-eyebrow text-lg', !onField && 'text-accent-text')}>
+      {mine ? t.ui.common.fromMyKitchen : t.ui.common.fromKitchen(recipe.author)}
+    </p>
+  );
+}
+
+/** "Based on Mom's Pasta", a row on --sunk above Start cooking. */
+function BasedOn({ recipe }: { recipe: Recipe }) {
+  const t = useT();
+  const original = useRecipe(recipe.forkedFromId);
+  if (!original) return null;
+  return (
+    <AriaLink
+      href={`/r/${original.id}`}
+      className="flex min-h-16 items-center gap-3 rounded-[min(var(--radius-md),18px)] bg-sunk px-3.5 py-2.5 text-ink no-underline data-[hovered]:bg-line"
+    >
+      <Icon name="myVersion" className="shrink-0 text-accent-text" />
+      <span className="flex-1">
+        <span className="text-ink-muted">{t.ui.recipe.basedOn}</span> <b>{original.title}</b>
+      </span>
+      <Icon name="chevron" className="shrink-0" />
+    </AriaLink>
+  );
+}
+
+/** A section heading in the skin's style (Heirloom centres it in small caps over a rule). */
+function SectionHeading({ id, children, desk }: { id: string; children: ReactNode; desk?: boolean }) {
+  return (
+    <div className="flex flex-col gap-3">
+      <h2 id={id} className={cx('type-heading text-(length:--heading-size)', !desk && '[text-align:var(--heading-align)]')}>
+        {children}
+      </h2>
+      {!desk && <span aria-hidden className="h-px bg-line-strong [display:var(--heading-rule)]" />}
+    </div>
+  );
+}
+
+/** The story card: the question, the answer as a quote, and its voice note. */
+function StoryCard({ recipe, compact }: { recipe: Recipe; compact?: boolean }) {
   const t = useT();
   if (!recipe.story?.length) return null;
   return (
-    <section aria-labelledby="story-h" className="rounded-xl bg-surface p-6 shadow-paper sm:p-8">
-      <h2 id="story-h" className="mb-4 flex items-center gap-2 font-text text-base font-bold text-accent-text">
-        <Icon name="transcript" size={22} />
-        {t.ui.recipe.story}
-      </h2>
-      <div className="flex flex-col gap-6">
-        {recipe.story.map((s, i) => (
-          <figure key={i} className="flex flex-col gap-3">
-            <figcaption className="text-ink-muted">{s.prompt}</figcaption>
-            <blockquote className="type-display text-2xl leading-snug font-normal italic">“{s.answer}”</blockquote>
-            {s.audioId && <AudioPlayer id={s.audioId} label={t.ui.recipe.voiceNote(i + 1)} />}
-          </figure>
-        ))}
-      </div>
+    <section aria-label={t.ui.recipe.story} className="flex flex-col gap-3 rounded-lg bg-surface p-5 shadow-paper">
+      {recipe.story.map((s, i) => (
+        <figure key={i} className={cx('flex gap-3', compact ? 'items-center' : 'flex-col')}>
+          {!compact && (
+            <figcaption className="font-bold text-ink-muted">
+              {t.ui.recipe.story} · {s.prompt}
+            </figcaption>
+          )}
+          <blockquote
+            className={cx(
+              'type-display flex-1 font-[calc(var(--font-display-weight)-30)] italic',
+              compact ? 'text-lg leading-[1.3]' : 'text-xl leading-[1.22]',
+            )}
+          >
+            “{s.answer}”
+          </blockquote>
+          {s.audioId && (
+            <AudioPlayer
+              id={s.audioId}
+              label={t.ui.recipe.voiceNote(i + 1)}
+              playLabel={t.ui.recipe.play}
+              pauseLabel={t.ui.recipe.pause}
+              compact={compact}
+              className="shrink-0"
+            />
+          )}
+        </figure>
+      ))}
     </section>
   );
 }
 
+function Ingredients({ adj, desk }: { adj: Adjusted; desk?: boolean }) {
+  const t = useT();
+  return (
+    <section aria-labelledby="ing-h" className="flex flex-col gap-3">
+      {desk ? (
+        <div className="flex flex-wrap items-center justify-between gap-2.5 pb-1.5">
+          <SectionHeading id="ing-h" desk>
+            {t.ui.recipe.ingredients}
+          </SectionHeading>
+          <IngredientControls {...adj} showUnits={false} className="no-print" />
+        </div>
+      ) : (
+        <>
+          <SectionHeading id="ing-h">{t.ui.recipe.ingredients}</SectionHeading>
+          <IngredientControls {...adj} className="no-print" />
+        </>
+      )}
+      <IngredientList ingredients={adj.ingredients} dense={desk} />
+      {desk && <IngredientControls {...adj} canScale={false} className="no-print pt-3" />}
+    </section>
+  );
+}
+
+function Steps({ recipe, desk }: { recipe: Recipe; desk?: boolean }) {
+  const t = useT();
+  return (
+    <section aria-labelledby="steps-h" className="flex flex-col gap-1.5">
+      <SectionHeading id="steps-h" desk={desk}>
+        {t.ui.recipe.steps}
+      </SectionHeading>
+      {!recipe.steps.length && <p className="text-ink-muted">{t.ui.recipe.noSteps}</p>}
+      <ol className="flex flex-col">
+        {recipe.steps.map((s, i) => (
+          <li key={s.id} className="print-avoid-break grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-line py-3">
+            <span aria-hidden className="type-display text-xl leading-[1.1] text-accent-text">
+              {i + 1}
+            </span>
+            <div className="flex flex-col gap-3">
+              <p className={desk ? undefined : 'text-lg leading-[1.4]'}>
+                <span className="sr-only">{t.ui.recipe.step(i + 1)}: </span>
+                {s.text}
+              </p>
+              {s.photoId && <Photo id={s.photoId} alt="" className="aspect-[4/3] w-full max-w-md rounded-[min(var(--radius-md),18px)]" />}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
+/** "In her words": the transcript exactly as it was said, in the handwritten face. Closed until asked. */
 function InHerWords({ transcript }: { transcript: string }) {
   const t = useT();
   return (
-    <Disclosure className="group rounded-xl border-2 border-line">
+    <Disclosure className="group flex flex-col">
       <Heading>
-        <AriaButton slot="trigger" className="flex min-h-16 w-full items-center gap-3 rounded-xl px-5 text-left ">
-          <Icon name="transcript" className="text-accent-text" />
-          <span className="flex-1">
-            <span className="block type-display text-xl">{t.ui.recipe.inHerWords}</span>
-            <span className="block text-sm text-ink-muted">{t.ui.recipe.inHerWordsHint}</span>
+        <AriaButton
+          slot="trigger"
+          className="flex min-h-16 w-full items-center justify-between gap-2.5 rounded-[min(var(--radius-md),18px)] bg-sunk px-4 font-bold group-data-[expanded]:rounded-b-none"
+        >
+          <span className="flex items-center gap-2.5">
+            <Icon name="transcript" className="shrink-0" />
+            {t.ui.recipe.inHerWords}
           </span>
-          <Icon name="collapse" className="rotate-180 transition-transform group-data-[expanded]:rotate-0" />
+          <span className="flex items-center gap-1 text-ink-muted">
+            <span className="group-data-[expanded]:hidden">{t.ui.common.show}</span>
+            <span className="hidden group-data-[expanded]:inline">{t.ui.common.hide}</span>
+            <Icon name="collapse" className="shrink-0 rotate-180 transition-transform group-data-[expanded]:rotate-0" />
+          </span>
         </AriaButton>
       </Heading>
       <DisclosurePanel>
-        <p
-          className="px-5 pb-6 type-handwritten text-xl leading-[2.1rem] italic"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(to bottom, transparent 0, transparent calc(2.1rem - 1px), var(--line) calc(2.1rem - 1px), var(--line) 2.1rem)',
-            backgroundPosition: '0 0.35rem',
-          }}
-        >
+        <p className="type-handwritten rounded-b-[min(var(--radius-md),18px)] bg-sunk px-4.5 pt-3 pb-4 text-lg leading-[1.5]">
           {transcript}
         </p>
       </DisclosurePanel>
@@ -93,286 +363,294 @@ function InHerWords({ transcript }: { transcript: string }) {
   );
 }
 
-function CollectionsEditor({ recipe }: { recipe: Recipe }) {
-  const t = useT();
-  const collections = useCollections();
-  if (!collections?.length) return null;
-  return (
-    <section aria-labelledby="col-h" className="flex flex-col gap-3">
-      <h2 id="col-h" className="font-text text-base font-bold">
-        {t.ui.recipe.collections}
-      </h2>
-      <div className="flex flex-wrap gap-2">
-        {collections.map((c) => {
-          const on = recipe.collectionIds.includes(c.id);
-          return (
-            <Chip
-              key={c.id}
-              isSelected={on}
-              onPress={() =>
-                setRecipeCollections(recipe.id, on ? recipe.collectionIds.filter((x) => x !== c.id) : [...recipe.collectionIds, c.id])
-              }
-            >
-              {on && <Icon name="check" size={18} />}
-              {c.name}
-            </Chip>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function CookLogList({ recipeId }: { recipeId: string }) {
-  const t = useT();
-  const logs = useCookLogs(recipeId);
-  return (
-    <section aria-labelledby="log-h" className="flex flex-col gap-3">
-      <h2 id="log-h" className="text-xl">
-        {t.ui.recipe.cookLog}
-      </h2>
-      {!logs?.length ? (
-        <p className="text-ink-muted">{t.ui.recipe.noCooks}</p>
-      ) : (
-        <ul className="flex flex-col divide-y divide-line">
-          {logs.map((l) => (
-            <li key={l.id} className="flex gap-4 py-3">
-              {l.photoId && <Photo id={l.photoId} alt="" className="size-20 shrink-0 rounded-md" />}
-              <div>
-                <p className="font-bold">
-                  {formatDate(l.cookedAt)}
-                  {l.rating ? (
-                    <span className="ml-3 inline-flex items-center gap-0.5 text-accent-text" aria-label={t.ui.recipe.rating(l.rating)}>
-                      {Array.from({ length: l.rating }, (_, i) => (
-                        <Icon key={i} name="star" size={16} fill="currentColor" />
-                      ))}
-                    </span>
-                  ) : null}
-                </p>
-                {l.note && <p className="text-ink-muted">{l.note}</p>}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-function Lineage({ recipe }: { recipe: Recipe }) {
-  const t = useT();
-  const original = useRecipe(recipe.forkedFromId);
-  const forks = useForks(recipe.id);
-  if (!original && !forks?.length) return null;
-  return (
-    <section className="flex flex-col gap-2">
-      {original && (
-        <p>
-          {t.ui.recipe.basedOn}{' '}
-          <Link to={`/r/${original.id}`} className="font-bold text-accent-text underline underline-offset-4">
-            {original.title}
-          </Link>
-        </p>
-      )}
-      {forks && forks.length > 0 && (
-        <div>
-          <h2 className="font-text text-base font-bold">{t.ui.recipe.versions}</h2>
-          <ul className="mt-1 flex flex-col gap-1">
-            {forks.map((f) => (
-              <li key={f.id}>
-                <Link to={`/r/${f.id}`} className="text-accent-text underline underline-offset-4">
-                  {t.ui.recipe.versionBy(f.author || '…')}: {f.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </section>
-  );
-}
-
-function CardPhotos({ recipe }: { recipe: Recipe }) {
+function OriginalCard({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const [open, setOpen] = useState<string | null>(null);
   if (!recipe.originalCardPhotoIds.length) return null;
   return (
-    <section aria-labelledby="card-h" className="flex flex-col gap-3">
-      <h2 id="card-h" className="text-xl">
-        {t.ui.recipe.originalCard}
-      </h2>
-      <div className="flex flex-wrap gap-3">
-        {recipe.originalCardPhotoIds.map((id, i) => (
-          <AriaButton
-            key={id}
-            onPress={() => setOpen(id)}
-            aria-label={`${t.ui.recipe.originalCard} ${i + 1}`}
-            className="overflow-hidden rounded-lg shadow-paper "
-          >
-            <Photo id={id} alt="" className="h-48 w-40 -rotate-1" />
-          </AriaButton>
-        ))}
-      </div>
+    <div className="flex flex-col gap-2">
+      <span className="font-bold">{t.ui.recipe.originalCard}</span>
+      {recipe.originalCardPhotoIds.map((id, i) => (
+        <AriaButton key={id} onPress={() => setOpen(id)} aria-label={`${t.ui.recipe.originalCard} ${i + 1}`} className="rounded-sm">
+          <Photo id={id} alt="" className="aspect-[4/3] w-full rounded-sm" />
+        </AriaButton>
+      ))}
       <Sheet isOpen={open !== null} onOpenChange={(o) => !o && setOpen(null)} title={t.ui.recipe.originalCard} size="lg">
-        {open && <Photo id={open} alt={t.ui.recipe.originalCard} className="w-full rounded-lg object-contain" />}
+        {open && <Photo id={open} alt={t.ui.recipe.originalCard} className="w-full rounded-[min(var(--radius-md),18px)] object-contain" />}
       </Sheet>
+    </div>
+  );
+}
+
+/** Tips, the transcript, voice notes and the original card. Hidden when there's none of them. */
+function TipsAndSources({ recipe, desk }: { recipe: Recipe; desk?: boolean }) {
+  const t = useT();
+  const player = { playLabel: t.ui.recipe.play, pauseLabel: t.ui.recipe.pause };
+  if (!recipe.tips && !recipe.tipsAudioId && !recipe.transcript && !recipe.voiceNoteIds.length && !recipe.originalCardPhotoIds.length)
+    return null;
+  return (
+    <section aria-labelledby={recipe.tips ? 'tips-h' : undefined} className="flex flex-col gap-3.5">
+      {(recipe.tips || recipe.tipsAudioId) && (
+        <>
+          <SectionHeading id="tips-h" desk={desk}>
+            {t.ui.recipe.tips}
+          </SectionHeading>
+          {recipe.tips && <p className={cx('whitespace-pre-line', !desk && 'text-lg leading-[1.4]')}>{recipe.tips}</p>}
+          {recipe.tipsAudioId && <AudioPlayer id={recipe.tipsAudioId} label={t.ui.recipe.tips} {...player} />}
+        </>
+      )}
+      {recipe.transcript && <InHerWords transcript={recipe.transcript} />}
+      {recipe.voiceNoteIds.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <span className="font-bold">{t.ui.recipe.voiceNotes}</span>
+          {recipe.voiceNoteIds.map((id, i) => (
+            <AudioPlayer key={id} id={id} label={t.ui.recipe.voiceNote(i + 1)} {...player} />
+          ))}
+        </div>
+      )}
+      <OriginalCard recipe={recipe} />
     </section>
   );
 }
 
-export function RecipeView({ recipe }: { recipe: Recipe }) {
+/** "Made 12 times": date, rating and the note for next time. */
+function CookLog({ recipe }: { recipe: Recipe }) {
+  const t = useT();
+  const logs = useCookLogs(recipe.id);
+  if (!logs?.length) return null;
+  return (
+    <section aria-labelledby="log-h" className="flex flex-col">
+      <SectionHeading id="log-h">{t.ui.common.madeTimes(Math.max(recipe.cookedCount, logs.length))}</SectionHeading>
+      <ul className="flex flex-col pt-2">
+        {logs.map((l) => (
+          <li key={l.id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-3 gap-y-0.5 border-b border-line py-3">
+            <b>{formatDay(l.cookedAt)}</b>
+            {l.rating ? (
+              <span className="flex items-center gap-1 font-bold">
+                <Icon name="star" size="1.2rem" filled className="text-accent-mark" />
+                {t.ui.recipe.rating(l.rating)}
+              </span>
+            ) : (
+              <span />
+            )}
+            {l.note && <span className="col-span-full text-ink-muted">{l.note}</span>}
+            {l.photoId && <Photo id={l.photoId} alt="" className="col-span-full mt-2 size-24 rounded-sm" />}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** The quieter things at the end: other versions, collections, the source, and Delete. */
+function More({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const navigate = useNavigate();
   const toast = useToast();
-  const settings = useSettings();
-  const adj = useAdjustedIngredients(recipe);
-
+  const forks = useForks(recipe.id);
+  const collections = useCollections();
   return (
-    <article className="@container mx-auto flex w-full max-w-5xl flex-col gap-10 pb-16">
-      <header className="flex flex-col gap-5">
-        {recipe.photoIds[0] && (
-          <Photo id={recipe.photoIds[0]} alt={recipe.title} className="aspect-[16/10] w-full rounded-xl shadow-paper" />
-        )}
-        <div className="flex flex-col gap-2">
-          <h1 className="text-3xl sm:text-4xl">{recipe.title}</h1>
-          {recipe.author && <p className="type-display text-xl text-ink-muted italic">{t.ui.common.fromKitchen(recipe.author)}</p>}
-        </div>
-        {recipe.description && <p className="max-w-[60ch] text-lg">{recipe.description}</p>}
-        <Meta recipe={recipe} />
-        {recipe.tags.length > 0 && (
-          <ul className="flex flex-wrap gap-2" aria-label={t.ui.recipe.tags}>
-            {recipe.tags.map((tag) => (
-              <li key={tag} className="rounded-full bg-sunk px-3 py-1 text-sm font-bold">
-                {tag}
+    <div className="no-print flex flex-col items-start gap-6 border-t border-line pt-6">
+      {forks && forks.length > 0 && (
+        <section aria-labelledby="versions-h" className="flex flex-col gap-2">
+          <h2 id="versions-h" className="font-text text-base font-bold">
+            {t.ui.recipe.versions}
+          </h2>
+          <ul className="flex flex-col gap-1">
+            {forks.map((f) => (
+              <li key={f.id}>
+                <AriaLink href={`/r/${f.id}`} className="text-accent-text underline underline-offset-4">
+                  {t.ui.recipe.versionBy(f.author || '…')}: {f.title}
+                </AriaLink>
               </li>
             ))}
           </ul>
-        )}
-        <div className="no-print flex flex-wrap items-center gap-2">
-          <ButtonLink href={`/r/${recipe.id}/cook`} variant="primary" size="XL" icon="startCooking">
-            {t.ui.recipe.startCooking}
-          </ButtonLink>
-          <ToolButton icon="edit" onPress={() => navigate(`/r/${recipe.id}/edit`)}>
-            {t.ui.common.edit}
-          </ToolButton>
-          <ToolButton
-            icon="addToGrocery"
-            onPress={async () => {
-              await addToGrocery(adj.ingredients, recipe.id);
-              toast.show({ message: t.ui.recipe.addedToGrocery(adj.ingredients.length), tone: 'success' });
-            }}
-          >
-            {t.ui.recipe.addToGrocery}
-          </ToolButton>
-          <ToolButton
-            icon="myVersion"
-            onPress={async () => {
-              const fork = await forkRecipe(recipe.id, settings.myName || recipe.author);
-              toast.show({ message: t.ui.recipe.forked, tone: 'success' });
-              navigate(`/r/${fork.id}/edit`);
-            }}
-          >
-            {t.ui.recipe.makeMyVersion}
-          </ToolButton>
-          <RecipeShareActions recipe={recipe} />
-        </div>
-      </header>
-
-      <StoryCard recipe={recipe} />
-
-      <div className="grid gap-10 @3xl:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-        <section aria-labelledby="ing-h" className="flex flex-col gap-5 @3xl:sticky @3xl:top-0 @3xl:self-start">
-          <h2 id="ing-h" className="text-2xl">
-            {t.ui.recipe.ingredients}
-          </h2>
-          <IngredientControls {...adj} className="no-print" />
-          <IngredientList ingredients={adj.ingredients} />
-        </section>
-
-        <section aria-labelledby="steps-h" className="flex flex-col gap-5">
-          <h2 id="steps-h" className="text-2xl">
-            {t.ui.recipe.method}
-          </h2>
-          {!recipe.steps.length && <p className="text-ink-muted">{t.ui.recipe.noSteps}</p>}
-          <ol className="flex flex-col gap-7">
-            {recipe.steps.map((s, i) => (
-              <li key={s.id} className="print-avoid-break grid grid-cols-[2.5rem_1fr] gap-x-3">
-                <span aria-hidden className="type-display text-2xl leading-none font-semibold text-accent-text">
-                  {i + 1}
-                </span>
-                <div className="flex flex-col gap-3">
-                  <p className="text-lg leading-relaxed">
-                    <span className="sr-only">{t.ui.recipe.step(i + 1)}: </span>
-                    <StepText text={s.text} ingredients={adj.ingredients} />
-                  </p>
-                  {s.photoId && <Photo id={s.photoId} alt="" className="aspect-[4/3] w-full max-w-md rounded-lg" />}
-                </div>
-              </li>
-            ))}
-          </ol>
-          {recipe.tips && (
-            <aside aria-labelledby="tips-h" className="mt-4 rounded-xl bg-accent-soft p-6">
-              <h2 id="tips-h" className="mb-2 font-text text-base font-bold">
-                {t.ui.recipe.tips}
-              </h2>
-              <p className="type-display text-xl whitespace-pre-line italic">{recipe.tips}</p>
-            </aside>
-          )}
-        </section>
-      </div>
-
-      {(recipe.voiceNoteIds.length > 0 || recipe.transcript) && (
-        <section className="flex flex-col gap-4">
-          {recipe.voiceNoteIds.length > 0 && (
-            <>
-              <h2 className="text-xl">{t.ui.recipe.voiceNotes}</h2>
-              {recipe.voiceNoteIds.map((id, i) => (
-                <AudioPlayer key={id} id={id} label={t.ui.recipe.voiceNote(i + 1)} />
-              ))}
-            </>
-          )}
-          {recipe.transcript && <InHerWords transcript={recipe.transcript} />}
         </section>
       )}
+      {collections && collections.length > 0 && (
+        <section aria-labelledby="col-h" className="flex flex-col gap-2.5">
+          <h2 id="col-h" className="font-text text-base font-bold">
+            {t.ui.recipe.collections}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {collections.map((c) => {
+              const on = recipe.collectionIds.includes(c.id);
+              return (
+                <Chip
+                  key={c.id}
+                  isSelected={on}
+                  onPress={() =>
+                    setRecipeCollections(recipe.id, on ? recipe.collectionIds.filter((x) => x !== c.id) : [...recipe.collectionIds, c.id])
+                  }
+                >
+                  {on && <Icon name="check" size="1.1rem" />}
+                  {c.name}
+                </Chip>
+              );
+            })}
+          </div>
+        </section>
+      )}
+      {recipe.sourceUrl && (
+        <p className="text-ink-muted">
+          {t.ui.recipe.source}:{' '}
+          <a href={recipe.sourceUrl} target="_blank" rel="noreferrer noopener" className="text-accent-text underline underline-offset-4">
+            {new URL(recipe.sourceUrl).hostname}
+          </a>
+        </p>
+      )}
+      <Button
+        variant="destructive"
+        onPress={async () => {
+          const snap = await deleteRecipe(recipe.id);
+          navigate('/');
+          if (snap) toast.undo(t.ui.recipe.deleted(recipe.title), () => restoreRecipe(snap));
+        }}
+      >
+        {t.ui.recipe.deleteRecipe}
+      </Button>
+    </div>
+  );
+}
 
-      <CardPhotos recipe={recipe} />
-      <Lineage recipe={recipe} />
-      <div className="no-print flex flex-col gap-10">
-        <CookLogList recipeId={recipe.id} />
-        <CollectionsEditor recipe={recipe} />
-        {recipe.sourceUrl && (
-          <p className="text-ink-muted">
-            {t.ui.recipe.source}:{' '}
-            <a href={recipe.sourceUrl} target="_blank" rel="noreferrer noopener" className="text-accent-text underline underline-offset-4">
-              {new URL(recipe.sourceUrl).hostname}
-            </a>
-          </p>
+/** Phone and pane: one column, laid out by skin. */
+function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane: boolean }) {
+  const t = useT();
+  const settings = useSettings();
+  const actions = useActions(recipe, adj);
+  const cfg = skinConfig[settings.skin];
+  const photo = recipe.photoIds[0];
+  const field = !pane && cfg.hero === 'fieldBand';
+  const center = !pane && cfg.detailAlign === 'center';
+  const meta = metaLine(recipe, t);
+
+  const titleBlock = (onField: boolean) => (
+    <div className={cx('flex flex-col gap-2', center && 'items-center text-center')}>
+      {onField && <Eyebrow recipe={recipe} onField />}
+      <h1 className="text-3xl leading-[1.02] tracking-[-0.02em]">{recipe.title}</h1>
+      {!onField && <Eyebrow recipe={recipe} />}
+      {meta.length > 0 && <p className={onField ? undefined : 'text-ink-muted'}>{meta.join(' · ')}</p>}
+      <TagLinks tags={recipe.tags} onField={onField} className={center ? 'justify-center' : undefined} />
+    </div>
+  );
+
+  return (
+    <article data-recipe-id={recipe.id} className="flex flex-col pb-10">
+      {field ? (
+        <>
+          <div data-surface="field" className="flex flex-col gap-2 bg-paper px-5 pt-3.5 pb-6 text-ink">
+            <div className="self-start">
+              <BackButton />
+            </div>
+            {titleBlock(true)}
+          </div>
+          {photo && <Photo id={photo} alt={recipe.title} className="mx-5 -mt-0.5 h-55 rounded-b-lg" />}
+        </>
+      ) : (
+        <>
+          {photo ? (
+            <div className="relative">
+              <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-75')} />
+              {!pane && <BackButton floating />}
+            </div>
+          ) : (
+            !pane && (
+              <div className="px-2 pt-4">
+                <BackButton />
+              </div>
+            )
+          )}
+          <div className={cx('pt-5.5', pane ? 'px-8' : 'px-5')}>{titleBlock(false)}</div>
+        </>
+      )}
+
+      <div className={cx('no-print flex flex-col gap-3.5 pt-5.5', pane ? 'px-8' : 'px-5')}>
+        <BasedOn recipe={recipe} />
+        {pane ? (
+          <div className="flex flex-wrap gap-2">
+            <StartCooking recipe={recipe} />
+            <Actions actions={actions} style="row" />
+          </div>
+        ) : (
+          <>
+            <StartCooking recipe={recipe} full />
+            <Actions actions={actions} style={cfg.actions} />
+          </>
         )}
-        <div>
-          <Button
-            variant="destructive"
-            onPress={async () => {
-              const snap = await deleteRecipe(recipe.id);
-              navigate('/');
-              if (snap) toast.undo(t.ui.recipe.deleted(recipe.title), () => restoreRecipe(snap));
-            }}
-          >
-            {t.ui.recipe.deleteRecipe}
-          </Button>
-        </div>
+      </div>
+
+      <div className={cx('flex flex-col gap-7.5 pt-6.5', pane ? 'px-8' : 'px-5')}>
+        <StoryCard recipe={recipe} />
+        <Ingredients adj={adj} />
+        <Steps recipe={recipe} />
+        <TipsAndSources recipe={recipe} />
+        <CookLog recipe={recipe} />
+        <More recipe={recipe} />
       </div>
     </article>
   );
+}
+
+/** Desktop page: title block and actions beside the photo, then ingredients beside the story and steps. */
+function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
+  const t = useT();
+  const actions = useActions(recipe, adj);
+  const photo = recipe.photoIds[0];
+  const meta = metaLine(recipe, t);
+  return (
+    <article data-recipe-id={recipe.id} className="flex flex-col pb-12">
+      <div className={cx('grid min-h-75', photo && 'grid-cols-[minmax(0,1fr)_420px]')}>
+        <div className="flex flex-col justify-end gap-2.5 px-10 pt-9 pb-7">
+          <Eyebrow recipe={recipe} />
+          <h1 className="text-4xl leading-none tracking-[-0.025em]">{recipe.title}</h1>
+          <div className="flex flex-wrap gap-x-1.5 text-ink-muted">
+            {meta.length > 0 && <span>{meta.join(' · ')}</span>}
+            {meta.length > 0 && recipe.tags.length > 0 && <span aria-hidden>·</span>}
+            <TagLinks tags={recipe.tags} className="font-normal" />
+          </div>
+          <div className="no-print flex max-w-[48rem] flex-col gap-3 pt-3">
+            <BasedOn recipe={recipe} />
+            <div className="flex flex-wrap gap-2">
+              <StartCooking recipe={recipe} />
+              <Actions actions={actions} style="row" />
+            </div>
+          </div>
+        </div>
+        {photo && <Photo id={photo} alt={recipe.title} className="h-full min-h-75 w-full" />}
+      </div>
+      <div className="border-t border-line">
+        <div className="grid max-w-[64rem] grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)] gap-11 px-10 pt-7">
+          <Ingredients adj={adj} desk />
+          <div className="flex flex-col gap-4.5">
+            <StoryCard recipe={recipe} compact />
+            <Steps recipe={recipe} desk />
+            <TipsAndSources recipe={recipe} desk />
+          </div>
+        </div>
+      </div>
+      <div className="flex max-w-3xl flex-col gap-8 px-10 pt-10">
+        <CookLog recipe={recipe} />
+        <More recipe={recipe} />
+      </div>
+    </article>
+  );
+}
+
+export function RecipeView({ recipe, layout }: { recipe: Recipe; layout?: Layout }) {
+  const desktop = useIsDesktop();
+  const adj = useAdjustedIngredients(recipe);
+  const l: Layout = layout ?? (desktop ? 'desk' : 'phone');
+  return l === 'desk' ? <DeskView recipe={recipe} adj={adj} /> : <ColumnView recipe={recipe} adj={adj} pane={l === 'pane'} />;
 }
 
 export function RecipeDetailPage() {
   const t = useT();
   const { id } = useParams();
   const recipe = useRecipe(id);
-  if (recipe === undefined) return <p className="p-6 text-ink-muted">{t.ui.common.loading}</p>;
+  if (recipe === undefined) return null;
   if (!recipe)
     return (
-      <div className="flex flex-col items-start gap-4 py-10">
+      <div className="flex flex-col items-start gap-4 px-5 py-10">
         <p className="type-display text-2xl">{t.ui.common.recipeNotFound}</p>
         <ButtonLink href="/" variant="secondary" icon="cookbook">
           {t.ui.common.goHome}
