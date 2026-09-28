@@ -1,0 +1,4 @@
+# Cloudflare Pages: serves dist/ and runs functions/ (the From a link import at /api/import).
+name = "bookcook"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-09-01"

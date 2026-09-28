@@ -1,6 +1,16 @@
+import { isNative } from './isNative';
+
 /** Whether this browser can record audio (MediaRecorder and a microphone API). */
 export function canRecord(): boolean {
   return typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
+}
+
+/**
+ * Whether a voice note can record while dictation listens (the story in Tell it). On Android the
+ * recogniser and the recording fight over the mic and one of them hears silence, so the app doesn't.
+ */
+export function canRecordWhileListening(): boolean {
+  return canRecord() && !isNative();
 }
 
 export interface Recording {

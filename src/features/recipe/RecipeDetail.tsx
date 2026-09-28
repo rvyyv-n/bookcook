@@ -10,6 +10,7 @@ import { useCollections, useCookLogs, useForks, useRecipe, useRequestAnsweredBy,
 import { deleteRecipe, forkRecipe, restoreRecipe } from '../../db/recipes';
 import type { Recipe } from '../../db/types';
 import { useT } from '../../i18n';
+import { printPage } from '../../lib/platform/print';
 import { formatDay } from '../../lib/format';
 import { AudioPlayer } from '../../ui/AudioPlayer';
 import { Button, ButtonLink } from '../../ui/Button';
@@ -78,7 +79,7 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
         if ((await shareRecipe(recipe, answered?.id, t)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
       },
     },
-    { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => window.print() },
+    { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => printPage(recipe.title) },
   ];
 }
 

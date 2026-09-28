@@ -5,6 +5,7 @@ import { deleteDraft, getDraft, patchDraft } from '../../db/drafts';
 import { useDraft } from '../../db/hooks';
 import { useT } from '../../i18n';
 import { parsePaste } from '../../lib/parse/paste';
+import { readClipboard } from '../../lib/platform/clipboard';
 import { Button } from '../../ui/Button';
 import { Working } from '../../ui/Capture';
 import { TextField } from '../../ui/Field';
@@ -67,7 +68,7 @@ export function PasteItPage() {
 
   async function pasteClipboard() {
     try {
-      const text = await navigator.clipboard.readText();
+      const text = await readClipboard();
       if (text) change(text);
     } catch {
       toast.show({ message: p.clipboardFailed });
