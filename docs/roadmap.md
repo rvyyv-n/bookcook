@@ -6,7 +6,7 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 ## Where the app is now
 
-A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by telling them (a guided interview, or free talk), typing them, pasting them in or importing them from a link, and edit any recipe; drafts save as you go.
+A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by telling them (a guided interview, or free talk), typing them, pasting them in or importing them from a link, and edit any recipe; drafts save as you go. There's a grocery list grouped by aisle, recipe requests you can send as a link, the full Settings page with backup and restore, and a printable family cookbook.
 
 It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions.
 
@@ -74,15 +74,16 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 - [x] Grocery: grouped by aisle, check-offs, Clear checked with Undo, manual items, merged quantities with "From Biryani, Karahi".
 - [x] Requests: incoming ("Tell it now", or Continue when a draft exists) and outgoing ("Send again"), the told state, Send request with a share link. The link carries the request in its fragment (`/import#request=…`, `src/lib/shareLink.ts`); opening it offers Tell it now or Add to my requests.
-- [ ] Settings: the full design, including the backup nudge, the text-size preview, Look, About you, Voice, and Voice commands.
-- [ ] Print: the family cookbook (cover, contents, recipe pages, story pages), always black on white, Letter and A4.
+- [x] Settings: the full design, including the backup nudge, the text-size preview, Look, About you, Voice, and Voice commands. Two columns on desktop.
+- [x] Print: the family cookbook (cover, contents, recipe pages, story pages), always black on white, Letter and A4. The preview is the paper at size; the contents' page numbers come from laying the preview out the way print breaks it (whole steps and sections move to the next page), and match the printed footers. They count the cover and contents, as Chrome can't restart the page counter.
 
 ### Phase 10: Safety and sharing
 
 **Milestone: safe for daily use.** Recipes can't be lost with the phone.
 
 - [x] PWA manifest, icons and offline caching (`vite-plugin-pwa`; the icons are drawn from the logo by `scripts/icons.mjs`). Brought forward so the app can be installed and tested from GitHub Pages.
-- [ ] `storage.persist()`, backup export and restore.
+- [x] Backup export and restore (brought forward for the Settings nudge): a `.bookcook` zip of every table plus photos and voice notes (`src/db/backup.ts`, `fflate`). Restore merges by id. `storage.persist()` is asked for on the first backup.
+- [ ] `storage.persist()` on the first saved recipe; restore that replaces instead of merging.
 - [ ] Share links for a recipe (request links landed in phase 9). An outgoing request is marked told when the recipe comes back by link.
 
 ### Phase 11: Android APK

@@ -89,6 +89,13 @@
   font-weight: var(--font-display-weight);
 }
 
+/* Cook-mode step text (and the text-size preview that shows it). */
+@utility type-step {
+  font-family: var(--font-display);
+  font-variation-settings: var(--step-settings);
+  font-weight: var(--step-weight);
+}
+
 /* "In her words" transcript. */
 @utility type-handwritten {
   font-family: var(--font-handwritten);

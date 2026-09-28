@@ -38,3 +38,67 @@
     margin: 16mm 18mm;
   }
 }
+
+/*
+ * The family cookbook (/print). Always black on white, whatever the mode, accent or skin: only the
+ * display face follows the skin. On screen each page is a sheet the size of the paper, with the same
+ * margins as @page, so the preview paginates like the print does.
+ */
+.book-sheet {
+  --paper: #fff;
+  --surface: #fff;
+  --ink: #111;
+  --ink-muted: #111;
+  --line: #111;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: var(--sheet-w);
+  min-height: var(--sheet-h);
+  margin-inline: auto;
+  padding: var(--sheet-my) var(--sheet-mx);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.18),
+    0 18px 40px -18px rgb(0 0 0 / 0.35);
+}
+/* The cover and contents fill exactly one sheet. */
+.book-front {
+  height: var(--sheet-h);
+}
+.book-photo {
+  filter: grayscale(1) contrast(1.05);
+}
+
+@media print {
+  .book-sheet {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    break-before: page;
+  }
+  .book-cover {
+    break-before: auto;
+  }
+  .book-front {
+    height: calc(var(--sheet-h) - 2 * var(--sheet-my));
+  }
+  /* Recipes and stories carry page numbers; the cover and contents don't. */
+  .book-flow {
+    page: book;
+  }
+  .book-avoid-break {
+    break-inside: avoid;
+  }
+  @page book {
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+      font-size: 10pt;
+      color: #111;
+    }
+  }
+}

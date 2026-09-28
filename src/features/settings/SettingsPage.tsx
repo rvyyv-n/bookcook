@@ -1,18 +1,22 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import { ShortcutList } from '../../app/shortcuts';
+import { useIsDesktop } from '../../app/useMediaQuery';
 import { useSettings } from '../../db/hooks';
 import { setSetting, setSkin, type Accent, type Skin, type TextSize, type Theme } from '../../db/settings';
 import { SKIN_LABELS, SKINS, skinConfig } from '../../design/skin';
 import { useT } from '../../i18n';
-import { ShortcutList } from '../../app/shortcuts';
 import { Segmented, Switch } from '../../ui/Controls';
 import { TextField } from '../../ui/Field';
-import { SelectField } from '../../ui/Select';
+import { RowButton, SelectRow } from '../../ui/Rows';
+import { Sheet } from '../../ui/Sheet';
+import { BackupCard } from './Backup';
 import { SpeechSettings } from './SpeechSettings';
 
-export function SettingsSection({ title, children, id }: { title: string; children: ReactNode; id?: string }) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
+  const id = `settings-${title.toLowerCase().replace(/\W+/g, '-')}`;
   return (
-    <section aria-labelledby={`${id ?? title}-h`} className="flex flex-col gap-5 border-t border-line pt-8" id={id}>
-      <h2 id={`${id ?? title}-h`} className="text-2xl">
+    <section aria-labelledby={id} className="flex flex-col gap-3">
+      <h2 id={id} className="type-heading text-lg">
         {title}
       </h2>
       {children}
@@ -20,109 +24,182 @@ export function SettingsSection({ title, children, id }: { title: string; childr
   );
 }
 
-export function SettingsPage() {
+/** Labels drawn at the size they pick (16, 19, 23px), whatever the current setting, and a cook step to judge by. */
+function TextSizeSection() {
   const t = useT();
-  const s = useSettings();
   const ts = t.ui.settings;
+  const s = useSettings();
   return (
-    <div className="flex flex-col gap-10 pb-10">
-      <h1 className="text-3xl">{ts.title}</h1>
+    <Section title={ts.textSize}>
+      <Segmented<TextSize>
+        label={ts.textSize}
+        labelHidden
+        size="XL"
+        value={s.textSize}
+        onChange={(v) => setSetting('textSize', v)}
+        options={[
+          { id: 'normal', label: ts.textSizes.normal, className: 'text-[16px]' },
+          { id: 'large', label: ts.textSizes.large, className: 'text-[19px]' },
+          { id: 'huge', label: ts.textSizes.huge, className: 'text-[23px]' },
+        ]}
+      />
+      <p className="type-step rounded-md bg-surface px-4.5 py-4 text-xl leading-[1.2] text-pretty shadow-paper" aria-live="polite">
+        {ts.textPreview}
+      </p>
+    </Section>
+  );
+}
 
-      <section aria-labelledby="size-h" className="flex flex-col gap-5">
-        <h2 id="size-h" className="text-2xl">
-          {ts.textSize}
-        </h2>
-        <Segmented<TextSize>
-          label={ts.textSize}
-          labelHidden
-          size="XL"
-          value={s.textSize}
-          onChange={(v) => setSetting('textSize', v)}
-          // Each label is drawn at the size it picks (16, 19, 23px), independent of the current setting.
-          options={[
-            { id: 'normal', label: ts.textSizes.normal, className: 'text-[16px]' },
-            { id: 'large', label: ts.textSizes.large, className: 'text-[19px]' },
-            { id: 'huge', label: ts.textSizes.huge, className: 'text-[23px]' },
-          ]}
-        />
-        <p className="rounded-lg bg-surface p-5 text-lg shadow-paper" aria-live="polite">
-          {ts.textPreview}
-        </p>
-      </section>
-
-      <SettingsSection title={ts.look}>
-        <Segmented<Theme>
-          label={ts.theme}
-          labelHidden
-          value={s.theme}
-          onChange={(v) => setSetting('theme', v)}
-          options={(['light', 'dark', 'system'] as const).map((id) => ({ id, label: ts.themes[id] }))}
-        />
-        <SelectField<Skin>
+function LookSection() {
+  const t = useT();
+  const ts = t.ui.settings;
+  const s = useSettings();
+  return (
+    <Section title={ts.look}>
+      <Segmented<Theme>
+        label={ts.theme}
+        labelHidden
+        value={s.theme}
+        onChange={(v) => setSetting('theme', v)}
+        options={(['light', 'dark', 'system'] as const).map((id) => ({ id, label: ts.themes[id] }))}
+      />
+      <div className="flex flex-col">
+        <SelectRow<Skin>
           label={ts.style}
           value={s.skin}
           onChange={(v) => setSkin(v)}
           options={SKINS.map((id) => ({ id, label: SKIN_LABELS[id] }))}
         />
         {skinConfig[s.skin].accentLocked ? (
-          <div className="flex flex-col gap-1.5">
-            <span className="font-bold">{ts.accent}</span>
-            <span>{ts.accentFixed}</span>
+          <div className="flex min-h-14 items-center gap-3 border-b border-line px-0.5 py-1.5">
+            <span className="flex-1 font-bold">{ts.accent}</span>
+            <span className="text-ink-muted">{ts.accentFixed}</span>
           </div>
         ) : (
-          <Segmented<Accent>
+          <SelectRow<Accent>
             label={ts.accent}
             value={s.accent}
             onChange={(v) => setSetting('accent', v)}
             options={(['tomato', 'saffron'] as const).map((id) => ({ id, label: ts.accents[id] }))}
           />
         )}
-        <div>
-          <Switch isSelected={s.spiceColours} onChange={(v) => setSetting('spiceColours', v)} description={ts.spiceColoursHint}>
-            {ts.spiceColours}
-          </Switch>
-          <Switch isSelected={s.stepPhoto} onChange={(v) => setSetting('stepPhoto', v)} description={ts.stepPhotosHint}>
-            {ts.stepPhotos}
-          </Switch>
+        <Switch isSelected={s.spiceColours} onChange={(v) => setSetting('spiceColours', v)} description={ts.spiceColoursHint}>
+          {ts.spiceColours}
+        </Switch>
+        <Switch isSelected={s.stepPhoto} onChange={(v) => setSetting('stepPhoto', v)} description={ts.stepPhotosHint}>
+          {ts.stepPhotos}
+        </Switch>
+      </div>
+    </Section>
+  );
+}
+
+function AboutSection() {
+  const t = useT();
+  const ts = t.ui.settings;
+  const s = useSettings();
+  return (
+    <Section title={ts.people}>
+      <TextField label={ts.myName} description={ts.myNameHint} value={s.myName} onChange={(v) => setSetting('myName', v)} />
+      <TextField
+        label={ts.defaultAuthor}
+        description={ts.defaultAuthorHint}
+        value={s.defaultAuthor}
+        onChange={(v) => setSetting('defaultAuthor', v)}
+      />
+      <TextField
+        label={ts.cookbookTitle}
+        description={ts.cookbookTitleHint}
+        value={s.cookbookTitle}
+        onChange={(v) => setSetting('cookbookTitle', v)}
+      />
+    </Section>
+  );
+}
+
+function VoiceCommandsSheet({ isOpen, onOpenChange }: { isOpen: boolean; onOpenChange: (open: boolean) => void }) {
+  const t = useT();
+  const ts = t.ui.settings;
+  return (
+    <Sheet isOpen={isOpen} onOpenChange={onOpenChange} title={ts.voiceCommands} description={ts.voiceCommandsIntro}>
+      <dl className="flex flex-col">
+        {ts.commandList
+          .map((item) => item as readonly [string, string])
+          .map(([say, does]) => (
+            <div key={say} className="flex flex-col gap-0.5 border-b border-line py-2.5">
+              <dt className="type-display text-lg">“{say}”</dt>
+              <dd className="text-ink-muted">{does}</dd>
+            </div>
+          ))}
+      </dl>
+    </Sheet>
+  );
+}
+
+function VoiceSection({ onCommands }: { onCommands: () => void }) {
+  const t = useT();
+  const ts = t.ui.settings;
+  const s = useSettings();
+  return (
+    <Section title={ts.voiceSection}>
+      <div className="flex flex-col">
+        <Switch isSelected={s.readAloud} onChange={(v) => setSetting('readAloud', v)} description={ts.readAloudHint}>
+          {ts.readAloud}
+        </Switch>
+        <Switch isSelected={s.speakQuestions} onChange={(v) => setSetting('speakQuestions', v)} description={ts.speakQuestionsHint}>
+          {ts.speakQuestions}
+        </Switch>
+      </div>
+      <SpeechSettings />
+      <RowButton label={ts.voiceCommands} value={ts.voiceCommandsHint} onPress={onCommands} />
+    </Section>
+  );
+}
+
+export function SettingsPage() {
+  const t = useT();
+  const ts = t.ui.settings;
+  const desktop = useIsDesktop();
+  const [sheet, setSheet] = useState<'commands' | 'shortcuts' | null>(null);
+  const close = (open: boolean) => !open && setSheet(null);
+
+  const more = (
+    <div className="flex flex-col">
+      {desktop && <RowButton icon="keyboard" label={ts.shortcuts} onPress={() => setSheet('shortcuts')} />}
+      <RowButton icon="print" label={ts.printCookbook} href="/print" />
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-7 pt-2 pb-10">
+      <h1 className="text-3xl leading-none tracking-[-0.02em]">{ts.title}</h1>
+      {desktop ? (
+        <div className="grid grid-cols-2 items-start gap-x-10">
+          <div className="flex flex-col gap-8">
+            <TextSizeSection />
+            <AboutSection />
+          </div>
+          <div className="flex flex-col gap-8">
+            <BackupCard layout="desk" />
+            <VoiceSection onCommands={() => setSheet('commands')} />
+            <LookSection />
+            {more}
+          </div>
         </div>
-      </SettingsSection>
-
-      <SettingsSection title={ts.people}>
-        <TextField
-          label={ts.defaultAuthor}
-          description={ts.defaultAuthorHint}
-          value={s.defaultAuthor}
-          onChange={(v) => setSetting('defaultAuthor', v)}
-        />
-        <TextField label={ts.myName} description={ts.myNameHint} value={s.myName} onChange={(v) => setSetting('myName', v)} />
-        <TextField
-          label={ts.cookbookTitle}
-          description={ts.cookbookTitleHint}
-          value={s.cookbookTitle}
-          onChange={(v) => setSetting('cookbookTitle', v)}
-        />
-      </SettingsSection>
-
-      <SettingsSection title={ts.voiceSection}>
-        <div>
-          <Switch isSelected={s.readAloud} onChange={(v) => setSetting('readAloud', v)}>
-            {ts.readAloud}
-          </Switch>
-          <Switch isSelected={s.speakQuestions} onChange={(v) => setSetting('speakQuestions', v)}>
-            {ts.speakQuestions}
-          </Switch>
-        </div>
-        <SpeechSettings />
-      </SettingsSection>
-
-      <SettingsSection title={ts.language}>
-        <p>English</p>
-        <p className="text-ink-muted">{ts.languageNote}</p>
-      </SettingsSection>
-
-      <SettingsSection title={ts.shortcuts}>
+      ) : (
+        <>
+          <BackupCard layout="phone" />
+          <TextSizeSection />
+          <LookSection />
+          <AboutSection />
+          <VoiceSection onCommands={() => setSheet('commands')} />
+          {more}
+        </>
+      )}
+      <VoiceCommandsSheet isOpen={sheet === 'commands'} onOpenChange={close} />
+      <Sheet isOpen={sheet === 'shortcuts'} onOpenChange={close} title={t.ui.common.keyboardShortcuts} placement="corner">
         <ShortcutList />
-      </SettingsSection>
+      </Sheet>
     </div>
   );
 }

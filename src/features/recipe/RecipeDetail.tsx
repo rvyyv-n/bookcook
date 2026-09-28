@@ -5,11 +5,12 @@ import { useIsDesktop } from '../../app/useMediaQuery';
 import { skinConfig } from '../../design/skin';
 import { setRecipeCollections } from '../../db/collections';
 import { addToGrocery } from '../../db/grocery';
+import { metaLine } from './meta';
 import { useCollections, useCookLogs, useForks, useRecipe, useSettings } from '../../db/hooks';
 import { deleteRecipe, forkRecipe, restoreRecipe } from '../../db/recipes';
 import type { Recipe } from '../../db/types';
 import { useT } from '../../i18n';
-import { formatDay, formatMinutes } from '../../lib/format';
+import { formatDay } from '../../lib/format';
 import { AudioPlayer } from '../../ui/AudioPlayer';
 import { Button, ButtonLink } from '../../ui/Button';
 import { Chip } from '../../ui/Controls';
@@ -170,17 +171,6 @@ function BackButton({ floating }: { floating?: boolean }) {
       {t.ui.common.back}
     </Button>
   );
-}
-
-/** "Serves 6 · Prep 30 min · Cook 1 hr 15 min" */
-function metaLine(recipe: Recipe, t: ReturnType<typeof useT>): string[] {
-  const prep = formatMinutes(recipe.prepMinutes);
-  const cook = formatMinutes(recipe.cookMinutes);
-  return [
-    recipe.servings ? t.ui.common.serves(recipe.servings) : undefined,
-    prep && t.ui.recipe.prep(prep),
-    cook && t.ui.recipe.cook(cook),
-  ].filter((x): x is string => !!x);
 }
 
 function TagLinks({ tags, onField, className }: { tags: string[]; onField?: boolean; className?: string }) {
