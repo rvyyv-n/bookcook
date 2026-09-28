@@ -57,7 +57,7 @@ export function ReviewIngredientRow({
         onPress={onPress}
         className={cx(
           amountGrid,
-          'gap-y-1 rounded-sm bg-accent-soft text-ink',
+          'min-h-[3.5rem] gap-y-1 rounded-sm bg-accent-soft text-ink',
           dense ? '-mx-2 my-0.75 w-[calc(100%+1rem)] px-2 py-1.75' : '-mx-2.5 my-1 w-[calc(100%+1.25rem)] p-2.5',
         )}
       >
@@ -72,7 +72,7 @@ export function ReviewIngredientRow({
     <AriaButton
       aria-label={label}
       onPress={onPress}
-      className={cx(amountGrid, 'border-b border-line data-[hovered]:bg-sunk', dense ? 'py-1.75' : 'min-h-[3.5rem] py-2.5')}
+      className={cx(amountGrid, 'border-b border-line data-[hovered]:bg-sunk', 'min-h-[3.5rem]', dense ? 'py-1.75' : 'py-2.5')}
     >
       <b>{amount}</b>
       <span>{name}</span>
@@ -100,7 +100,7 @@ export function ReviewTap({ label, onPress, children }: { label: string; onPress
     <AriaButton
       aria-label={label}
       onPress={onPress}
-      className="-mx-1.5 flex flex-col gap-1.5 rounded-sm px-1.5 py-1 text-left data-[hovered]:bg-sunk"
+      className="-mx-1.5 flex min-h-[3.5rem] flex-col justify-center gap-1.5 rounded-sm px-1.5 py-1 text-left data-[hovered]:bg-sunk"
     >
       {children}
     </AriaButton>

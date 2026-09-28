@@ -69,7 +69,10 @@ export function DeskPromptCard({ request, draft }: { request?: RecipeRequest; dr
   const draftLine = draft && (
     <span className="text-[0.875rem] text-ink-muted">
       {t.ui.library.draftLine} {draft.recipe.title?.trim() || t.ui.common.untitled} ·{' '}
-      <Link href={draftHref(draft)} className="font-bold text-accent-text underline underline-offset-2">
+      <Link
+        href={draftHref(draft)}
+        className="relative font-bold text-accent-text underline underline-offset-2 after:absolute after:-inset-x-2 after:-inset-y-[1.1rem] after:content-['']"
+      >
         {t.ui.library.continue}
       </Link>
     </span>

@@ -360,8 +360,14 @@ export function IngredientLineField({
           <span aria-hidden className="h-px flex-1 bg-(--sp) [display:var(--sp-rule)]" />
         </div>
       ) : (
+        // The whole row is the target: a press on its padding lands in the line.
         <div
-          className={cx('flex flex-col justify-center gap-1 border-b border-line', dense ? 'min-h-[3.5rem] py-1.5' : 'min-h-[3.5rem] py-2')}
+          className={cx('flex min-h-[3.5rem] cursor-text flex-col justify-center gap-1 border-b border-line', dense ? 'py-1.5' : 'py-2')}
+          onPointerDown={(e) => {
+            if (e.target !== e.currentTarget) return;
+            e.preventDefault();
+            e.currentTarget.querySelector('input')?.focus();
+          }}
         >
           {input}
           {check}
@@ -618,7 +624,7 @@ export function StepTextButton({ label, onPress, children }: { label: string; on
     <AriaButton
       aria-label={label}
       onPress={onPress}
-      className="cursor-text rounded-sm py-1 text-left [text-wrap:pretty] data-[hovered]:bg-sunk data-[pressed]:bg-sunk"
+      className="min-h-[3.5rem] cursor-text rounded-sm py-1 text-left [text-wrap:pretty] data-[hovered]:bg-sunk data-[pressed]:bg-sunk"
     >
       {children}
     </AriaButton>

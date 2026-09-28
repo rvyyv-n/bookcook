@@ -27,7 +27,7 @@ export function Sidebar({
     >
       <Link
         href="/"
-        className="type-display flex items-center gap-2.5 self-start rounded-sm px-2 pt-0.5 pb-4 text-xl leading-none text-ink no-underline"
+        className="type-display flex min-h-[3.5rem] items-center gap-2.5 self-start rounded-sm px-2 pt-0.5 pb-4 text-xl leading-none text-ink no-underline"
       >
         <Logo variant="rice" className="size-9 shrink-0 dark:hidden" />
         <Logo variant="dark" className="hidden size-9 shrink-0 dark:block" />
