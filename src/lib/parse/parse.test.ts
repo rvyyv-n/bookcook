@@ -223,6 +223,8 @@ describe('voice helpers', () => {
     expect(splitOnSeparator('two onions next a cup of rice')).toEqual(['two onions', 'a cup of rice']);
     expect(splitOnSeparator('two onions next')).toEqual(['two onions', '']);
     expect(splitOnSeparator('put it next to the stove')).toEqual(['put it next to the stove']);
+    expect(splitOnSeparator('chicken next one cup yogurt')).toEqual(['chicken', 'one cup yogurt']);
+    expect(splitOnSeparator('chicken, next one, yogurt')).toEqual(['chicken', 'yogurt']);
   });
 
   it('finds ingredients mentioned inside spoken steps', () => {

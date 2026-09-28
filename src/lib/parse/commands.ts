@@ -87,10 +87,13 @@ export function parseCommand(text: string, phrases: CommandPhrases = en.voice.co
 /**
  * Split dictation on the spoken separator ("next"), so "two onions next a cup of rice"
  * becomes ["two onions", "a cup of rice"]. Every part except the last is a finished item;
- * "two onions next" gives ["two onions", ""]. "next to" is ordinary speech.
+ * "two onions next" gives ["two onions", ""]. "next to" is ordinary speech, and in "next one cup
+ * of yogurt" the "one" is the amount, so "next one" only separates at a pause or the end.
  */
 export function splitOnSeparator(text: string, phrases: CommandPhrases = en.voice.commands): string[] {
-  const seps = [...phrases.separators].sort((a, b) => b.length - a.length).map(escape);
+  const seps = [...phrases.separators]
+    .sort((a, b) => b.length - a.length)
+    .map((s) => (/\bone$/.test(s) ? `${escape(s)}(?=\\s*(?:$|[,.;]))` : escape(s)));
   const re = new RegExp(`(?:^|(?<=[\\s,.;]))(?:${seps.join('|')})(?!\\s+to\\b)(?=$|[\\s,.;])`, 'i');
   return text.split(re).map((p) => p.replace(/^[\s,.;]+|[\s,.;]+$/g, '').trim());
 }
