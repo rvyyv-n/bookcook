@@ -94,7 +94,7 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 - [ ] Onboarding, motion details, a full accessibility pass.
 - [x] A test deployment on GitHub Pages (`.github/workflows/deploy.yml`).
-- [ ] Deploy to Cloudflare Pages, which the From a link import function needs.
+- [ ] Deploy to Cloudflare Pages, which the From a link import function needs. The config and the `cloudflare` workflow job are in (`wrangler.toml`, `.github/workflows/deploy.yml`); it deploys once the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets exist and a Pages project named `bookcook` has been created.
 - [ ] README with screenshots and GIFs, the parser accuracy figure and Lighthouse scores; the case-study outline.
 
 ## Later, not in this build
