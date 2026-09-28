@@ -535,7 +535,7 @@ export function MoveHandle({
         isOpen={open}
         onOpenChange={setOpen}
         placement="bottom start"
-        className="min-w-44 rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise"
+        className="min-w-44 rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Menu
           aria-label={label}

@@ -91,7 +91,7 @@ export function ListeningIndicator({ state, word, hint }: { state: ListeningStat
       <Popover
         placement="bottom end"
         offset={12}
-        className="max-w-64 rounded-sm bg-ink px-3.5 py-2 font-bold text-paper shadow-lift data-[entering]:animate-rise"
+        className="max-w-64 rounded-sm bg-ink px-3.5 py-2 font-bold text-paper shadow-lift data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Dialog aria-label={word} className="outline-none">
           {hint}
@@ -238,7 +238,7 @@ export function Mention({
       <Popover
         placement="bottom start"
         offset={8}
-        className="rounded-sm bg-ink px-[.9rem] py-2 text-base font-bold whitespace-nowrap text-paper shadow-lift data-[entering]:animate-rise"
+        className="rounded-sm bg-ink px-[.9rem] py-2 text-base font-bold whitespace-nowrap text-paper shadow-lift data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Dialog aria-label={label} className="outline-none">
           {({ close }) => (

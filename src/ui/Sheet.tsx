@@ -46,6 +46,7 @@ export function Sheet({
       isDismissable={isDismissable}
       className={cx(
         'fixed inset-0 z-40 flex items-end justify-center bg-[rgb(var(--shadow-color)/.42)] desk:p-7',
+        'data-[entering]:animate-scrim-in data-[exiting]:animate-fade-out',
         placement === 'center' ? 'desk:items-center' : 'desk:justify-end',
         besideSidebar && 'desk:left-[252px] desk:bg-[rgb(var(--shadow-color)/.32)]',
       )}
@@ -53,7 +54,7 @@ export function Sheet({
       <Modal
         className={cx(
           'no-print flex max-h-[92dvh] w-full flex-col rounded-t-xl bg-surface bg-(image:--grain) text-ink shadow-lift desk:rounded-xl',
-          'data-[entering]:animate-rise',
+          'data-[entering]:animate-rise data-[exiting]:animate-drop-out',
           placement === 'corner' ? 'desk:max-w-[23.3333rem]' : widths[size],
         )}
       >
