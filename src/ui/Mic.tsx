@@ -228,7 +228,7 @@ export function TellProgress({
 }) {
   return (
     <div className={cx('flex min-w-0 flex-col gap-2', segments ? 'items-center' : 'items-end')}>
-      <b className={cx('leading-[1.15] whitespace-nowrap', !segments && 'text-right')}>{label}</b>
+      <b className={cx('leading-[1.15]', segments ? 'whitespace-nowrap' : 'text-right [text-wrap:balance]')}>{label}</b>
       {segments ? (
         <span aria-hidden className="grid gap-[5px]" style={{ gridTemplateColumns: `repeat(${total}, 1.5556rem)` }}>
           {Array.from({ length: total }, (_, i) => (
@@ -275,20 +275,21 @@ export function HeardRow({
     <li
       className={cx(
         'grid min-h-14 items-center gap-3 py-1.5',
-        wide ? 'grid-cols-[6rem_minmax(0,1fr)_auto]' : 'grid-cols-[minmax(0,5rem)_minmax(0,1fr)_auto]',
+        wide ? 'grid-cols-[6rem_minmax(0,1fr)]' : 'grid-cols-[minmax(0,5rem)_minmax(0,1fr)]',
         isNew ? '-mx-2.5 mt-1 rounded-sm bg-accent-soft px-2.5' : 'border-b border-line last:border-b-0',
       )}
     >
       <b>{amount}</b>
-      <span className="min-w-0 [overflow-wrap:anywhere]">{name}</span>
-      {check ? (
-        <span className="flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-[0.8333rem] font-bold whitespace-nowrap text-accent-text">
-          <Icon name="checkThis" size="1.1rem" />
-          {check}
-        </span>
-      ) : (
-        <span />
-      )}
+      {/* The check sits beside the name, and drops under it when there isn't room (Large, Huge). */}
+      <span className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1">
+        <span className="min-w-0 [overflow-wrap:anywhere]">{name}</span>
+        {check && (
+          <span className="flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-[0.8333rem] font-bold whitespace-nowrap text-accent-text">
+            <Icon name="checkThis" size="1.1rem" />
+            {check}
+          </span>
+        )}
+      </span>
     </li>
   );
 }

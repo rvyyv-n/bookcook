@@ -485,7 +485,7 @@ export function TellItPage() {
   );
 
   const exitButton = (
-    <Button variant="quiet" icon="close" onPress={() => void exit()} className="justify-self-start px-[.8rem]">
+    <Button variant="quiet" icon="close" onPress={() => void exit()} className="shrink-0 justify-self-start px-[.8rem]">
       {c.exit}
     </Button>
   );
@@ -517,7 +517,7 @@ export function TellItPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-paper bg-(image:--grain)">
-      <header className="flex items-center justify-between gap-2 pt-[max(1rem,env(safe-area-inset-top))] pr-4 pl-2">
+      <header className="flex items-start justify-between gap-2 pt-[max(1rem,env(safe-area-inset-top))] pr-4 pl-2">
         {exitButton}
         <TellProgress label={progress} current={stageNumber(stage)} total={TOTAL} />
       </header>
