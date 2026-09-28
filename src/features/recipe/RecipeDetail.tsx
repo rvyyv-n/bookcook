@@ -6,7 +6,7 @@ import { skinConfig } from '../../design/skin';
 import { setRecipeCollections } from '../../db/collections';
 import { addToGrocery } from '../../db/grocery';
 import { metaLine } from './meta';
-import { useCollections, useCookLogs, useForks, useRecipe, useSettings } from '../../db/hooks';
+import { useCollections, useCookLogs, useForks, useRecipe, useRequestAnsweredBy, useSettings } from '../../db/hooks';
 import { deleteRecipe, forkRecipe, restoreRecipe } from '../../db/recipes';
 import type { Recipe } from '../../db/types';
 import { useT } from '../../i18n';
@@ -44,6 +44,7 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
   const navigate = useNavigate();
   const toast = useToast();
   const settings = useSettings();
+  const answered = useRequestAnsweredBy(recipe.id);
   const s = t.ui.recipe.short;
   return [
     { id: 'edit', icon: 'edit', label: t.ui.common.edit, short: s.edit, onPress: () => navigate(`/r/${recipe.id}/edit`) },
@@ -74,7 +75,7 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
       label: t.ui.recipe.share,
       short: s.share,
       onPress: async () => {
-        if ((await shareRecipe(recipe, t)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
+        if ((await shareRecipe(recipe, answered?.id, t)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
       },
     },
     { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => window.print() },

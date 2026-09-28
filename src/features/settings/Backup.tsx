@@ -47,7 +47,7 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
     try {
       const { blob, filename, counts } = await exportBackup();
       download(blob, filename);
-      void requestPersistentStorage();
+      void requestPersistentStorage({ again: true });
       toast.show({ message: ts.backedUp(counts.recipes), tone: 'success' });
     } finally {
       setBusy(false);
@@ -74,6 +74,8 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
       const counts = await applyBackup(picked, mode);
       setPicked(null);
       toast.show({ message: (mode === 'replace' ? ts.replaced : ts.restored)(counts.recipes), tone: 'success' });
+    } catch {
+      toast.show({ message: ts.restoreFailed });
     } finally {
       setBusy(false);
     }

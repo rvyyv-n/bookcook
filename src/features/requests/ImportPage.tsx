@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useRecipe } from '../../db/hooks';
 import { addSharedRecipe } from '../../db/recipes';
@@ -27,9 +27,9 @@ async function keep(shared: SharedRequest): Promise<void> {
 export function ImportPage() {
   const t = useT();
   const { hash } = useLocation();
-  const recipe = readRecipeLink(hash);
+  const recipe = useMemo(() => readRecipeLink(hash), [hash]);
+  const request = useMemo(() => (recipe ? undefined : readRequestLink(hash)), [hash, recipe]);
   if (recipe) return <SharedRecipePage shared={recipe} />;
-  const request = readRequestLink(hash);
   if (request) return <SharedRequestPage shared={request} />;
   return (
     <div className="flex max-w-xl flex-col items-start gap-4 py-10">
@@ -83,10 +83,15 @@ function SharedRecipePage({ shared }: { shared: SharedRecipe }) {
               isDisabled={busy}
               onPress={async () => {
                 setBusy(true);
-                const { recipe: saved } = await addSharedRecipe(shared.id, recipe, shared.requestId);
-                void requestPersistentStorage();
-                toast.show({ message: tr.addedRecipe, tone: 'success' });
-                navigate(`/r/${saved.id}`, { replace: true });
+                try {
+                  const { recipe: saved } = await addSharedRecipe(shared.id, recipe, shared.requestId);
+                  void requestPersistentStorage();
+                  toast.show({ message: tr.addedRecipe, tone: 'success' });
+                  navigate(`/r/${saved.id}`, { replace: true });
+                } catch {
+                  toast.show({ message: tr.addFailed });
+                  setBusy(false);
+                }
               }}
             >
               {tr.addToCookbook}

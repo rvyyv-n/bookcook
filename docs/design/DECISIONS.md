@@ -93,7 +93,7 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 The handoff has no screens for these, so they're built from the request link page and the Sheet.
 
 - **A recipe link opens "A recipe for you"** (`/import#recipe=…`): the request page's accent card with "From ___'s kitchen", the title, description and counts, then **Add to my cookbook**. The link carries the sender's recipe id, so opening it again shows "It's already in your cookbook" and **Open it** instead of adding a copy.
-- **Recipe links are compressed with `fflate`**, which the backup already uses, instead of the plan's `lz-string`. They carry text only: no photos, voice notes, collections or cook log.
+- **Recipe links are compressed with `fflate`**, which the backup already uses, instead of the plan's `lz-string`. They carry the recipe's text only: no photos, voice notes, transcript, collections or cook log, so a Tell it recipe's link stays short enough for a message. Reading one stops past 1 MB inflated.
 - **A recipe told for a request carries that request's id.** The asker's copy of the request shares the id, so adding the recipe marks their outgoing request told.
 - **Restore asks how** after the file is picked, in a Sheet: **Add to my cookbook** (merge, the primary) or **Replace everything** (destructive). Replace keeps this device's own settings (last backup, the storage request).
-- **`storage.persist()` is asked for once**, on the first saved recipe, added link or backup, as Firefox shows a prompt each time.
+- **`storage.persist()` is asked for once on saving** (the first saved recipe or added link), as Firefox shows a prompt each time. **Each backup asks again**, as Chrome decides silently and says yes once the site is used more or installed.

@@ -1,3 +1,4 @@
+import { deflateSync, strToU8 } from 'fflate';
 import { describe, expect, it } from 'vitest';
 import { readRecipeLink, readRequestLink, recipeLink, requestLink } from './shareLink';
 
@@ -85,6 +86,13 @@ describe('recipe links', () => {
     };
     const link = recipeLink({ id: 'r1', recipe: long }, '', '/');
     expect(link.length).toBeLessThan(JSON.stringify(long).length);
+  });
+
+  it('refuses a link that would inflate past 1 MB', () => {
+    const bomb = deflateSync(strToU8(JSON.stringify({ i: 'x', t: 'x', d: ' '.repeat(3_000_000) })), { level: 9 });
+    let bin = '';
+    for (const b of bomb) bin += String.fromCharCode(b);
+    expect(readRecipeLink('#recipe=' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''))).toBeUndefined();
   });
 
   it('rejects a missing or damaged fragment, and a request link', () => {

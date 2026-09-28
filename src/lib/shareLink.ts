@@ -1,10 +1,12 @@
-import { deflateSync, inflateSync, strFromU8, strToU8 } from 'fflate';
+import { deflateSync, Inflate, strFromU8, strToU8 } from 'fflate';
 import type { Ingredient, Recipe, Step, StoryAnswer } from '../db/types';
 import type { Quantity } from './parse/types';
 
 /**
  * Share links: a recipe request or a whole recipe packed into the URL fragment of /import, so it
- * never reaches a server. Recipes are compressed and carry text only (no photos or voice notes).
+ * never reaches a server. Recipes are compressed and carry the recipe's text only: no photos, voice
+ * notes or transcript, which stay with the original (as they do for Make Mine), so links stay short
+ * enough for a message.
  */
 
 export interface SharedRequest {
@@ -62,15 +64,35 @@ export function readRequestLink(hash: string): SharedRequest | undefined {
 export interface SharedRecipe {
   /** The sender's recipe id, so opening the link twice adds it once. */
   id: string;
-  /** The text of the recipe; photos, voice notes, collections and the cook log stay behind. */
+  /** The text of the recipe; photos, voice notes, the transcript, collections and the cook log stay behind. */
   recipe: Partial<Recipe> & { title: string };
   /** The request this recipe answers (the asker's id for it), so their request can be marked told. */
   requestId?: string;
 }
 
 const RECIPE_KEY = 'recipe';
-/** Longer than any real recipe; a guard against a link that would inflate to something huge. */
+/** Longer than any real recipe; guards against a link that would inflate to something huge. */
 const MAX_LINK = 100_000;
+const MAX_INFLATED = 1_000_000;
+
+/** Inflate, giving up past MAX_INFLATED bytes. */
+function inflateCapped(data: Uint8Array): Uint8Array {
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  const inflate = new Inflate((chunk) => {
+    size += chunk.length;
+    if (size > MAX_INFLATED) throw new Error('too big');
+    chunks.push(chunk);
+  });
+  inflate.push(data, true);
+  const out = new Uint8Array(size);
+  let at = 0;
+  for (const c of chunks) {
+    out.set(c, at);
+    at += c.length;
+  }
+  return out;
+}
 
 /** The link to send: `<origin><base>import#recipe=…`. */
 export function recipeLink(shared: SharedRecipe, origin: string, base: string): string {
@@ -88,7 +110,6 @@ export function recipeLink(shared: SharedRecipe, origin: string, base: string): 
     n: r.ingredients?.map((i) => [i.name, i.quantity ?? 0, i.unit ?? '', i.note ?? '', i.section ?? '']),
     x: r.steps?.filter((st) => st.text).map((st) => (st.timerSeconds ? [st.text, st.timerSeconds] : [st.text])),
     k: r.tips,
-    w: r.transcript,
     y: r.story?.filter((st) => st.answer).map((st) => [st.prompt, st.answer]),
   };
   const packed = deflateSync(strToU8(JSON.stringify(payload)), { level: 9 });
@@ -108,7 +129,7 @@ export function readRecipeLink(hash: string): SharedRecipe | undefined {
   const data = new URLSearchParams(hash.replace(/^#/, '')).get(RECIPE_KEY);
   if (!data || data.length > MAX_LINK) return undefined;
   try {
-    const raw = JSON.parse(strFromU8(inflateSync(base64UrlToBytes(data)))) as Record<string, unknown>;
+    const raw = JSON.parse(strFromU8(inflateCapped(base64UrlToBytes(data)))) as Record<string, unknown>;
     const id = text(raw.i, 64);
     const title = text(raw.t, 200);
     if (!id || !title) return undefined;
@@ -138,7 +159,6 @@ export function readRecipeLink(hash: string): SharedRecipe | undefined {
       ingredients: ingredients as Ingredient[],
       steps: steps as Step[],
       tips: text(raw.k, 5000),
-      transcript: text(raw.w, 50_000),
       story,
     };
     return { id, recipe, requestId: text(raw.q, 64) };
