@@ -55,6 +55,14 @@
       transform: translateY(8px);
     }
   }
+  /* A grocery row put back by Undo opens up and fades in. */
+  --animate-row-in: bc-row-in var(--dur) var(--ease-out) both;
+  @keyframes bc-row-in {
+    from {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+  }
   /* The scrim behind a sheet. */
   --animate-scrim-in: fade-in var(--dur) var(--ease-out) both;
 }

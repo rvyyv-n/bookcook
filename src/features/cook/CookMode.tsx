@@ -19,7 +19,7 @@ import { compressImage } from '../../lib/platform/image';
 import { useWakeLock } from '../../lib/platform/wakeLock';
 import { newId } from '../../db/db';
 import { Button, ButtonLink } from '../../ui/Button';
-import { CheckItem, Segmented, StarRating, Stepper } from '../../ui/Controls';
+import { CheckItem, Segmented, StarRating, Stepper, Struck } from '../../ui/Controls';
 import {
   CookControls,
   ListeningIndicator,
@@ -138,8 +138,10 @@ function Checklist({
               return (
                 <li key={i.id}>
                   <CheckItem dense={dense} isSelected={checked.has(i.id)} onChange={(on) => onToggle(i.id, on)}>
-                    {amount && <b>{amount}</b>} {p.name}
-                    {note && `, ${note}`}
+                    <Struck>
+                      {amount && <b>{amount}</b>} {p.name}
+                      {note && `, ${note}`}
+                    </Struck>
                   </CheckItem>
                 </li>
               );

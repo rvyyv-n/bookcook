@@ -176,8 +176,26 @@ export function CheckItem({
       >
         <Icon name="check" size={dense ? 20 : 22} current className="opacity-0 group-data-[selected]:opacity-100" />
       </span>
-      <span className="min-w-0 flex-1 group-data-[selected]:line-through">{children}</span>
+      <span className="min-w-0 flex-1">{children}</span>
     </AriaCheckbox>
+  );
+}
+
+/**
+ * The words of a checked item: a line draws through them from left to right and they fade to muted.
+ * Inside a CheckItem. The line is a background, so it follows the text over wrapped lines.
+ */
+export function Struck({ children }: { children: ReactNode }) {
+  return (
+    <span
+      className={cx(
+        '[box-decoration-break:clone] bg-linear-to-r from-current to-current bg-position-[0_58%] bg-no-repeat [background-size:0%_2px]',
+        'transition-[background-size,color] duration-(--dur) ease-(--ease-out)',
+        'group-data-[selected]:text-ink-muted group-data-[selected]:[background-size:100%_2px]',
+      )}
+    >
+      {children}
+    </span>
   );
 }
 
