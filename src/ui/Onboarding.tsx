@@ -29,6 +29,8 @@ export function OnboardingFrame({
   centreSlot,
   right,
   wide = false,
+  stepKey,
+  direction,
   primary,
   children,
 }: {
@@ -39,6 +41,9 @@ export function OnboardingFrame({
   centreSlot: ReactNode;
   right: ReactNode;
   wide?: boolean;
+  /** The step's id, and which way it was reached from: the body slides in from that side. */
+  stepKey: string;
+  direction: 'next' | 'back' | null;
   primary: ReactNode;
   children: ReactNode;
 }) {
@@ -64,7 +69,17 @@ export function OnboardingFrame({
             centre && 'items-center text-center',
           )}
         >
-          {children}
+          <div
+            key={stepKey}
+            className={cx(
+              'flex w-full flex-col gap-6',
+              centre && 'items-center',
+              direction === 'next' && 'animate-step-next',
+              direction === 'back' && 'animate-step-back',
+            )}
+          >
+            {children}
+          </div>
           {desktop && <div className={cx('flex flex-wrap items-center gap-4 pt-2', centre && 'justify-center')}>{primary}</div>}
         </div>
         <div className={desktop ? 'flex-1' : 'flex-2'} />

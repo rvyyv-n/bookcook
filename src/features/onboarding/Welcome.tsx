@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useLocation, useNavigate, useSearchParams } from 'react-router';
 import { useIsDesktop } from '../../app/useMediaQuery';
 import { useSettings } from '../../db/hooks';
@@ -33,9 +33,16 @@ export function WelcomePage() {
   const [params] = useSearchParams();
   const from = params.get('from') === 'settings';
   const index = Math.max(0, STEPS.indexOf(params.get('step') as StepId));
-  const step = STEPS[index];
+  const step = STEPS[index] ?? STEPS[0];
   const config = skinConfig[skin];
   const heading = useRef<HTMLHeadingElement>(null);
+  // Which way the step was reached, for the slide.
+  const [seen, setSeen] = useState(index);
+  const [direction, setDirection] = useState<'next' | 'back' | null>(null);
+  if (index !== seen) {
+    setSeen(index);
+    setDirection(index > seen ? 'next' : 'back');
+  }
 
   const url = (i: number) => {
     const q = new URLSearchParams();
@@ -133,6 +140,8 @@ export function WelcomePage() {
     <OnboardingFrame
       desktop={desktop}
       wide={step === 'voice'}
+      stepKey={step}
+      direction={direction}
       field={config.cookSurface === 'field'}
       centre={config.detailAlign === 'center'}
       left={

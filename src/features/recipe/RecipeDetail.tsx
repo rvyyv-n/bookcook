@@ -333,11 +333,15 @@ function InHerWords({ transcript }: { transcript: string }) {
           <span className="flex items-center gap-1 text-ink-muted">
             <span className="group-data-[expanded]:hidden">{t.ui.common.show}</span>
             <span className="hidden group-data-[expanded]:inline">{t.ui.common.hide}</span>
-            <Icon name="collapse" className="shrink-0 rotate-180 transition-transform group-data-[expanded]:rotate-0" />
+            <Icon
+              name="collapse"
+              className="shrink-0 rotate-180 transition-transform duration-(--dur) ease-(--ease-out) group-data-[expanded]:rotate-0"
+            />
           </span>
         </AriaButton>
       </Heading>
-      <DisclosurePanel>
+      {/* The height opens and closes with the panel: --disclosure-panel-height is React Aria's. */}
+      <DisclosurePanel className="h-(--disclosure-panel-height) overflow-clip transition-[height] duration-(--dur) ease-(--ease-out)">
         <p className="type-handwritten rounded-b-[min(var(--radius-md),18px)] bg-sunk px-4.5 pt-3 pb-4 text-lg leading-[1.5]">
           {transcript}
         </p>
