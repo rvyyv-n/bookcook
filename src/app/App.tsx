@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
-import { CaptureSoonPage, NewRecipePage } from '../features/capture/NewRecipe';
+import { FromLinkPage } from '../features/capture/FromLink';
+import { NewRecipePage } from '../features/capture/NewRecipe';
 import { JustTalkPage } from '../features/capture/JustTalk';
 import { PasteItPage } from '../features/capture/PasteIt';
 import { TellItPage } from '../features/capture/TellIt';
@@ -74,8 +75,7 @@ const router = createBrowserRouter(
             { path: '/new', element: <NewRecipePage /> },
             { path: '/new/type/:draftId', element: <TypeItPage /> },
             { path: '/new/paste/:draftId', element: <PasteItPage /> },
-            // From a link (phase 8).
-            { path: '/new/:mode/:draftId', element: <CaptureSoonPage /> },
+            { path: '/new/link/:draftId', element: <FromLinkPage /> },
             { path: '/c', element: <CollectionsPage /> },
             { path: '/c/:id', element: <CollectionPage /> },
             { path: '/t', element: <TagsPage /> },

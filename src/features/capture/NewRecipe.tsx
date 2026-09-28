@@ -1,15 +1,13 @@
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useIsDesktop } from '../../app/useMediaQuery';
-import { createDraft, deleteDraft, patchDraft } from '../../db/drafts';
-import { useDraft, useSettings } from '../../db/hooks';
+import { createDraft } from '../../db/drafts';
+import { useSettings } from '../../db/hooks';
 import type { DraftMode } from '../../db/types';
 import { useT } from '../../i18n';
 import { speech } from '../../lib/speech';
-import { Button } from '../../ui/Button';
 import { ChoiceCard, QuietLink } from '../../ui/Capture';
 import type { IconName } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
-import { isBlankDraft } from '../editor/model';
 import { CookbookPage } from '../library/Cookbook';
 import { draftHref } from '../library/SpecialCards';
 
@@ -70,49 +68,5 @@ export function NewRecipePage() {
         </div>
       </Sheet>
     </>
-  );
-}
-
-/**
- * Tell it, Just talk and From a link come with voice capture and imports. Until then their drafts
- * open here, with a way to type the recipe instead.
- */
-export function CaptureSoonPage() {
-  const { mode, draftId } = useParams();
-  const t = useT();
-  const n = t.ui.newRecipe;
-  const navigate = useNavigate();
-  const draft = useDraft(draftId);
-  const leave = useLeave();
-  const title = mode === 'talk' ? n.talkTitle : mode === 'tell' || mode === 'link' ? n.choices[mode].title : n.title;
-
-  async function close() {
-    if (draft && isBlankDraft(draft.recipe, draft.ingredientLines ?? [])) await deleteDraft(draft.id);
-    leave();
-  }
-
-  async function typeInstead() {
-    if (!draftId) return;
-    await patchDraft(draftId, { mode: 'type' });
-    navigate(`/new/type/${draftId}`, { replace: true });
-  }
-
-  return (
-    <div className="flex min-h-dvh flex-col desk:min-h-full">
-      <div className="flex items-center pt-[max(1rem,env(safe-area-inset-top))] pr-5 pl-2 desk:px-7">
-        <Button variant="quiet" icon="close" onPress={() => void close()} className="px-[.8rem]">
-          {t.ui.common.close}
-        </Button>
-      </div>
-      <div className="flex max-w-[40rem] flex-col gap-2.5 px-5 pt-6 desk:px-16">
-        <h1 className="text-2xl leading-[1.1] tracking-[-0.015em]">{title}</h1>
-        <p className="text-ink-muted">{n.soon}</p>
-      </div>
-      <div className="px-4 pt-6 desk:px-16">
-        <Button variant="primary" size="XL" icon="keyboard" onPress={() => void typeInstead()} className="w-full desk:w-auto">
-          {n.typeInstead}
-        </Button>
-      </div>
-    </div>
   );
 }

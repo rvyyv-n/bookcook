@@ -90,6 +90,43 @@ export function Working({ icon, title, body }: { icon: IconName; title: string; 
   );
 }
 
+/** From a link, loading: a small spinner and "Reading the page…" over a picture and two skeleton lines. */
+export function LinkLoading({ children }: { children: ReactNode }) {
+  return (
+    <div role="status" className="flex flex-col gap-3.5 rounded-lg bg-surface p-4 shadow-paper">
+      <span className="flex items-center gap-3">
+        <span className="relative size-[2.2rem] shrink-0">
+          <Spinner />
+        </span>
+        <b>{children}</b>
+      </span>
+      <span aria-hidden className="aspect-video w-full rounded-sm bg-sunk" />
+      <span aria-hidden className="h-[1.1rem] w-3/4 rounded-[6px] bg-line" />
+      <span aria-hidden className="h-[1.1rem] w-1/2 rounded-[6px] bg-line" />
+    </div>
+  );
+}
+
+/** From a link, failed: on --danger-soft, why, and a way to Paste it instead. */
+export function LinkFailed({ title, body, action, onAction }: { title: string; body: string; action: string; onAction: () => void }) {
+  return (
+    <div role="alert" className="flex flex-col gap-3 rounded-lg bg-danger-soft p-4.5 text-ink">
+      <span className="flex items-center gap-2.5 text-lg font-bold text-danger">
+        <Icon name="failed" className="shrink-0" />
+        {title}
+      </span>
+      <span className="[text-wrap:pretty]">{body}</span>
+      <AriaButton
+        onPress={onAction}
+        className="flex min-h-14 items-center gap-1.5 self-start rounded-md bg-surface pr-4 pl-3 font-bold text-ink shadow-paper transition-transform duration-(--dur) data-[pressed]:scale-[.97]"
+      >
+        <Icon name="paste" className="shrink-0" />
+        {action}
+      </AriaButton>
+    </div>
+  );
+}
+
 /** "Or just talk freely": deliberately quieter than the four choices. */
 export function QuietLink({ children, onPress }: { children: ReactNode; onPress: () => void }) {
   return (

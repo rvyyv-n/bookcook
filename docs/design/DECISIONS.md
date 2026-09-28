@@ -83,3 +83,7 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 - **Spoken amounts count as a second amount** for "Check this" ("haldi in two tablespoons milk"), not only written ones.
 - **Just talk starts listening on arrival** (choosing it is the tap) and keeps listening through pauses. The clock counts only the time spent listening, and survives leaving and coming back.
 - **Just talk on desktop has no caption by the mic**, as in the mock; the clock says talking or paused, and the mic's name says what a tap does.
+- **From a link sits in the app shell**, like Paste it (its desktop mock uses the same layout).
+- **The import function is `/api/import?url=…`** (`functions/api/import.ts`, a Cloudflare Pages Function), or `VITE_IMPORT_URL` when it's deployed elsewhere. It only fetches public http(s) pages, reads at most 3 MB, and stores nothing. Where it isn't deployed, the app tries reading the page directly (a few sites allow it), then shows the failure state.
+- **A bad web address is a field error** ("That doesn't look like a web address"), not the page failure, which is kept for pages that can't be read.
+- **The recipe's picture isn't imported yet**: `imageUrl` would need fetching through the function to be kept offline.

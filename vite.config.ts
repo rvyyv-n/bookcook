@@ -1,13 +1,29 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import { importRecipe } from './functions/api/import';
+
+/** The From a link function (functions/api/import.ts) on the dev server, as Cloudflare Pages serves it. */
+const importFunction: Plugin = {
+  name: 'bookcook-import-function',
+  configureServer(server) {
+    server.middlewares.use('/api/import', (req, res) => {
+      void importRecipe(new URL(req.url ?? '', 'http://dev').searchParams.get('url')).then(async (r) => {
+        res.statusCode = r.status;
+        r.headers.forEach((value, key) => res.setHeader(key, value));
+        res.end(await r.text());
+      });
+    });
+  },
+};
 
 export default defineConfig({
   // The GitHub Pages build sets BASE_PATH=/bookcook/; everywhere else the app is served from the root.
   base: process.env.BASE_PATH ?? '/',
   plugins: [
     react(),
+    importFunction,
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',

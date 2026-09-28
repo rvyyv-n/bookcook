@@ -6,7 +6,7 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 ## Where the app is now
 
-A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by typing them or pasting them in, and edit any recipe; drafts save as you go.
+A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by telling them (a guided interview, or free talk), typing them, pasting them in or importing them from a link, and edit any recipe; drafts save as you go.
 
 It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions.
 
@@ -65,10 +65,10 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 ### Phase 8: Voice capture and imports (handoff step 5)
 
-- [ ] Tell it: one question at a time, BigMicButton, live transcript, parsed rows, hands-free, undo, the mic-denied and unsupported states, the story prompt with a voice note.
-- [ ] Just talk: free talk with an elapsed timer, then Review.
+- [x] Tell it: one question at a time, BigMicButton, live transcript, parsed rows, hands-free, undo, the mic-denied and unsupported states, the story prompt with a voice note.
+- [x] Just talk: free talk with an elapsed timer, then Review.
 - [x] Paste it: paste, "Tidy it up", then Review.
-- [ ] From a link: a small serverless function that fetches the page, schema.org parsing, the failure state that points to Paste it.
+- [x] From a link: a small serverless function that fetches the page (`functions/api/import.ts`, also served by `npm run dev`), schema.org parsing, the failure state that points to Paste it. It needs Cloudflare Pages to run in production (phase 12); on GitHub Pages every link ends in the failure state.
 
 ### Phase 9: Grocery, requests, settings, print (handoff step 6)
 

@@ -22,6 +22,8 @@ const page = ctx.pages()[0] ?? (await ctx.newPage());
 const logs = [];
 page.on('console', (m) => (m.type() === 'error' || m.type() === 'warning') && logs.push(`${m.type()}: ${m.text()}`));
 page.on('pageerror', (e) => logs.push(`pageerror: ${e.message}`));
+// "route": {"match":"**/api/import**","json":{…},"status":200} answers a request without the network.
+if (plan.route) await page.route(plan.route.match, (r) => r.fulfill({ status: plan.route.status ?? 200, json: plan.route.json }));
 await page.goto(base + (plan.path ?? '/'));
 if (plan.reset) {
   await page.evaluate(async () => {

@@ -390,9 +390,6 @@ export const en = {
       },
       noSpeech: 'This browser can’t hear you. Try Chrome or Edge.',
       justTalk: 'Or just talk freely',
-      talkTitle: 'Just talk',
-      soon: 'This way of adding a recipe is coming in the next update. You can type it for now.',
-      typeInstead: 'Type it instead',
     },
     capture: {
       exit: 'Exit',
@@ -535,6 +532,19 @@ export const en = {
       clipboardFailed: 'Couldn’t read the clipboard. Press and hold in the box, then choose Paste.',
       nothingFound: 'We couldn’t find ingredients or steps in that. Is it the whole recipe?',
       ctrlEnter: 'Ctrl+Enter',
+    },
+    link: {
+      title: 'From a link',
+      helper: 'Paste the web address of a recipe page.',
+      label: 'Web address',
+      placeholder: 'recipesite.com/chicken-biryani',
+      get: 'Get recipe',
+      reading: 'Reading the page…',
+      failed: 'We couldn’t read that page',
+      failedBody: 'Some sites hide their recipes. Copy the recipe text and try Paste it instead.',
+      pasteIt: 'Paste it',
+      tryAgain: 'Try again',
+      badUrl: 'That doesn’t look like a web address. Try something like recipesite.com/biryani.',
     },
     shortcuts: {
       items: [
