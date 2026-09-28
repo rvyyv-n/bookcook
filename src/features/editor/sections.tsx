@@ -12,6 +12,7 @@ import { segmentStep } from '../../lib/parse/segments';
 import { formatClock, formatDuration, stepTimer } from '../../lib/parse/timers';
 import type { ParseCheck } from '../../lib/parse/types';
 import { compressImage } from '../../lib/platform/image';
+import { isNative } from '../../lib/platform/isNative';
 import { canRecord, startRecording, type Recording } from '../../lib/platform/recorder';
 import { AudioPlayer } from '../../ui/AudioPlayer';
 import { Button } from '../../ui/Button';
@@ -684,7 +685,7 @@ export function useVoiceNote(onSaved: (id: string) => void) {
       setNow(at);
       setRec({ recording, startedAt: at });
     } catch {
-      toast.show({ message: t.ui.editor.micBlocked, timeout: 8000 });
+      toast.show({ message: isNative() ? t.ui.editor.micBlockedNative : t.ui.editor.micBlocked, timeout: 8000 });
     }
   }
   return { available: canRecord(), recording: !!rec, elapsed: rec ? Math.max(0, (now - rec.startedAt) / 1000) : 0, toggle };

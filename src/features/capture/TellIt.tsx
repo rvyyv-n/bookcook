@@ -36,6 +36,7 @@ import { isBlankDraft } from '../editor/model';
 import { useLeave } from './NewRecipe';
 import { advance, closeOpen, hear, isShortStage, isTellStage, stageNumber, TELL_STAGES, type TellStage, type TellState } from './tell';
 import { useListen } from './useListen';
+import { useMicCopy } from './micCopy';
 
 const TOTAL = TELL_STAGES.length;
 
@@ -166,6 +167,7 @@ export function TellItPage() {
 
   // What was heard. Kept in a ref so the recogniser's callbacks always see the latest state.
   const onFinal = useRef<(text: string) => void>(() => {});
+  const micCopy = useMicCopy();
   const listen = useListen({
     onFinal: (text) => onFinal.current(text),
     onError: (e) => e === 'network' && toast.show({ message: c.offline, timeout: 8000 }),
@@ -341,7 +343,7 @@ export function TellItPage() {
   const mic = blocked ? (
     <MicBlocked
       title={c.blocked}
-      steps={c.blockedSteps}
+      steps={micCopy.blockedSteps}
       retry={c.tryAgain}
       typeInstead={c.typeInstead}
       onRetry={() => {
@@ -351,7 +353,7 @@ export function TellItPage() {
       onType={() => void typeInstead()}
     />
   ) : unsupported ? (
-    <NoSpeech title={c.noSpeechTitle} body={c.noSpeechBody} action={c.typeIt} onType={() => void typeInstead()} />
+    <NoSpeech title={micCopy.noSpeechTitle} body={micCopy.noSpeechBody} action={c.typeIt} onType={() => void typeInstead()} />
   ) : (
     <BigMicButton
       state={micState}

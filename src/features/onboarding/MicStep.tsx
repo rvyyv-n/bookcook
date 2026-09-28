@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type Ref } from 'react';
 import { useT } from '../../i18n';
 import { isNative } from '../../lib/platform/isNative';
+import { useMicCopy } from '../capture/micCopy';
 import { micState, requestMic, type MicState } from '../../lib/platform/micPermission';
 import { OnboardingHeading, StatusDisc, StepsCard } from '../../ui/Onboarding';
 
@@ -51,12 +52,22 @@ export type Mic = ReturnType<typeof useMic>;
 export function MicStep({ heading, mic }: { heading: Ref<HTMLHeadingElement>; mic: Mic }) {
   const t = useT();
   const o = t.ui.onboarding;
+  const micCopy = useMicCopy();
+  const native = isNative();
   const { state } = mic;
   const denied = state === 'denied';
   const unsupported = state === 'unsupported';
   const granted = state === 'granted';
-  const title = granted ? o.micGranted : denied ? t.ui.capture.blocked : unsupported ? t.ui.capture.noSpeechTitle : o.micTitle;
-  const body = granted ? o.micGrantedBody : denied ? o.micDeniedBody : unsupported ? o.micUnsupportedBody : o.micBody;
+  const title = granted ? o.micGranted : denied ? t.ui.capture.blocked : unsupported ? micCopy.noSpeechTitle : o.micTitle;
+  const body = granted
+    ? o.micGrantedBody
+    : denied
+      ? o.micDeniedBody
+      : unsupported
+        ? native
+          ? o.micUnsupportedBodyNative
+          : o.micUnsupportedBody
+        : o.micBody;
   return (
     <>
       {state && (
@@ -71,7 +82,7 @@ export function MicStep({ heading, mic }: { heading: Ref<HTMLHeadingElement>; mi
         </OnboardingHeading>
         {state && <p className="text-lg text-pretty">{body}</p>}
       </div>
-      {denied && <StepsCard steps={isNative() ? o.blockedStepsNative : t.ui.capture.blockedSteps} />}
+      {denied && <StepsCard steps={micCopy.blockedSteps} />}
       <p role="status" className="sr-only">
         {mic.announce}
       </p>

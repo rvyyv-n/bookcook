@@ -13,6 +13,7 @@ import { useToast } from '../../ui/Toast';
 import { draftFromParsed } from '../editor/model';
 import { useLeave } from './NewRecipe';
 import { useListen } from './useListen';
+import { useMicCopy } from './micCopy';
 
 /** How long "Sorting it out…" stays up at least, so it reads as a step rather than a flash. */
 const SORT_MS = 500;
@@ -66,6 +67,7 @@ export function JustTalkPage() {
     // `talked` reads refs only.
   }, [draftId, draft]);
 
+  const micCopy = useMicCopy();
   const listen = useListen({
     onFinal: (text) => {
       const next = live.current.transcript ? `${live.current.transcript} ${text.trim()}` : text.trim();
@@ -172,7 +174,7 @@ export function JustTalkPage() {
     listen.status === 'denied' ? (
       <MicBlocked
         title={c.blocked}
-        steps={c.blockedSteps}
+        steps={micCopy.blockedSteps}
         retry={c.tryAgain}
         typeInstead={c.typeInstead}
         onRetry={() => {
@@ -182,7 +184,7 @@ export function JustTalkPage() {
         onType={() => void typeInstead()}
       />
     ) : listen.status === 'unsupported' ? (
-      <NoSpeech title={c.noSpeechTitle} body={c.noSpeechBody} action={c.typeIt} onType={() => void typeInstead()} />
+      <NoSpeech title={micCopy.noSpeechTitle} body={micCopy.noSpeechBody} action={c.typeIt} onType={() => void typeInstead()} />
     ) : (
       <BigMicButton state={micState} label={micLabel} ariaLabel={micAria} onToggle={toggle} side={desktop} hideLabel={desktop} />
     );

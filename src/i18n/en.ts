@@ -390,6 +390,7 @@ export const en = {
         link: { title: 'From a link', line: 'Import from a recipe website.' },
       },
       noSpeech: 'This browser can’t hear you. Try Chrome or Edge.',
+      noSpeechNative: 'This phone can’t hear you. Its speech service is off or missing.',
       justTalk: 'Or just talk freely',
     },
     capture: {
@@ -411,9 +412,17 @@ export const en = {
       keys: 'Space to talk · Esc to exit',
       blocked: 'The mic is blocked',
       blockedSteps: ['Tap the lock by the web address.', 'Turn on Microphone.', 'Come back and tap Try again.'],
+      blockedStepsNative: [
+        'Open your phone’s Settings.',
+        'Go to Apps, then Bookcook, then Permissions.',
+        'Turn on Microphone, then come back and tap Try again.',
+      ],
       tryAgain: 'Try again',
       noSpeechTitle: 'This browser can’t hear you',
       noSpeechBody: 'Open Bookcook in Chrome or Edge to talk. Or type it now, the same questions in the same order.',
+      noSpeechTitleNative: 'This phone can’t hear you',
+      noSpeechBodyNative:
+        'Its speech service is off or missing. Turn on Google’s speech service in your phone’s settings to talk, or type it now, the same questions in the same order.',
       typeIt: 'Type it',
       offline: 'Listening needs the internet in this browser. Check your connection, then tap the mic again.',
       soFar: 'So far',
@@ -496,6 +505,7 @@ export const en = {
       noteSaved: 'Voice note saved.',
       noteReplaced: 'Voice note replaced',
       micBlocked: 'The microphone is blocked. Allow it in your browser’s site settings, then try again.',
+      micBlockedNative: 'The microphone is blocked. Turn it on for Bookcook in your phone’s settings, then try again.',
       voiceNote: 'Voice note',
       keys: { enter: 'Enter', nextLine: 'for next line', save: 'Ctrl+S', toSave: 'to save', section: 'End a line with “:” for a section' },
       saved: 'Recipe saved.',
@@ -692,12 +702,8 @@ export const en = {
       micGranted: 'Bookcook can hear you',
       micGrantedBody: 'Tap any mic button to talk.',
       micDeniedBody: 'You can still type everything. To talk later, turn the mic on:',
-      blockedStepsNative: [
-        'Open your phone’s Settings.',
-        'Go to Apps, then Bookcook, then Permissions.',
-        'Turn on Microphone, then come back.',
-      ],
       micUnsupportedBody: 'You can still type every recipe. Chrome and Edge can hear you.',
+      micUnsupportedBodyNative: 'You can still type every recipe. To talk, turn on Google’s speech service in your phone’s settings.',
       finish: 'Open my cookbook',
     },
     settings: {
