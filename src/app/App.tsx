@@ -5,6 +5,7 @@ import { JustTalkPage } from '../features/capture/JustTalk';
 import { PasteItPage } from '../features/capture/PasteIt';
 import { TellItPage } from '../features/capture/TellIt';
 import { CookModePage } from '../features/cook/CookMode';
+import { firstRunLoader } from '../features/onboarding/firstRun';
 import { WelcomePage } from '../features/onboarding/Welcome';
 import { PrintPage } from '../features/print/PrintPage';
 import { GroceryPage } from '../features/grocery/GroceryPage';
@@ -60,6 +61,8 @@ const router = createBrowserRouter(
     {
       element: <Root />,
       errorElement: <RouteError />,
+      // The first-run check reads the database before drawing, so there's nothing to show meanwhile.
+      HydrateFallback: () => null,
       children: [
         // Full-screen, no app shell: cook mode, Tell it, Just talk, Check your recipe and the welcome.
         { path: '/r/:id/cook', element: <CookModePage /> },
@@ -71,7 +74,7 @@ const router = createBrowserRouter(
         {
           element: <AppShell />,
           children: [
-            { path: '/', element: <CookbookPage /> },
+            { path: '/', element: <CookbookPage />, loader: firstRunLoader },
             { path: '/r/:id', element: <RecipeDetailPage /> },
             { path: '/r/:id/edit', element: <EditRecipePage /> },
             { path: '/new', element: <NewRecipePage /> },

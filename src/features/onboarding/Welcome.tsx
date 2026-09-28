@@ -46,18 +46,20 @@ export function WelcomePage() {
   const next = () => navigate(url(index + 1));
   // Back goes to the step before it in history; a page opened on a later step has none, so it steps back in place.
   const back = () => (location.key === 'default' ? navigate(url(index - 1), { replace: true }) : navigate(-1));
-  const leave = () => {
-    if (!from) void setSetting('onboarded', true);
-    navigate(from ? '/settings' : '/', { replace: true });
+  // Onboarded is stored before going on: the gate on / reads it, and would send them back here.
+  const leave = async () => {
+    if (from) return navigate('/settings', { replace: true });
+    await setSetting('onboarded', true);
+    navigate('/', { replace: true, state: { welcomed: true } });
   };
-  const restore = useRestore(leave);
+  const restore = useRestore(() => void leave());
   const mic = useMic(step === 'mic');
 
   useEffect(() => heading.current?.focus(), [index]);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       // A sheet (the restore choice) takes Escape for itself.
-      if (e.key === 'Escape' && !e.defaultPrevented && !document.querySelector('[role="dialog"]')) leave();
+      if (e.key === 'Escape' && !e.defaultPrevented && !document.querySelector('[role="dialog"]')) void leave();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -84,7 +86,7 @@ export function WelcomePage() {
       ? large(o.next, next, { iconEnd: 'next' })
       : asking
         ? large(o.allowMic, () => void mic.allow(), { icon: 'mic', disabled: mic.busy })
-        : large(o.finish, leave, { disabled: mic.state === null });
+        : large(o.finish, () => void leave(), { disabled: mic.state === null });
   const hint = desktop && index < STEPS.length - 1 && <span className="text-[0.8333rem] text-ink-muted">{o.skipHint}</span>;
 
   let body: ReactNode = null;
@@ -115,7 +117,7 @@ export function WelcomePage() {
       <>
         <MicStep heading={heading} mic={mic} />
         {asking && (
-          <Button variant="quiet" onPress={leave} className="w-fit">
+          <Button variant="quiet" onPress={() => void leave()} className="w-fit">
             {o.notNow}
           </Button>
         )}
@@ -151,7 +153,7 @@ export function WelcomePage() {
       }
       right={
         step !== 'mic' && (
-          <Button variant="quiet" onPress={leave}>
+          <Button variant="quiet" onPress={() => void leave()}>
             {o.skip}
           </Button>
         )
