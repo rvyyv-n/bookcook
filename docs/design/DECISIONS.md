@@ -1,6 +1,6 @@
 # Decisions on the design handoff
 
-The other files in this folder are copied verbatim from the design handoff. The full package (the HTML prototypes and the screenshots) is in `design_handoff/` for reference; paths in the copied docs such as `design/*.dc.html` and `screenshots/` refer to that folder. Its stock photo was removed: the example recipes use pixel-art pictures instead.
+The other files in this folder are copied verbatim from the design handoff. The rest of the package (the HTML prototypes and the screenshots) isn't kept in the repo; paths in the copied docs such as `design/*.dc.html` and `screenshots/` refer to it. Its stock photo was removed: the example recipes use pixel-art pictures instead.
 
 ## Design
 

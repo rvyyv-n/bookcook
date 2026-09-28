@@ -12,8 +12,10 @@ android/build
 .DS_Store
 *.log
 shots
+# The design handoff as delivered (prototypes and screenshots); the parts the app uses are in docs/design and src/design
+design_handoff
 
-# Local tool and editor settings
+# Local editor settings
 .vscode/
 .idea/
 .env
