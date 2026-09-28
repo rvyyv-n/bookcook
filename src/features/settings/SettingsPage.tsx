@@ -155,6 +155,7 @@ export function SettingsPage() {
     <div className="flex flex-col">
       {desktop && <RowButton icon="keyboard" label={ts.shortcuts} onPress={() => setSheet('shortcuts')} />}
       <RowButton icon="print" label={ts.printCookbook} href="/print" />
+      <RowButton icon="cookbook" label={ts.showWelcome} href="/welcome?from=settings" />
     </div>
   );
 
