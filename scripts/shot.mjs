@@ -1,4 +1,5 @@
 // Dev helper: screenshot the running app with Playwright.
+// "fakeSpeech": true swaps in a scripted recogniser (scripts/fake-speech.js): {"eval":"__say('two onions')"}.
 // node scripts/shot.mjs '{"path":"/","width":390,"height":844,"theme":"dark","textSize":"huge","settings":{"skin":"heirloom"},"actions":[{"click":"text=Try an example"}],"out":"shots/x.png"}'
 import { chromium } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
@@ -13,7 +14,10 @@ const ctx = await chromium.launchPersistentContext(join(tmpdir(), 'bookcook-shot
   colorScheme: plan.theme === 'dark' ? 'dark' : 'light',
   reducedMotion: 'reduce',
   permissions: ['microphone'],
+  // CHROMIUM=/path/to/chrome when Playwright's own browser isn't installed.
+  ...(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {}),
 });
+if (plan.fakeSpeech) await ctx.addInitScript({ path: new URL('./fake-speech.js', import.meta.url).pathname });
 const page = ctx.pages()[0] ?? (await ctx.newPage());
 const logs = [];
 page.on('console', (m) => (m.type() === 'error' || m.type() === 'warning') && logs.push(`${m.type()}: ${m.text()}`));

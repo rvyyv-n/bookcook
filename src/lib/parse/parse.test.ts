@@ -280,6 +280,9 @@ describe('schema.org import', () => {
 describe('checks for Review', () => {
   it('flags a second amount hiding in the line', () => {
     expect(checkIngredient('a pinch saffron in 2 tbsp warm milk')).toEqual({ reason: 'twoAmounts' });
+    expect(checkIngredient('a teaspoon of haldi in two tablespoons milk')).toEqual({ reason: 'twoAmounts' });
+    expect(checkIngredient('one onion, finely chopped')).toBeUndefined();
+    expect(checkIngredient('a cup of rice, washed a few times')).toBeUndefined();
     expect(checkIngredient('1 (400 g) can chopped tomatoes')).toBeUndefined();
     expect(checkIngredient('3 cups basmati rice, washed and soaked')).toBeUndefined();
   });

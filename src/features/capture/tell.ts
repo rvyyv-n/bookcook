@@ -2,7 +2,7 @@ import { newId } from '../../db/db';
 import type { Ingredient, Recipe, Step } from '../../db/types';
 import { en } from '../../i18n/en';
 import { checkIngredient } from '../../lib/parse/check';
-import { normalizeUtterance, parseCommand, splitOnSeparator, type Command } from '../../lib/parse/commands';
+import { parseCommand, splitOnSeparator, type Command } from '../../lib/parse/commands';
 import { parseIngredient } from '../../lib/parse/ingredient';
 import { findNumber } from '../../lib/parse/numbers';
 import { cleanStep } from '../../lib/parse/steps';
@@ -90,6 +90,11 @@ function closeStep(state: TellState): { state: TellState; id?: string } {
   const timerSeconds = stepTimer(text);
   const step: Step = { id: newId(), text, ...(timerSeconds ? { timerSeconds } : {}) };
   return { state: { ...state, open: undefined, recipe: { ...state.recipe, steps: [...(state.recipe.steps ?? []), step] } }, id: step.id };
+}
+
+/** The same state with the step being told written down (before leaving Tell it). */
+export function closeOpen(state: TellState): TellState {
+  return closeStep(state).state;
 }
 
 /** Close anything still open and move to the next question (or Review after the last). */
@@ -207,11 +212,6 @@ export function hear(state: TellState, text: string): Heard {
       };
     }
   }
-}
-
-/** Whether a phrase is just "done" (so the live transcript can show it as understood). */
-export function isCommandPhrase(text: string): boolean {
-  return !!normalizeUtterance(text) && parseCommand(text) !== null;
 }
 
 /** 1-based position of a stage, for "Ingredients · step 4 of 7". */

@@ -92,7 +92,8 @@ export function isBlankDraft(recipe: Partial<Recipe>, lines: IngredientLine[]): 
     !recipe.tips?.trim() &&
     !recipe.story?.some((s) => s.answer.trim() || s.audioId) &&
     !recipe.photoIds?.length &&
-    !recipe.voiceNoteIds?.length
+    !recipe.voiceNoteIds?.length &&
+    !recipe.tipsAudioId
   );
 }
 

@@ -69,3 +69,15 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 
 - **The desktop editor has a Tags pill** beside Serves, Prep and Cook, which the mock leaves out, so tags can be edited on desktop too.
 - **Desktop steps have Add photo**, as on the phone, though the desktop mock draws the steps without it.
+
+## Voice capture and imports
+
+- **Tell it is full screen**, without the app shell, as in the mocks.
+- **Short answers move on by themselves.** The name, whose recipe and servings are one phrase each, so hearing one goes to the next question. Answers so far show as cards under the mic, and Undo last (or saying "undo") goes back.
+- **Every question has a Next button** (Skip while it's unanswered), so each can be finished by touch as well as by saying "next" or "done". The mocks only draw Skip and Done on the last question.
+- **Ingredients are one per phrase; steps run until "next".** A pause ends an ingredient, but a step can take several breaths, so it stays open (ringed in the accent) until "next". "For the marinade" starts a section.
+- **Hands-free is off at first** (tap to talk is the reliable default). It's a `role="switch"`, drawn as a small toggle inside the control.
+- **The questions are spoken** when "Speak the questions" is on, and the mic pauses while they are.
+- **The story is recorded while the mic listens**, so it's "Kept in your voice". The tips voice note is `tipsAudioId`, recorded with Record a voice note (which pauses the mic).
+- **Everything heard is kept as "In her words"**, one phrase per line, leaving out the commands.
+- **Spoken amounts count as a second amount** for "Check this" ("haldi in two tablespoons milk"), not only written ones.

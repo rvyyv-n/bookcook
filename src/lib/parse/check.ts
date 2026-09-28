@@ -1,15 +1,24 @@
 import { parseIngredient } from './ingredient';
+import { readQuantity } from './numbers';
 import { readUnit } from './units';
 import type { ParseCheck, ParsedIngredient } from './types';
 
 /** A written amount with a unit after it ("2 tbsp", "400 g"). */
 const AMOUNT = /(?<![\p{L}\p{N}])(?:\d+(?:[.,/]\d+)?|[½¼¾⅓⅔⅛])\s*/gu;
 
+/** A spoken amount ("two tablespoons"), as heard in Tell it. "a" and "an" alone don't count. */
+const SPOKEN = /(?<![\p{L}\p{N}])(?!(?:a|an)\b)\p{L}/gu;
+
 function hasAmount(text: string): boolean {
   AMOUNT.lastIndex = 0;
   let m: RegExpExecArray | null;
   while ((m = AMOUNT.exec(text))) {
     if (readUnit(text.slice(m.index + m[0].length))) return true;
+  }
+  SPOKEN.lastIndex = 0;
+  while ((m = SPOKEN.exec(text))) {
+    const q = readQuantity(text.slice(m.index));
+    if (q && readUnit(text.slice(m.index + q.length).trimStart())) return true;
   }
   return false;
 }

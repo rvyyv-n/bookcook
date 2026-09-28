@@ -655,7 +655,7 @@ export function StepsEditor({ ed, ingredients, dense = false }: { ed: EditorApi;
 // Story and tips
 
 /** Record a voice note: start, the running time, stop; the note is stored and handed to `onSaved`. */
-function useVoiceNote(onSaved: (id: string) => void) {
+export function useVoiceNote(onSaved: (id: string) => void) {
   const t = useT();
   const toast = useToast();
   const [rec, setRec] = useState<{ recording: Recording; startedAt: number } | null>(null);
