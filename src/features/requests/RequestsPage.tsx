@@ -48,7 +48,7 @@ function RemoveButton({ request }: { request: RecipeRequest }) {
   );
 }
 
-/** Someone wants this from you: "Rayyan would love to learn · 3 days ago", then Tell it now (or Continue a draft). */
+/** Someone wants this from you: "Sam would love to learn · 3 days ago", then Tell it now (or Continue a draft). */
 function IncomingCard({ request, draft }: { request: RecipeRequest; draft?: Draft }) {
   const t = useT();
   const tr = t.ui.requests;

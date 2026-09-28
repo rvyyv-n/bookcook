@@ -5,7 +5,7 @@ import { readRecipeLink, readRequestLink, recipeLink, requestLink } from './shar
 describe('request links', () => {
   it('round-trips a request, accents and quotes included', () => {
     const link = requestLink(
-      { id: 'r1', title: 'Nani’s nihari', from: 'Rayyan', note: 'The one from “Eid” 🍲' },
+      { id: 'r1', title: 'Nani’s nihari', from: 'Sam', note: 'The one from “Eid” 🍲' },
       'https://x.dev',
       '/bookcook/',
     );
@@ -13,7 +13,7 @@ describe('request links', () => {
     expect(readRequestLink(new URL(link).hash)).toEqual({
       id: 'r1',
       title: 'Nani’s nihari',
-      from: 'Rayyan',
+      from: 'Sam',
       note: 'The one from “Eid” 🍲',
     });
   });

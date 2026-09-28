@@ -44,7 +44,7 @@ function Asker({ request }: { request: RecipeRequest }) {
   return <i className="type-display">{request.requestedBy || t.ui.library.someone}</i>;
 }
 
-/** "Rayyan would love to learn / Nihari / Tell it", on --accent-soft. */
+/** "Sam would love to learn / Nihari / Tell it", on --accent-soft. */
 export function RequestCard({ request }: { request: RecipeRequest }) {
   const t = useT();
   const tellIt = useTellIt();

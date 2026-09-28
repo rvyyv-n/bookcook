@@ -178,12 +178,12 @@ Full-screen, readable from 1–2 metres. The root has `data-surface="field"` in 
 ### 9. Cookbook (home) — `/`
 - **Phone:** "Good evening" (display 3xl), then a search field with a Speak button, and collection chips in a horizontally scrolling row (All · Mom's classics · Eid · Quick weeknights; nowrap, 56px, selected = ink). Below them:
   - **DraftCard** (`--sunk`): "Continue your draft" / **Chicken Karahi** / "Started 2 days ago" / an ink **Continue** button.
-  - **RequestCard** (`--accent-soft`): "*Rayyan* would love to learn" / **Nihari** / **Tell it**.
+  - **RequestCard** (`--accent-soft`): "*Sam* would love to learn" / **Nihari** / **Tell it**.
   - "All recipes · 5" with a **Recent** sort button, then **2-column** RecipeCards: a 4:3 photo (or a striped placeholder), the title in display lg, "Mom · 1 hr 45 min", and "Made 12 times" or "Based on Mom's Pasta".
 
   The whole card is one link.
 - **Empty:** the eyebrow "Your cookbook is empty", "Every family has a recipe worth keeping.", a helper line, and **Let's save your first recipe**.
-- **Search, no results:** "No “nihari” here yet". Because an open request matches, it says "Rayyan already asked for it…" with **Tell it** and **Ask for it**.
+- **Search, no results:** "No “nihari” here yet". Because an open request matches, it says "Sam already asked for it…" with **Tell it** and **Ask for it**.
 - **Desktop:** the three panes. The list pane has the greeting, a search field ("/" hint), wrapping chips, a combined request-and-draft card, and 64px-thumbnail rows. The selected row is surface with a shadow. The detail pane shows the recipe.
 
 ### 10. Grocery — `/grocery`
