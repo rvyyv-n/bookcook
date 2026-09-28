@@ -482,7 +482,7 @@ export function TellItPage() {
       <CaptureControl icon="keyboard" stacked={!desktop} onPress={() => void typeInstead()}>
         {c.typeInstead}
       </CaptureControl>
-      {desktop && <span className="ml-auto self-center text-[0.8333rem] whitespace-nowrap text-ink-muted">{c.keys}</span>}
+      {desktop && <span className="ml-auto self-center text-[0.875rem] whitespace-nowrap text-ink-muted">{c.keys}</span>}
     </div>
   );
 

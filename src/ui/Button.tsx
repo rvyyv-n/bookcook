@@ -31,8 +31,8 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const sizes: Record<ButtonSize, string> = {
-  L: 'min-h-14 gap-2 px-[1rem]',
-  XL: 'min-h-16 gap-[.6rem] px-[1.4rem] text-lg',
+  L: 'min-h-[3.5rem] gap-2 px-[1rem]',
+  XL: 'min-h-[4rem] gap-[.6rem] px-[1.4rem] text-lg',
 };
 
 const iconSize: Record<ButtonSize, string> = { L: '1.3333rem', XL: '1.6rem' };

@@ -42,7 +42,7 @@ export function Sidebar({
           href={it.href}
           aria-current={it.current ? 'page' : undefined}
           className={cx(
-            'flex min-h-14 items-center gap-2.5 rounded-sm px-3 text-ink no-underline data-[focus-visible]:outline-offset-[-3px]',
+            'flex min-h-[3.5rem] items-center gap-2.5 rounded-sm px-3 text-ink no-underline data-[focus-visible]:outline-offset-[-3px]',
             it.current ? 'bg-surface font-bold shadow-paper' : 'data-[hovered]:bg-line',
           )}
         >

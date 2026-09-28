@@ -94,7 +94,7 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
       <AriaButton
         key={a.id}
         onPress={a.onPress}
-        className={cx('inline-flex min-h-16 items-center gap-1.5 rounded-md pr-4 pl-[.7rem] font-bold whitespace-nowrap', outlined)}
+        className={cx('inline-flex min-h-[4rem] items-center gap-1.5 rounded-md pr-4 pl-[.7rem] font-bold whitespace-nowrap', outlined)}
       >
         <Icon name={a.icon} className="shrink-0" />
         {a.short}
@@ -112,7 +112,7 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
           <AriaButton
             key={a.id}
             onPress={a.onPress}
-            className={cx('flex min-h-14 items-center gap-2 rounded-md px-2.5 py-1.5 text-left leading-[1.15] font-bold', outlined)}
+            className={cx('flex min-h-[3.5rem] items-center gap-2 rounded-md px-2.5 py-1.5 text-left leading-[1.15] font-bold', outlined)}
           >
             <Icon name={a.icon} className="shrink-0" />
             {a.label}
@@ -121,7 +121,7 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
           <AriaButton
             key={a.id}
             onPress={a.onPress}
-            className="flex min-h-14 items-center gap-3 border-b border-line px-1 text-left data-[hovered]:bg-sunk"
+            className="flex min-h-[3.5rem] items-center gap-3 border-b border-line px-1 text-left data-[hovered]:bg-sunk"
           >
             <Icon name={a.icon} className="shrink-0 text-accent-text" />
             <span className="flex-1 font-semibold">{a.label}</span>
@@ -132,9 +132,9 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
             key={a.id}
             onPress={a.onPress}
             aria-label={a.label}
-            className="group flex min-h-20 flex-col items-center gap-1.5 text-center text-[min(var(--text-sm),16px)] leading-[1.15] font-bold"
+            className="group flex min-h-20 flex-col items-center gap-1.5 text-center text-[min(0.875rem,16px)] leading-[1.15] font-bold"
           >
-            <span className="grid size-14 place-items-center rounded-full bg-(--control-fill) transition-colors group-data-[hovered]:bg-(--control-fill-hover)">
+            <span className="grid size-[3.5rem] place-items-center rounded-full bg-(--control-fill) transition-colors group-data-[hovered]:bg-(--control-fill-hover)">
               <Icon name={a.icon} />
             </span>
             {a.short}
@@ -214,7 +214,7 @@ function BasedOn({ recipe }: { recipe: Recipe }) {
   return (
     <AriaLink
       href={`/r/${original.id}`}
-      className="flex min-h-16 items-center gap-3 rounded-[min(var(--radius-md),18px)] bg-sunk px-3.5 py-2.5 text-ink no-underline data-[hovered]:bg-line"
+      className="flex min-h-[4rem] items-center gap-3 rounded-[min(var(--radius-md),18px)] bg-sunk px-3.5 py-2.5 text-ink no-underline data-[hovered]:bg-line"
     >
       <Icon name="myVersion" className="shrink-0 text-accent-text" />
       <span className="flex-1">
@@ -324,7 +324,7 @@ function InHerWords({ transcript }: { transcript: string }) {
       <Heading>
         <AriaButton
           slot="trigger"
-          className="flex min-h-16 w-full items-center justify-between gap-2.5 rounded-[min(var(--radius-md),18px)] bg-sunk px-4 font-bold group-data-[expanded]:rounded-b-none"
+          className="flex min-h-[4rem] w-full items-center justify-between gap-2.5 rounded-[min(var(--radius-md),18px)] bg-sunk px-4 font-bold group-data-[expanded]:rounded-b-none"
         >
           <span className="flex items-center gap-2.5">
             <Icon name="transcript" className="shrink-0" />

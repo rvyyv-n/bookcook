@@ -263,7 +263,7 @@ export function PrintPage() {
                 options={(['letter', 'a4'] as const).map((id) => ({ id, label: tp.papers[id] }))}
               />
               {coverPhoto && (
-                <Switch isSelected={withPhoto} onChange={setWithPhoto} className="min-h-14 border-b-0">
+                <Switch isSelected={withPhoto} onChange={setWithPhoto} className="min-h-[3.5rem] border-b-0">
                   {tp.coverPhoto}
                 </Switch>
               )}
@@ -274,28 +274,25 @@ export function PrintPage() {
           )}
         </div>
       </header>
-      {recipes.length === 0 ? (
-        <p className="mx-auto max-w-xl px-5 py-12 text-lg">{tp.empty}</p>
-      ) : (
-        // Wide enough for a sheet: on a phone the preview scrolls sideways (the paper doesn't reflow).
-        <div className="overflow-x-auto print:overflow-visible">
-          <div
-            ref={ref}
-            aria-label={tp.preview}
-            role="region"
-            className="flex w-max min-w-full flex-col gap-10 px-5 py-10 print:block print:w-auto print:p-0"
-          >
-            <Cover title={title} photoId={withPhoto ? coverPhoto : undefined} />
-            <Contents recipes={recipes} pages={pages} titles={titles} />
-            {recipes.map((r) => (
-              <div key={r.id} data-book-recipe className="contents">
-                <RecipeSheet recipe={r} />
-                {hasStory(r) && <StorySheet recipe={r} />}
-              </div>
-            ))}
+      <main>
+        {recipes.length === 0 ? (
+          <p className="mx-auto max-w-xl px-5 py-12 text-lg">{tp.empty}</p>
+        ) : (
+          // Wide enough for a sheet: on a phone the preview scrolls sideways (the paper doesn't reflow).
+          <div tabIndex={0} role="region" aria-label={tp.preview} className="overflow-x-auto print:overflow-visible">
+            <div ref={ref} className="flex w-max min-w-full flex-col gap-10 px-5 py-10 print:block print:w-auto print:p-0">
+              <Cover title={title} photoId={withPhoto ? coverPhoto : undefined} />
+              <Contents recipes={recipes} pages={pages} titles={titles} />
+              {recipes.map((r) => (
+                <div key={r.id} data-book-recipe className="contents">
+                  <RecipeSheet recipe={r} />
+                  {hasStory(r) && <StorySheet recipe={r} />}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </main>
     </div>
   );
 }

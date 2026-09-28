@@ -118,7 +118,7 @@ export function LinkFailed({ title, body, action, onAction }: { title: string; b
       <span className="[text-wrap:pretty]">{body}</span>
       <AriaButton
         onPress={onAction}
-        className="flex min-h-14 items-center gap-1.5 self-start rounded-md bg-surface pr-4 pl-3 font-bold text-ink shadow-paper transition-transform duration-(--dur) data-[pressed]:scale-[.97]"
+        className="flex min-h-[3.5rem] items-center gap-1.5 self-start rounded-md bg-surface pr-4 pl-3 font-bold text-ink shadow-paper transition-transform duration-(--dur) data-[pressed]:scale-[.97]"
       >
         <Icon name="paste" className="shrink-0" />
         {action}
@@ -132,7 +132,7 @@ export function QuietLink({ children, onPress }: { children: ReactNode; onPress:
   return (
     <Link
       onPress={onPress}
-      className="flex min-h-14 cursor-pointer items-center gap-1.5 self-center px-3 font-bold text-ink-muted underline underline-offset-4 data-[hovered]:text-ink"
+      className="flex min-h-[3.5rem] cursor-pointer items-center gap-1.5 self-center px-3 font-bold text-ink-muted underline underline-offset-4 data-[hovered]:text-ink"
     >
       {children}
     </Link>

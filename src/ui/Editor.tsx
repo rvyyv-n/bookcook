@@ -32,7 +32,7 @@ export { TabPanel, Tabs } from 'react-aria-components';
 
 const fieldRadius = 'rounded-[min(var(--radius-md),18px)]';
 const outlined =
-  'inline-flex min-h-14 items-center gap-1.5 rounded-md pr-[1rem] pl-[.7rem] font-bold text-ink shadow-[inset_0_0_0_1.5px_var(--line-strong)] ' +
+  'inline-flex min-h-[3.5rem] items-center gap-1.5 rounded-md pr-[1rem] pl-[.7rem] font-bold text-ink shadow-[inset_0_0_0_1.5px_var(--line-strong)] ' +
   'transition-[background-color,transform] duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:scale-[.97]';
 
 /** "Draft saved" (cloud_done in the success colour), or "Saving…" while a change is on its way. */
@@ -57,7 +57,7 @@ export function SectionTabs({ label, items }: { label: string; items: { id: stri
           key={it.id}
           id={it.id}
           className={cx(
-            'group flex min-h-14 flex-none cursor-pointer items-center gap-1.5 rounded-full px-[1rem] font-bold text-ink outline-none transition-colors duration-(--dur)',
+            'group flex min-h-[3.5rem] flex-none cursor-pointer items-center gap-1.5 rounded-full px-[1rem] font-bold text-ink outline-none transition-colors duration-(--dur)',
             'shadow-[inset_0_0_0_1.5px_var(--line-strong)] data-[hovered]:bg-sunk',
             'data-[selected]:bg-ink data-[selected]:text-paper data-[selected]:shadow-none',
             'data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus',
@@ -112,7 +112,7 @@ export function PhotoButton({
         className={cx(
           variant === 'outline'
             ? outlined
-            : 'inline-flex min-h-14 items-center gap-1.5 rounded-md bg-surface pr-[1rem] pl-[.7rem] font-bold text-ink shadow-lift data-[pressed]:scale-[.97]',
+            : 'inline-flex min-h-[3.5rem] items-center gap-1.5 rounded-md bg-surface pr-[1rem] pl-[.7rem] font-bold text-ink shadow-lift data-[pressed]:scale-[.97]',
           className,
         )}
       >
@@ -188,7 +188,7 @@ function ParsePreview({ parts }: { parts: LineParts }) {
     );
   if (parts.note) bits.push(<i key="o">{parts.note}</i>);
   return (
-    <span className="flex animate-fade-in flex-wrap items-center gap-x-2 gap-y-1 text-[0.8889rem] text-ink-muted">
+    <span className="flex animate-fade-in flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-muted">
       {bits.flatMap((b, i) =>
         i
           ? [
@@ -206,7 +206,7 @@ function ParsePreview({ parts }: { parts: LineParts }) {
 /** "Check this · two amounts in one line", under a line the parser was unsure of. */
 export function CheckNote({ children }: { children: ReactNode }) {
   return (
-    <span className="flex items-center gap-1 text-[0.8333rem] font-bold text-accent-text">
+    <span className="flex items-center gap-1 text-[0.875rem] font-bold text-accent-text">
       <Icon name="checkThis" size="1.1rem" className="shrink-0" />
       {children}
     </span>
@@ -360,7 +360,9 @@ export function IngredientLineField({
           <span aria-hidden className="h-px flex-1 bg-(--sp) [display:var(--sp-rule)]" />
         </div>
       ) : (
-        <div className={cx('flex flex-col justify-center gap-1 border-b border-line', dense ? 'min-h-[2.9rem] py-1.5' : 'min-h-14 py-2')}>
+        <div
+          className={cx('flex flex-col justify-center gap-1 border-b border-line', dense ? 'min-h-[3.5rem] py-1.5' : 'min-h-[3.5rem] py-2')}
+        >
           {input}
           {check}
         </div>
@@ -381,7 +383,7 @@ export function IngredientLineField({
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => onPick?.(i)}
               className={cx(
-                'flex min-h-14 cursor-pointer items-center px-3.5',
+                'flex min-h-[3.5rem] cursor-pointer items-center px-3.5',
                 i > 0 && 'border-t border-line',
                 i === active ? 'bg-accent-soft font-bold' : 'hover:bg-sunk',
               )}
@@ -528,7 +530,7 @@ export function MoveHandle({
         aria-expanded={open}
         {...dragProps}
         onClick={() => wasTap() && setOpen(true)}
-        className="flex min-h-14 min-w-14 cursor-grab flex-col items-center justify-center rounded-md text-[0.6667rem] leading-tight font-bold text-ink-muted transition-colors duration-(--dur) select-none hover:bg-sunk active:cursor-grabbing"
+        className="flex min-h-[3.5rem] min-w-[3.5rem] cursor-grab flex-col items-center justify-center rounded-md text-[0.875rem] leading-tight font-bold text-ink-muted transition-colors duration-(--dur) select-none hover:bg-sunk active:cursor-grabbing"
       >
         <Icon name="drag" className="shrink-0" />
         {word}
@@ -560,7 +562,7 @@ export function MoveHandle({
             <MenuItem
               key={id}
               id={id}
-              className="flex min-h-14 cursor-pointer items-center gap-3 rounded-sm px-3 font-bold text-ink outline-none data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted data-[focused]:bg-sunk"
+              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 font-bold text-ink outline-none data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted data-[focused]:bg-sunk"
             >
               <Icon name={icon} className="shrink-0" />
               {text}
@@ -695,7 +697,7 @@ export function MetaPill({
     >
       <Label
         className={cx(
-          'flex min-h-14 cursor-text items-center gap-1.5 bg-surface px-3.5 shadow-[inset_0_0_0_1.5px_var(--line-control)] focus-within:shadow-[inset_0_0_0_2px_var(--ink)]',
+          'flex min-h-[3.5rem] cursor-text items-center gap-1.5 bg-surface px-3.5 shadow-[inset_0_0_0_1.5px_var(--line-control)] focus-within:shadow-[inset_0_0_0_2px_var(--ink)]',
           'has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-focus',
           isInvalid && 'shadow-[inset_0_0_0_2px_var(--danger)]!',
           fieldRadius,
@@ -712,7 +714,7 @@ export function MetaPill({
 /** The desktop editor's foot: "Enter for next line · Ctrl+S to save · End a line with “:” for a section". */
 export function KeyHints({ items }: { items: { keys?: string; text: string }[] }) {
   return (
-    <p className="flex flex-wrap items-center gap-x-4.5 gap-y-1 text-[0.8333rem] text-ink-muted">
+    <p className="flex flex-wrap items-center gap-x-4.5 gap-y-1 text-[0.875rem] text-ink-muted">
       {items.flatMap((it, i) => [
         ...(i
           ? [
@@ -736,7 +738,7 @@ export function RecordButton({ recording, children, onPress }: { recording: bool
       onPress={onPress}
       aria-pressed={recording}
       className={cx(
-        'flex min-h-16 w-full items-center justify-center gap-2 rounded-md bg-(--control-fill) font-bold text-ink tabular-nums',
+        'flex min-h-[4rem] w-full items-center justify-center gap-2 rounded-md bg-(--control-fill) font-bold text-ink tabular-nums',
         'shadow-[inset_0_0_0_var(--control-border)_var(--line-strong)] transition-[background-color,transform] duration-(--dur)',
         'data-[hovered]:bg-(--control-fill-hover) data-[pressed]:scale-[.97]',
       )}

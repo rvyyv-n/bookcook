@@ -72,7 +72,7 @@ export function ReviewIngredientRow({
     <AriaButton
       aria-label={label}
       onPress={onPress}
-      className={cx(amountGrid, 'border-b border-line data-[hovered]:bg-sunk', dense ? 'py-1.75' : 'min-h-[2.9rem] py-2.5')}
+      className={cx(amountGrid, 'border-b border-line data-[hovered]:bg-sunk', dense ? 'py-1.75' : 'min-h-[3.5rem] py-2.5')}
     >
       <b>{amount}</b>
       <span>{name}</span>

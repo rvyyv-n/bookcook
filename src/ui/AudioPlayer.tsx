@@ -71,7 +71,7 @@ export function AudioPlayer({
           }
         }}
         className={cx(
-          'inline-flex min-h-14 items-center gap-2.5 rounded-full bg-(--control-fill) py-1.5 pr-[1.2rem] pl-[.5rem] font-bold text-ink',
+          'inline-flex min-h-[3.5rem] items-center gap-2.5 rounded-full bg-(--control-fill) py-1.5 pr-[1.2rem] pl-[.5rem] font-bold text-ink',
           'shadow-[inset_0_0_0_var(--control-border)_var(--line-strong)] transition-colors duration-(--dur) data-[hovered]:bg-(--control-fill-hover)',
         )}
       >
@@ -85,7 +85,7 @@ export function AudioPlayer({
           <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
             <div className="h-full rounded-full bg-accent-mark transition-[width] duration-200" style={{ width: `${progress * 100}%` }} />
           </div>
-          <span className="text-sm text-ink-muted tabular-nums">
+          <span className="text-[0.875rem] text-ink-muted tabular-nums">
             {formatClock(time)} / {length}
           </span>
         </div>

@@ -91,7 +91,7 @@ export function ListeningIndicator({ state, word, hint }: { state: ListeningStat
       <AriaButton
         className={cx(
           // The hit area reaches past the word so it's a comfortable target without moving the layout.
-          "relative flex shrink-0 items-center gap-2 rounded-sm leading-none whitespace-nowrap text-ink-muted after:absolute after:-inset-x-2 after:-inset-y-4 after:content-['']",
+          "relative flex shrink-0 items-center gap-2 rounded-sm leading-none whitespace-nowrap text-ink-muted after:absolute after:-inset-x-3 after:-inset-y-[1.25rem] after:content-['']",
         )}
       >
         {icon ? (
@@ -196,7 +196,7 @@ export function TimerAlert({
   onAdd: () => void;
   onStop: () => void;
 }) {
-  const btn = 'min-h-14 rounded-md font-bold transition-transform duration-(--dur) data-[pressed]:scale-[.97]';
+  const btn = 'min-h-[3.5rem] rounded-md font-bold transition-transform duration-(--dur) data-[pressed]:scale-[.97]';
   return (
     <div
       role="alert"
