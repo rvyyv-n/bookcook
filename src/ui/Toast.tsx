@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
 import { useT } from '../i18n';
+import { cx } from './cx';
 import { Icon } from './Icon';
 
 export interface ToastOptions {
@@ -69,12 +70,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
 function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void }) {
   const [paused, setPaused] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => {
     if (paused) return;
-    timer.current = setTimeout(onDismiss, item.timeout ?? TOAST_MS);
+    timer.current = setTimeout(() => setLeaving(true), item.timeout ?? TOAST_MS);
     return () => clearTimeout(timer.current);
-  }, [paused, item.timeout, onDismiss]);
+  }, [paused, item.timeout]);
+  // The fade ends the toast; this is for when no animation runs (a hidden tab).
+  useEffect(() => {
+    if (!leaving) return;
+    const id = setTimeout(onDismiss, 500);
+    return () => clearTimeout(id);
+  }, [leaving, onDismiss]);
 
   return (
     <div
@@ -83,14 +91,19 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      className="pointer-events-auto flex min-h-16 w-full max-w-[23.3333rem] animate-rise items-center gap-3 rounded-md bg-ink py-1.5 pr-1.5 pl-4 text-paper shadow-lift"
+      // It fades out, then goes; under reduced motion that takes no time.
+      onAnimationEnd={() => leaving && onDismiss()}
+      className={cx(
+        'pointer-events-auto flex min-h-16 w-full max-w-[23.3333rem] items-center gap-3 rounded-md bg-ink py-1.5 pr-1.5 pl-4 text-paper shadow-lift',
+        leaving ? 'animate-fade-out' : 'animate-rise',
+      )}
     >
       {item.tone === 'success' && <Icon name="check" className="shrink-0" />}
       <p className="flex-1 py-2 font-bold">{item.message}</p>
       {item.action && (
         <AriaButton
           onPress={async () => {
-            onDismiss();
+            setLeaving(true);
             await item.action!.onAction();
           }}
           className="flex min-h-14 shrink-0 items-center gap-1.5 rounded-md pr-[1.1rem] pl-[0.8rem] font-bold text-paper shadow-[inset_0_0_0_1.5px_var(--paper)] data-[focus-visible]:outline-paper data-[hovered]:bg-[rgb(255_255_255/.12)]"

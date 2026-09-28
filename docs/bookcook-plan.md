@@ -144,7 +144,7 @@ Keep a **fixture corpus** (`src/lib/parse/__fixtures__/`) of realistic spoken, t
 - **The story behind the dish:** optional prompts ("Who taught you this?", "When do you make it?", "Any memory with this dish?"), answered by voice or text, with optional audio. They appear in guided capture and in the editor.
 - **Recipe requests (wish list):**
   - Add a request, e.g. "Mom's biryani", with an optional note.
-  - It shows on the library home as "*Rayyan* would love to learn: **Biryani** · Tell it" (the requester's name is entered).
+  - It shows on the library home as "*Sam* would love to learn: **Biryani** · Tell it" (the requester's name is entered).
   - It can be sent as a share link, and is marked fulfilled when that recipe is saved.
 - **Original card photo:** attach photos of the handwritten card or notebook page, shown beside the typed recipe.
 

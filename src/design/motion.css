@@ -1,0 +1,68 @@
+/*
+ * App motion, on top of the handoff's (--dur, --ease-out, rise, pop and breathe are in tokens.css).
+ * This is the one file in src/design/ the app owns: a new handoff replaces the others and leaves it.
+ * Entering takes --dur with --ease-out; leaving is faster, with --ease-in, so what goes gets out of
+ * the way. Reduced motion is handled by the global rule in index.css, which makes every animation
+ * and transition instant, and by tokens.css, which sets --dur to 1ms.
+ */
+:root {
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --dur-exit: 150ms;
+}
+
+@theme {
+  /* Cook steps and onboarding steps slide 24px with a cross-fade, from the side they come from. */
+  --animate-step-next: cook-step-next var(--dur) var(--ease-out) both;
+  --animate-step-back: cook-step-back var(--dur) var(--ease-out) both;
+  @keyframes cook-step-next {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+  }
+  @keyframes cook-step-back {
+    from {
+      opacity: 0;
+      transform: translateX(-24px);
+    }
+  }
+  /* The editor's parse preview fades in once typing pauses. */
+  --animate-fade-in: fade-in 150ms var(--ease-out) both;
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  /* Leaving: sheets drop 8px and fade; toasts, popovers and menus just fade. */
+  --animate-drop-out: bc-drop-out var(--dur-exit) var(--ease-in) both;
+  --animate-fade-out: bc-fade-out var(--dur-exit) var(--ease-in) both;
+  @keyframes bc-drop-out {
+    to {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @keyframes bc-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+  /* Spice Tin's step numeral: the new one rises 8px into place. */
+  --animate-numeral-in: bc-numeral-in var(--dur) var(--ease-out) both;
+  @keyframes bc-numeral-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  /* A grocery row put back by Undo opens up and fades in. */
+  --animate-row-in: bc-row-in var(--dur) var(--ease-out) both;
+  @keyframes bc-row-in {
+    from {
+      grid-template-rows: 0fr;
+      opacity: 0;
+    }
+  }
+  /* The scrim behind a sheet. */
+  --animate-scrim-in: fade-in var(--dur) var(--ease-out) both;
+}

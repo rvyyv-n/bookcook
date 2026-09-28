@@ -151,6 +151,6 @@ export async function addExampleRecipes(): Promise<void> {
 
 /** Local development only: a request and a draft, so the cookbook looks like the handoff mocks. */
 async function addDevExtras(): Promise<void> {
-  await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Rayyan' });
+  await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Sam' });
   await createDraft('type', { title: 'Chicken Karahi' });
 }

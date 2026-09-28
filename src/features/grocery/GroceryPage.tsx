@@ -6,23 +6,65 @@ import type { GroceryItem } from '../../db/types';
 import { useT } from '../../i18n';
 import { formatIngredient } from '../../lib/parse/ingredient';
 import { Button } from '../../ui/Button';
-import { CheckItem } from '../../ui/Controls';
+import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
+import type { Aisle } from '../../lib/parse/aisles';
+import { CheckItem, Struck } from '../../ui/Controls';
+import { cx } from '../../ui/cx';
 import { TextField } from '../../ui/Field';
 import { useToast } from '../../ui/Toast';
 import { groupByAisle } from './aisles';
 
+/** A small icon for each aisle, from the same set as collections and tags. */
+const AISLE_ICONS: Record<Aisle, TopicIconName> = {
+  Produce: 'carrot',
+  'Meat & fish': 'beef',
+  'Dairy & eggs': 'egg',
+  Bakery: 'croissant',
+  'Spices & seasonings': 'flame',
+  Pantry: 'wheat',
+  Frozen: 'iceCream',
+  Drinks: 'coffee',
+  Other: 'utensils',
+};
+
+/** Fade 150ms then collapse 200ms (motion.css: --dur-exit, --dur). */
+const LEAVE_MS = 350;
+
 /** "3 onions" over "From Biryani, Karahi" (or "Added by you"). */
-function Item({ item, titles }: { item: GroceryItem; titles: Map<string, string> }) {
+function Item({
+  item,
+  titles,
+  leaving,
+  entering,
+}: {
+  item: GroceryItem;
+  titles: Map<string, string>;
+  /** Being cleared: fades out, then the rows below close up. */
+  leaving: boolean;
+  /** Just put back by Undo: opens up and fades in. */
+  entering: boolean;
+}) {
   const t = useT();
   const from = item.fromRecipeIds.map((id) => titles.get(id)).filter((x): x is string => !!x);
   const origin = from.length ? t.ui.grocery.from(from) : item.fromRecipeIds.length ? undefined : t.ui.grocery.addedByYou;
   return (
-    <li>
-      <CheckItem isSelected={item.checked} onChange={(on) => setChecked(item.id, on)}>
-        <b className="block">{formatIngredient(item)}</b>
-        {/* inline-block keeps the check's strikethrough off this line, as in the mock. */}
-        {origin && <span className="inline-block text-[1rem] text-ink-muted">{origin}</span>}
-      </CheckItem>
+    <li
+      className={cx('grid grid-rows-[1fr]', leaving && 'grid-rows-[0fr] opacity-0', entering && 'animate-row-in')}
+      style={
+        leaving
+          ? { transition: 'opacity var(--dur-exit) var(--ease-in), grid-template-rows var(--dur) var(--ease-out) var(--dur-exit)' }
+          : undefined
+      }
+    >
+      <div className="min-h-0 overflow-hidden">
+        <CheckItem isSelected={item.checked} onChange={(on) => setChecked(item.id, on)}>
+          {/* The origin sits outside Struck, so the line stays off it, as in the mock. */}
+          <b className="block">
+            <Struck>{formatIngredient(item)}</Struck>
+          </b>
+          {origin && <span className="inline-block text-[1rem] text-ink-muted">{origin}</span>}
+        </CheckItem>
+      </div>
     </li>
   );
 }
@@ -62,6 +104,8 @@ export function GroceryPage() {
   const recipes = useRecipes();
   const titles = useMemo(() => new Map(recipes?.map((r) => [r.id, r.title])), [recipes]);
   const groups = useMemo(() => groupByAisle(items ?? []), [items]);
+  const [clearing, setClearing] = useState<ReadonlySet<string>>(new Set());
+  const [restored, setRestored] = useState<ReadonlySet<string>>(new Set());
   if (!items) return null;
   const inBasket = items.filter((i) => i.checked).length;
 
@@ -81,8 +125,18 @@ export function GroceryPage() {
             icon="clearChecked"
             className="shrink-0"
             onPress={async () => {
+              // The rows fade out and close up before they're removed (at once if motion is reduced).
+              if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                setClearing(new Set(items.filter((i) => i.checked).map((i) => i.id)));
+                await new Promise((done) => setTimeout(done, LEAVE_MS));
+              }
               const cleared = await clearChecked();
-              toast.undo(t.ui.grocery.cleared(cleared.length), () => restoreGroceryItems(cleared));
+              setClearing(new Set());
+              toast.undo(t.ui.grocery.cleared(cleared.length), async () => {
+                setRestored(new Set(cleared.map((i) => i.id)));
+                await restoreGroceryItems(cleared);
+                setTimeout(() => setRestored(new Set()), 400);
+              });
             }}
           >
             {t.ui.grocery.clearChecked}
@@ -99,12 +153,13 @@ export function GroceryPage() {
         <div className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1">
           {groups.map((g, gi) => (
             <section key={g.aisle} aria-labelledby={`aisle-${gi}`} className="flex flex-col desk:pb-4.5">
-              <h2 id={`aisle-${gi}`} className="type-heading mb-1 text-lg">
+              <h2 id={`aisle-${gi}`} className="type-heading mb-1 flex items-center gap-2 text-lg">
+                <TopicIcon name={AISLE_ICONS[g.aisle]} size="1.25rem" className="shrink-0 text-ink-muted" />
                 {t.ui.grocery.aisles[g.aisle]}
               </h2>
               <ul className="flex flex-col">
                 {g.items.map((item) => (
-                  <Item key={item.id} item={item} titles={titles} />
+                  <Item key={item.id} item={item} titles={titles} leaving={clearing.has(item.id)} entering={restored.has(item.id)} />
                 ))}
               </ul>
             </section>

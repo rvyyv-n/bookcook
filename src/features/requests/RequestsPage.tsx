@@ -10,7 +10,7 @@ import { relativeTime } from '../../lib/format';
 import { Button, ButtonLink } from '../../ui/Button';
 import { cx } from '../../ui/cx';
 import { TextField } from '../../ui/Field';
-import { Icon } from '../../ui/Icon';
+import { Icon, type IconName } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 import { draftHref, useTellIt } from '../library/SpecialCards';
@@ -19,6 +19,25 @@ import { shareRequest } from './share';
 const cardClass = 'flex flex-col items-start gap-2.5 rounded-lg bg-surface p-4.5 shadow-paper desk:p-5';
 const titleClass = 'type-display text-xl leading-[1.1] desk:text-2xl desk:leading-[1.05]';
 const gridClass = 'grid gap-2.5 desk:grid-cols-3 desk:gap-4.5';
+
+/** Who it's with: a disc with their initial (or the icon when nobody's named), what they did, and when. */
+function Who({ name, icon, children, when }: { name?: string; icon: IconName; children: ReactNode; when: string }) {
+  const initial = name?.trim().charAt(0).toUpperCase();
+  return (
+    <div className="flex items-center gap-3">
+      <span
+        aria-hidden
+        className="type-display grid size-11 shrink-0 place-items-center rounded-full bg-accent-soft text-xl leading-none text-accent-text"
+      >
+        {initial || <Icon name={icon} size="1.3rem" />}
+      </span>
+      <p className="flex min-w-0 flex-col leading-[1.25]">
+        <span>{children}</span>
+        <span className="text-[0.8333rem] text-ink-muted">{when}</span>
+      </p>
+    </div>
+  );
+}
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
@@ -48,16 +67,16 @@ function RemoveButton({ request }: { request: RecipeRequest }) {
   );
 }
 
-/** Someone wants this from you: "Rayyan would love to learn · 3 days ago", then Tell it now (or Continue a draft). */
+/** Someone wants this from you: "Sam would love to learn · 3 days ago", then Tell it now (or Continue a draft). */
 function IncomingCard({ request, draft }: { request: RecipeRequest; draft?: Draft }) {
   const t = useT();
   const tr = t.ui.requests;
   const tellIt = useTellIt();
   return (
     <li className={cardClass}>
-      <p>
-        <i className="type-display">{request.requestedBy || tr.someone}</i> {tr.wouldLove} · {relativeTime(request.createdAt)}
-      </p>
+      <Who name={request.requestedBy} icon="requests" when={relativeTime(request.createdAt)}>
+        <b>{request.requestedBy || tr.someone}</b> {tr.wouldLove}
+      </Who>
       <h3 className={titleClass}>{request.title}</h3>
       {request.note && <p className="text-ink-muted">“{request.note}”</p>}
       {draft && (
@@ -90,16 +109,9 @@ function OutgoingCard({ request }: { request: RecipeRequest }) {
   const { myName } = useSettings();
   return (
     <li className={cardClass}>
-      <p>
-        {request.askedOf ? (
-          <>
-            {tr.youAsked} <i className="type-display">{request.askedOf}</i>
-          </>
-        ) : (
-          tr.youAsked
-        )}{' '}
-        · {relativeTime(request.createdAt)}
-      </p>
+      <Who name={request.askedOf} icon="send" when={relativeTime(request.createdAt)}>
+        {tr.youAsked} {request.askedOf && <b>{request.askedOf}</b>}
+      </Who>
       <h3 className={titleClass}>{request.title}</h3>
       {request.note && <p className="text-ink-muted">“{request.note}”</p>}
       <div className="mt-auto flex flex-wrap gap-2 pt-1">

@@ -136,7 +136,7 @@ It must feel smart and fast, never like a plain form.
 - A greeting ("Good evening"), search, collection chips (All · Mom's classics · Eid · Quick weeknights), and sort.
 - Special cards at the top:
   - **Continue your draft** ("Chicken Karahi, started 2 days ago").
-  - A **Recipe request**: "*Rayyan* would love to learn: **Nihari** · [Tell it]".
+  - A **Recipe request**: "*Sam* would love to learn: **Nihari** · [Tell it]".
 - **Recipe cards:** photo, title, author, time, "Made 12 times".
 - **Desktop:** the full three-pane layout with a recipe open on the right.
 - **Empty state / onboarding:** a warm illustration or typographic moment, with one big button: **"Let's save your first recipe."**

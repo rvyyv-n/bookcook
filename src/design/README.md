@@ -8,8 +8,9 @@ Everything visual that comes from the design handoff lives here. The handoff doc
 | `theme.css`  | The CSS entry: Tailwind, self-hosted fonts, tokens, and the `@theme inline` mapping to utilities (`bg-paper`, `text-accent-text`, `font-title`, …)     |
 | `skin.ts`    | The six layout differences between skins that tokens can't express (`skinConfig`), `applyAppearance()` and `spiceGroups()`                             |
 | `icons.ts`   | The Material Symbols → lucide-react mapping. Render icons with `src/ui/Icon.tsx`                                                                       |
+| `motion.css` | **Owned by the app, not the handoff.** The leaving ease and duration (`--ease-in`, `--dur-exit`) and the animations built on them                      |
 
-**These four files are kept byte-identical to the handoff** (they're in `.prettierignore`). Adapt the app to them rather than editing them; a new handoff replaces them wholesale.
+**The first four files are kept byte-identical to the handoff** (they're in `.prettierignore`). Adapt the app to them rather than editing them; a new handoff replaces them wholesale and leaves `motion.css` alone.
 
 ## How it's wired
 

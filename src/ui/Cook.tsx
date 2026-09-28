@@ -23,20 +23,40 @@ export function StepBar({ current, total, className }: { current: number; total:
   return (
     <div aria-hidden className={cx('grid gap-1.25', className)} style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
       {Array.from({ length: total }, (_, i) => (
-        <span key={i} className={cx('h-1.25 rounded-full', i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line')} />
+        <span
+          key={i}
+          className={cx(
+            'h-1.25 rounded-full transition-colors duration-(--dur) ease-(--ease-out)',
+            i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line',
+          )}
+        />
       ))}
     </div>
   );
 }
 
 /** Spice Tin's header: a big numeral in the accent, with "of 5" and a dot per step beside it. */
-export function StepNumeral({ current, total, of, label }: { current: number; total: number; of: string; label: string }) {
+export function StepNumeral({
+  current,
+  total,
+  of,
+  label,
+  as: Tag = 'h1',
+}: {
+  current: number;
+  total: number;
+  of: string;
+  label: string;
+  /** The heading it is in cook mode; a div where the screen has its own heading. */
+  as?: 'h1' | 'div';
+}) {
   return (
-    <h1 className="flex items-end gap-3">
+    <Tag className="flex items-end gap-3">
       <span className="sr-only">{label}</span>
       <span
         aria-hidden
-        className="font-(family-name:--font-display) text-[5.7778rem] leading-[.78] font-extrabold text-accent-text [font-variation-settings:var(--font-display-settings)]"
+        key={current}
+        className="animate-numeral-in font-(family-name:--font-display) text-[5.7778rem] leading-[.78] font-extrabold text-accent-text [font-variation-settings:var(--font-display-settings)]"
       >
         {current + 1}
       </span>
@@ -44,11 +64,17 @@ export function StepNumeral({ current, total, of, label }: { current: number; to
         <b className="leading-none">{of}</b>
         <span className="flex gap-1.25">
           {Array.from({ length: total }, (_, i) => (
-            <span key={i} className={cx('size-2.5 rounded-full', i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line')} />
+            <span
+              key={i}
+              className={cx(
+                'size-2.5 rounded-full transition-colors duration-(--dur) ease-(--ease-out)',
+                i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line',
+              )}
+            />
           ))}
         </span>
       </span>
-    </h1>
+    </Tag>
   );
 }
 
@@ -78,7 +104,7 @@ export function ListeningIndicator({ state, word, hint }: { state: ListeningStat
       <Popover
         placement="bottom end"
         offset={12}
-        className="max-w-64 rounded-sm bg-ink px-3.5 py-2 font-bold text-paper shadow-lift data-[entering]:animate-rise"
+        className="max-w-64 rounded-sm bg-ink px-3.5 py-2 font-bold text-paper shadow-lift data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Dialog aria-label={word} className="outline-none">
           {hint}
@@ -100,6 +126,7 @@ export function PinnedTimer({
   spiceGroup,
   onPress,
   wide = false,
+  leaving = false,
 }: {
   label: string;
   time: string;
@@ -110,6 +137,8 @@ export function PinnedTimer({
   spiceGroup?: number;
   onPress: () => void;
   wide?: boolean;
+  /** Done or stopped: fades out where it was. */
+  leaving?: boolean;
 }) {
   const hot = state === 'hot';
   const paused = state === 'paused';
@@ -121,7 +150,10 @@ export function PinnedTimer({
       onPress={onPress}
       style={{ '--disc': hot ? 'var(--timer-hot-bg)' : 'var(--timer-bg)' } as CSSProperties}
       className={cx(
-        'flex min-h-19 min-w-0 items-center gap-2.5 rounded-md py-2 pl-2 text-left transition-transform duration-(--dur) data-[pressed]:scale-[.98]',
+        // Rises in when started; turning hot warms the colours more slowly than anything else moves.
+        'flex min-h-19 min-w-0 items-center gap-2.5 rounded-md py-2 pl-2 text-left data-[pressed]:scale-[.98]',
+        '[transition:transform_var(--dur)_var(--ease-out),background-color_400ms_var(--ease-out),color_400ms_var(--ease-out)]',
+        leaving ? 'pointer-events-none animate-fade-out' : 'animate-rise',
         wide ? 'min-w-[12rem] pr-4' : 'pr-3',
         hot
           ? 'bg-(--timer-hot-bg) text-(color:--timer-hot-fg)'
@@ -134,7 +166,10 @@ export function PinnedTimer({
         style={{ background: `conic-gradient(${fill} 0 ${Math.round(progress * 100)}%, var(--timer-ring-track) 0)` }}
       >
         <span className="grid size-[76%] place-items-center rounded-full bg-(--timer-disc)">
-          <Icon name={paused ? 'pause' : hot ? 'alarm' : 'timer'} size="1.4444rem" />
+          {/* Keyed so the alarm arrives with a single pop. */}
+          <span key={hot ? 'hot' : 'cool'} className={cx('grid place-items-center', hot && 'animate-pop')}>
+            <Icon name={paused ? 'pause' : hot ? 'alarm' : 'timer'} size="1.4444rem" />
+          </span>
         </span>
       </span>
       <span className="flex min-w-0 flex-col gap-0.75">
@@ -165,7 +200,7 @@ export function TimerAlert({
   return (
     <div
       role="alert"
-      className="flex flex-wrap items-center gap-x-3.5 gap-y-3 rounded-lg bg-accent pt-4 pr-3.5 pb-3.5 pl-4.5 text-accent-ink shadow-lift"
+      className="flex animate-rise flex-wrap items-center gap-x-3.5 gap-y-3 rounded-lg bg-accent pt-4 pr-3.5 pb-3.5 pl-4.5 text-accent-ink shadow-lift"
     >
       <Icon name="alarm" size="2.2rem" className="shrink-0" />
       <span className="flex flex-[1_1_150px] flex-col gap-0.5">
@@ -225,7 +260,7 @@ export function Mention({
       <Popover
         placement="bottom start"
         offset={8}
-        className="rounded-sm bg-ink px-[.9rem] py-2 text-base font-bold whitespace-nowrap text-paper shadow-lift data-[entering]:animate-rise"
+        className="rounded-sm bg-ink px-[.9rem] py-2 text-base font-bold whitespace-nowrap text-paper shadow-lift data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Dialog aria-label={label} className="outline-none">
           {({ close }) => (

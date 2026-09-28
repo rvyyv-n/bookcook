@@ -82,6 +82,10 @@ export function mediaIdsOf(r: Partial<Recipe>): string[] {
   ];
 }
 
+export function countRecipes(): Promise<number> {
+  return db.recipes.count();
+}
+
 export function listRecipes(): Promise<Recipe[]> {
   return db.recipes.orderBy('updatedAt').reverse().toArray();
 }

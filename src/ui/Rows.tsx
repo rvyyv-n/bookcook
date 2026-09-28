@@ -77,7 +77,7 @@ export function SelectRow<K extends string>({
         <SelectValue className="min-w-0 text-right text-ink-muted" />
         <Icon name="chevron" className="shrink-0 rotate-90 text-ink-muted" />
       </AriaButton>
-      <Popover className="max-h-[60dvh] min-w-(--trigger-width) overflow-y-auto rounded-lg bg-surface p-1.5 shadow-lift data-[entering]:animate-rise">
+      <Popover className="max-h-[60dvh] min-w-(--trigger-width) overflow-y-auto rounded-lg bg-surface p-1.5 shadow-lift data-[entering]:animate-rise data-[exiting]:animate-fade-out">
         <ListBox className="outline-none">
           {options.map((o) => (
             <ListBoxItem

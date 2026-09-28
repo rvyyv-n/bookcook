@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { cloneElement, Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import { FileTrigger } from 'react-aria-components';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useSpeaker } from '../../app/speech';
@@ -19,7 +19,7 @@ import { compressImage } from '../../lib/platform/image';
 import { useWakeLock } from '../../lib/platform/wakeLock';
 import { newId } from '../../db/db';
 import { Button, ButtonLink } from '../../ui/Button';
-import { CheckItem, Segmented, StarRating, Stepper } from '../../ui/Controls';
+import { CheckItem, Segmented, StarRating, Stepper, Struck } from '../../ui/Controls';
 import {
   CookControls,
   ListeningIndicator,
@@ -138,8 +138,10 @@ function Checklist({
               return (
                 <li key={i.id}>
                   <CheckItem dense={dense} isSelected={checked.has(i.id)} onChange={(on) => onToggle(i.id, on)}>
-                    {amount && <b>{amount}</b>} {p.name}
-                    {note && `, ${note}`}
+                    <Struck>
+                      {amount && <b>{amount}</b>} {p.name}
+                      {note && `, ${note}`}
+                    </Struck>
                   </CheckItem>
                 </li>
               );
@@ -212,6 +214,35 @@ function MadeItSheet({ recipe, isOpen, onOpenChange }: { recipe: Recipe; isOpen:
       </div>
     </Sheet>
   );
+}
+
+/**
+ * The pinned timer tiles, plus a fading copy of any that has just finished or been stopped, left where
+ * it was so the others close up once it has gone. Under reduced motion it's just removed.
+ */
+type Tile = ReactElement<{ leaving?: boolean }>;
+
+function useLeavingTiles(tiles: Tile[]): Tile[] {
+  const [ghosts, setGhosts] = useState<{ el: Tile; index: number }[]>([]);
+  const last = useRef(tiles);
+  const keys = tiles.map((t) => t.key).join('|');
+  // Declared before the effect that keeps `last` up to date, so it still sees the previous tiles.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const current = new Set(keys.split('|'));
+    const gone = last.current.flatMap((el, index) =>
+      current.has(String(el.key)) ? [] : [{ el: cloneElement(el, { leaving: true }), index }],
+    );
+    if (!gone.length) return;
+    setGhosts((all) => [...all, ...gone]);
+    setTimeout(() => setGhosts((all) => all.filter((g) => !gone.includes(g))), 200);
+  }, [keys]);
+  useEffect(() => {
+    last.current = tiles;
+  });
+  const out = [...tiles];
+  for (const g of ghosts) out.splice(Math.min(g.index, out.length), 0, g.el);
+  return out;
 }
 
 function Cook({ recipe }: { recipe: Recipe }) {
@@ -406,7 +437,8 @@ function Cook({ recipe }: { recipe: Recipe }) {
       />
     );
   });
-  const timerGroup = pinned.length > 0 && (
+  const tiles = useLeavingTiles(pinned);
+  const timerGroup = tiles.length > 0 && (
     <div
       role="group"
       aria-label={c.timers}
@@ -415,7 +447,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
         wide ? 'flex flex-wrap gap-2.5' : 'grid gap-2.5',
       )}
     >
-      {pinned}
+      {tiles}
     </div>
   );
 
@@ -469,6 +501,12 @@ function Cook({ recipe }: { recipe: Recipe }) {
     });
   const madeSheet = <MadeItSheet recipe={recipe} isOpen={made} onOpenChange={setMade} />;
   const title = c.stepOf(index + 1, total);
+  // Said by a screen reader on every step change, whether the step was reached by touch, key or voice.
+  const announce = (
+    <p aria-live="polite" className="sr-only">
+      {title} {step?.text}
+    </p>
+  );
 
   if (wide)
     return (
@@ -494,6 +532,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
             {listening}
             <div className="ml-auto">{closeButton}</div>
           </div>
+          {announce}
           {alertCard}
           {timerGroup}
           {stepBody}
@@ -530,6 +569,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
           <StepBar current={index} total={total} />
         </div>
       )}
+      {announce}
       {alertCard}
       {timerGroup}
       {stepBody}

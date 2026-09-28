@@ -2,10 +2,11 @@ import { useState, type ReactNode } from 'react';
 import { ShortcutList } from '../../app/shortcuts';
 import { useIsDesktop } from '../../app/useMediaQuery';
 import { useSettings } from '../../db/hooks';
-import { setSetting, setSkin, type Accent, type Skin, type TextSize, type Theme } from '../../db/settings';
+import { setSetting, setSkin, type Accent, type Skin, type Theme } from '../../db/settings';
 import { SKIN_LABELS, SKINS, skinConfig } from '../../design/skin';
 import { useT } from '../../i18n';
 import { Segmented, Switch } from '../../ui/Controls';
+import { TextSizeSegmented } from './TextSizeSegmented';
 import { TextField } from '../../ui/Field';
 import { RowButton, SelectRow } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
@@ -24,25 +25,12 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-/** Labels drawn at the size they pick (16, 19, 23px), whatever the current setting, and a cook step to judge by. */
+/** The text-size control and a cook step to judge by. */
 function TextSizeSection() {
-  const t = useT();
-  const ts = t.ui.settings;
-  const s = useSettings();
+  const ts = useT().ui.settings;
   return (
     <Section title={ts.textSize}>
-      <Segmented<TextSize>
-        label={ts.textSize}
-        labelHidden
-        size="XL"
-        value={s.textSize}
-        onChange={(v) => setSetting('textSize', v)}
-        options={[
-          { id: 'normal', label: ts.textSizes.normal, className: 'text-[16px]' },
-          { id: 'large', label: ts.textSizes.large, className: 'text-[19px]' },
-          { id: 'huge', label: ts.textSizes.huge, className: 'text-[23px]' },
-        ]}
-      />
+      <TextSizeSegmented label={ts.textSize} />
       <p className="type-step rounded-md bg-surface px-4.5 py-4 text-xl leading-[1.2] text-pretty shadow-paper" aria-live="polite">
         {ts.textPreview}
       </p>
@@ -167,6 +155,7 @@ export function SettingsPage() {
     <div className="flex flex-col">
       {desktop && <RowButton icon="keyboard" label={ts.shortcuts} onPress={() => setSheet('shortcuts')} />}
       <RowButton icon="print" label={ts.printCookbook} href="/print" />
+      <RowButton icon="cookbook" label={ts.showWelcome} href="/welcome?from=settings" />
     </div>
   );
 

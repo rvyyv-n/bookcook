@@ -39,8 +39,11 @@ const outlined =
 export function SavedIndicator({ saving, label }: { saving: boolean; label: string }) {
   return (
     <span role="status" className="flex items-center gap-1.5 text-ink-muted">
-      <Icon name={saving ? 'backup' : 'saved'} size="1.2rem" className={cx('shrink-0', !saving && 'text-success')} />
-      {label}
+      {/* Keyed, so "Saving…" and "Draft saved" fade in place of each other. */}
+      <span key={saving ? 'saving' : 'saved'} className="flex animate-fade-in items-center gap-1.5">
+        <Icon name={saving ? 'backup' : 'saved'} size="1.2rem" className={cx('shrink-0', !saving && 'text-success')} />
+        {label}
+      </span>
     </span>
   );
 }
@@ -535,7 +538,7 @@ export function MoveHandle({
         isOpen={open}
         onOpenChange={setOpen}
         placement="bottom start"
-        className="min-w-44 rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise"
+        className="min-w-44 rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Menu
           aria-label={label}

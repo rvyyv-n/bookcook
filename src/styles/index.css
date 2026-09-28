@@ -3,6 +3,7 @@
  * tokens); this file only holds app behaviour that doesn't change with the design.
  */
 @import '../design/theme.css';
+@import '../design/motion.css';
 @import './print.css';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
@@ -10,28 +11,6 @@
 /* App shell breakpoint: tab bar below 900px, sidebar from 900px (media-query rem is always 16px). */
 @theme {
   --breakpoint-desk: 56.25rem;
-  /* Cook steps slide 24px with a cross-fade, from the side they come from. */
-  --animate-step-next: cook-step-next var(--dur) var(--ease-out) both;
-  --animate-step-back: cook-step-back var(--dur) var(--ease-out) both;
-  @keyframes cook-step-next {
-    from {
-      opacity: 0;
-      transform: translateX(24px);
-    }
-  }
-  @keyframes cook-step-back {
-    from {
-      opacity: 0;
-      transform: translateX(-24px);
-    }
-  }
-  /* The editor's parse preview fades in once typing pauses. */
-  --animate-fade-in: fade-in 150ms var(--ease-out) both;
-  @keyframes fade-in {
-    from {
-      opacity: 0;
-    }
-  }
 }
 
 /*

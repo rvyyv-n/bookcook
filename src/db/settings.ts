@@ -29,7 +29,7 @@ export interface Settings {
   measureSystem: 'metric' | 'imperial' | 'auto';
   lastBackupAt: number | null;
   persistRequested: boolean;
-  /** Name shown on requests you make ("Rayyan would love to learn…"). */
+  /** Name shown on requests you make ("Sam would love to learn…"). */
   myName: string;
   cookbookTitle: string;
   onboarded: boolean;

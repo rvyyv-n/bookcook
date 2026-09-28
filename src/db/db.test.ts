@@ -133,7 +133,7 @@ describe('drafts', () => {
   });
 
   it('fulfils the request a draft was started from', async () => {
-    const req = await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Rayyan' });
+    const req = await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Sam' });
     const d = await createDraft('tell', { title: 'Nihari' }, { requestId: req.id });
     const recipe = await commitDraft(d.id);
     expect((await listRequests())[0]!.fulfilledRecipeId).toBe(recipe.id);
@@ -196,7 +196,7 @@ describe('grocery', () => {
 
 describe('requests', () => {
   it('matches open requests to a recipe title', async () => {
-    await addRequest({ title: "Mom's biryani", direction: 'incoming', requestedBy: 'Rayyan' });
+    await addRequest({ title: "Mom's biryani", direction: 'incoming', requestedBy: 'Sam' });
     await addRequest({ title: 'Nihari', direction: 'incoming' });
     await addRequest({ title: "Nani's biryani", direction: 'outgoing', askedOf: 'Nani' });
     expect((await findOpenRequestsFor('Chicken Biryani')).map((r) => r.title)).toEqual(["Mom's biryani"]);

@@ -42,7 +42,8 @@ if (plan.reset) {
   await page.goto(base + (plan.path ?? '/'));
 }
 // Settings to store before the shot, e.g. {"skin":"heirloom","accent":"saffron"}. `textSize` is a shorthand.
-const settings = { ...plan.settings, ...(plan.textSize ? { textSize: plan.textSize } : {}) };
+// The welcome is marked seen so `/` shows the cookbook; {"onboarded":false} brings it back.
+const settings = { onboarded: true, ...plan.settings, ...(plan.textSize ? { textSize: plan.textSize } : {}) };
 if (Object.keys(settings).length) {
   await page.evaluate(
     (entries) =>

@@ -19,6 +19,11 @@ export async function listDrafts(): Promise<Draft[]> {
   return all.filter((d) => d.mode !== 'edit');
 }
 
+/** How many drafts for new recipes there are. */
+export async function countDrafts(): Promise<number> {
+  return (await listDrafts()).length;
+}
+
 export async function saveDraft(draft: Draft): Promise<void> {
   await db.drafts.put({ ...draft, updatedAt: Date.now() });
 }

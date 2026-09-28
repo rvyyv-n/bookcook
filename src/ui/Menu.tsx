@@ -31,7 +31,7 @@ export function ChoiceMenu<K extends string>({
       </AriaButton>
       <Popover
         placement="bottom end"
-        className="min-w-56 rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise"
+        className="min-w-56 rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Menu
           aria-label={label}
@@ -87,7 +87,7 @@ export function IconMenu({
       </AriaButton>
       <Popover
         placement="bottom start"
-        className="max-h-[min(24rem,var(--visible-height))] min-w-52 overflow-y-auto rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise"
+        className="max-h-[min(24rem,var(--visible-height))] min-w-52 overflow-y-auto rounded-[min(var(--radius-md),18px)] bg-surface p-1.5 shadow-lift outline-none data-[entering]:animate-rise data-[exiting]:animate-fade-out"
       >
         <Menu
           aria-label={label}

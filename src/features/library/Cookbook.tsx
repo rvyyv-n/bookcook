@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router';
 import { useIsDesktop } from '../../app/useMediaQuery';
 import { useCollections, useDrafts, useRecipes, useRequests } from '../../db/hooks';
 import type { Recipe, RecipeRequest } from '../../db/types';
@@ -121,10 +121,18 @@ function EmptyCookbook() {
   const t = useT();
   const toast = useToast();
   const [busy, setBusy] = useState(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  // Coming from the welcome screen, focus lands on the heading so a screen reader starts here.
+  const welcomed = (useLocation().state as { welcomed?: boolean } | null)?.welcomed;
+  useEffect(() => {
+    if (welcomed) heading.current?.focus();
+  }, [welcomed]);
   return (
     <section className="flex max-w-xl flex-1 flex-col justify-center gap-4.5 px-2 py-10">
       <p className="type-eyebrow text-lg text-accent-text">{t.ui.library.emptyEyebrow}</p>
-      <h1 className="text-3xl leading-[1.02] tracking-[-0.02em]">{t.ui.library.emptyTitle}</h1>
+      <h1 ref={heading} tabIndex={-1} className="text-3xl leading-[1.02] tracking-[-0.02em] outline-none">
+        {t.ui.library.emptyTitle}
+      </h1>
       <p className="text-lg leading-[1.4] text-ink-muted">{t.ui.library.emptyBody}</p>
       <ButtonLink href="/new" variant="primary" icon="mic" className="mt-2.5 pr-6 pl-[1.2rem]">
         {t.ui.library.emptyAction}

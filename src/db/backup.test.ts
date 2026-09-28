@@ -18,7 +18,7 @@ describe('backup', () => {
     const recipe = await saveRecipe({ title: 'Nihari', author: 'Nani', ingredients: [], steps: [] });
     const photo = await putMedia(new Blob([new Uint8Array([1, 2, 3])], { type: 'image/jpeg' }), 'photo', recipe.id);
     await addManualItem('2 lemons');
-    await addRequest({ title: 'Karahi', direction: 'incoming', requestedBy: 'Rayyan' });
+    await addRequest({ title: 'Karahi', direction: 'incoming', requestedBy: 'Sam' });
     await setSetting('cookbookTitle', 'Nani’s Kitchen');
 
     const { blob, filename, counts } = await exportBackup(Date.UTC(2026, 8, 28));
