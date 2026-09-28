@@ -8,7 +8,7 @@ import { useSettings } from '../../db/hooks';
 import type { Draft, Ingredient } from '../../db/types';
 import { useT } from '../../i18n';
 import { ingredientParts } from '../../lib/parse/ingredient';
-import { canRecord, startRecording, type Recording } from '../../lib/platform/recorder';
+import { canRecordWhileListening, startRecording, type Recording } from '../../lib/platform/recorder';
 import { findDurations, formatClock } from '../../lib/parse/timers';
 import { AudioPlayer } from '../../ui/AudioPlayer';
 import { Button } from '../../ui/Button';
@@ -234,7 +234,7 @@ export function TellItPage() {
   }, [stage]);
 
   useEffect(() => {
-    if (stage !== 'story' || listen.status !== 'listening' || storyRec.current || starting.current || !canRecord()) return;
+    if (stage !== 'story' || listen.status !== 'listening' || storyRec.current || starting.current || !canRecordWhileListening()) return;
     starting.current = true;
     void startRecording()
       .then((recording) => {

@@ -9,6 +9,12 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
+    implementation project(':capacitor-community-keep-awake')
+    implementation project(':capacitor-clipboard')
+    implementation project(':capacitor-filesystem')
+    implementation project(':capacitor-share')
+    implementation project(':capgo-capacitor-printer')
+    implementation project(':capgo-capacitor-speech-recognition')
     implementation project(':capacitor-community-text-to-speech')
 
 }

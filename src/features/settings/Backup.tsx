@@ -2,8 +2,11 @@ import { useState, type ReactNode } from 'react';
 import { FileTrigger } from 'react-aria-components';
 import { applyBackup, BackupError, exportBackup, readBackup, type BackupFile, type RestoreMode } from '../../db/backup';
 import { useSettings } from '../../db/hooks';
+import { setSetting } from '../../db/settings';
 import { useT } from '../../i18n';
 import { formatDay, relativeTime } from '../../lib/format';
+import { isNative } from '../../lib/platform/isNative';
+import { saveFile } from '../../lib/platform/saveFile';
 import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { Button } from '../../ui/Button';
 import { cx } from '../../ui/cx';
@@ -13,17 +16,6 @@ import { useToast } from '../../ui/Toast';
 
 /** A backup older than this (or none at all) gets the accent nudge. */
 const OVERDUE_DAYS = 30;
-
-function download(blob: Blob, filename: string) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 10_000);
-}
 
 /**
  * "Last backup: 34 days ago" with Back up now and Restore. On --accent-soft (and with the screen's
@@ -46,7 +38,11 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
     setBusy(true);
     try {
       const { blob, filename, counts } = await exportBackup();
-      download(blob, filename);
+      if (!(await saveFile(blob, filename))) {
+        // Share sheet dismissed in the app: nothing was kept, so the last backup stands.
+        await setSetting('lastBackupAt', lastBackupAt);
+        return;
+      }
       void requestPersistentStorage({ again: true });
       toast.show({ message: ts.backedUp(counts.recipes), tone: 'success' });
     } finally {
@@ -107,7 +103,8 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
         >
           {ts.backUpNow}
         </Button>
-        <FileTrigger acceptedFileTypes={['.bookcook', 'application/zip']} onSelect={pick}>
+        {/* Android has no type for .bookcook, so its picker would grey the file out: the app takes any file and checks it. */}
+        <FileTrigger acceptedFileTypes={isNative() ? undefined : ['.bookcook', 'application/zip']} onSelect={pick}>
           <Button variant="quiet" icon="download" isDisabled={busy}>
             {ts.restore}
           </Button>

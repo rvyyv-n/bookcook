@@ -3,6 +3,7 @@ import { RouterProvider as AriaRouterProvider } from 'react-aria-components';
 import { useHref, useNavigate, type NavigateOptions } from 'react-router';
 import { useSettings } from '../db/hooks';
 import { applyAppearance } from '../design/skin';
+import { matchSystemBars } from '../lib/platform/systemBars';
 import { ToastProvider } from '../ui/Toast';
 import { SpeechProvider } from './speech';
 import { usePrefersDark } from './useMediaQuery';
@@ -21,6 +22,7 @@ function Appearance() {
     const root = document.documentElement;
     applyAppearance({ skin, theme, accent, textSize, spiceColours, stepPhoto }, systemDark, root);
     root.lang = lang;
+    matchSystemBars(root.dataset.theme === 'dark');
     // Browser chrome follows the design's paper colour.
     const paper = getComputedStyle(root).getPropertyValue('--paper').trim();
     document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => {

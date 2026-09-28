@@ -4,6 +4,7 @@ import type { Ingredient, Recipe } from '../../db/types';
 import { useT } from '../../i18n';
 import { ingredientParts } from '../../lib/parse/ingredient';
 import { getUnit } from '../../lib/parse/units';
+import { printPage } from '../../lib/platform/print';
 import { Button, ButtonLink } from '../../ui/Button';
 import { Segmented, Switch } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
@@ -266,7 +267,7 @@ export function PrintPage() {
                   {tp.coverPhoto}
                 </Switch>
               )}
-              <Button variant="primary" icon="print" onPress={() => window.print()}>
+              <Button variant="primary" icon="print" onPress={() => printPage(title)}>
                 {tp.print}
               </Button>
             </div>

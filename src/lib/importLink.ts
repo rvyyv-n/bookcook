@@ -1,5 +1,7 @@
+import { CapacitorHttp } from '@capacitor/core';
 import { recipeFromHtml } from './parse/schemaOrg';
 import type { ParsedRecipe } from './parse/types';
+import { isNative } from './platform/isNative';
 
 /**
  * Where the From a link function lives: `VITE_IMPORT_URL` when set (a function deployed elsewhere),
@@ -34,11 +36,25 @@ async function direct(url: string, signal?: AbortSignal): Promise<ParsedRecipe |
   return recipeFromHtml(await res.text(), url);
 }
 
+/** In the Android app: the page itself, over native HTTP, which no site's CORS rules apply to. */
+async function native(url: string): Promise<ParsedRecipe | undefined> {
+  const res = await CapacitorHttp.get({
+    url,
+    responseType: 'text',
+    connectTimeout: 10_000,
+    readTimeout: 10_000,
+    headers: { accept: 'text/html,application/xhtml+xml', 'user-agent': 'Mozilla/5.0 (compatible; Bookcook recipe import)' },
+  });
+  if (res.status < 200 || res.status >= 300 || typeof res.data !== 'string') return undefined;
+  return recipeFromHtml(res.data, res.url || url);
+}
+
 /** The recipe on a web page, or undefined when it can't be read (so the page can point to Paste it). */
 export async function importFromLink(url: string, signal?: AbortSignal): Promise<ParsedRecipe | undefined> {
-  for (const attempt of [viaFunction, direct]) {
+  for (const attempt of isNative() ? [native] : [viaFunction, direct]) {
     try {
       const recipe = await attempt(url, signal);
+      signal?.throwIfAborted();
       if (recipe && (recipe.ingredients.length || recipe.steps.length)) return recipe;
     } catch (e) {
       if (signal?.aborted) throw e;
