@@ -9,7 +9,7 @@
 Save the recipes that only live in someone's head by saying them out loud,<br />
 then cook from them hands-free.
 
-[**Try it**](https://rvyyv-n.github.io/bookcook/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/)
+[**Try it**](https://rvyyv-n.github.io/bookcook/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/) · [Case study](docs/case-study.md)
 
 [![Check and deploy](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml/badge.svg)](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -20,7 +20,7 @@ then cook from them hands-free.
 
 Bookcook is for the family cook who wears reading glasses and has busy hands: very large text, big targets, and voice for everything. Tell it a recipe the way you'd tell a friend, and it turns what you said into ingredients, steps and timers, keeping the story behind the dish in the teller's own voice.
 
-**[Open the app](https://rvyyv-n.github.io/bookcook/)** and tap _Try an example_ for three sample recipes. Install it from the browser menu to use it as an app, offline too. There's nothing to sign up for.
+**[Open the app](https://rvyyv-n.github.io/bookcook/)**, pick a text size on the welcome screen, and tap _Try an example_ for three sample recipes. Install it from the browser menu to use it as an app, offline too. There's nothing to sign up for.
 
 ## Contents
 
@@ -28,25 +28,35 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 - [Privacy](#privacy)
 - [Browser support](#browser-support)
 - [How it's built](#how-its-built)
+- [Quality](#quality)
 - [Development](#development)
 - [Deployment](#deployment)
+- [Android app](#android-app)
 - [License](#license)
 
 ## Features
 
 ### Getting recipes in
 
+<img src="docs/images/tell-it.gif" alt="Tell it: a recipe told out loud. The name, whose it is and how many it feeds are answered, then each ingredient appears in the list as it's said" width="320" align="right" />
+
 - **Tell it.** A gentle interview, one question at a time: the name, whose recipe it is, how many it feeds, the ingredients, the steps, tips and the story behind it. Ingredients appear as you say them and durations become timers. Hands-free if you like.
 - **Just talk.** Talk while you cook; Bookcook sorts it into ingredients and steps for you to check, and keeps every word as "In her words".
 - **Type it, paste it or bring a link.** Type the way you'd say it (`2 cups basmati rice, washed`) with a live preview, paste messy text from WhatsApp or notes and have it tidied up, or import a recipe website's page.
 - **Check before saving.** Whichever way it came in, you check it on one screen, with anything the parser was unsure of marked. Drafts save as you go, and every text field has a Speak button.
 
+<br clear="right" />
+
 ### Cooking
+
+<img src="docs/images/cook-mode.gif" alt="Cook mode: stepping to the next step, starting its seven-minute timer from the step text, and the timer turning hot in its last minute" width="320" align="right" />
 
 - **Cook mode.** One step at a time, in type you can read from across the kitchen. Steps are read aloud, voice commands (next, back, repeat, timer, stop) move you along without touching the screen, and the screen stays awake.
 - **Timers.** Tap a duration in a step to start one. Several can run at once; a finished one chimes and speaks until you stop it, and they survive a reload.
 - **Ingredients that follow you.** Scale servings and switch metric or imperial, and every amount updates, including the one that pops up when you tap an ingredient in a step.
 - **I made it.** Rate it, note what to change next time, and add a photo to the cook log.
+
+<br clear="right" />
 
 ### Keeping and sharing
 
@@ -56,6 +66,7 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 - **Share and back up.** Share a recipe as a link that adds it to someone else's cookbook. Back up everything, photos and voice notes included, to a `.bookcook` file, and restore it on any device.
 - **Print the family cookbook.** A cover, contents, one recipe per page and the stories behind them, on Letter or A4.
 - **Five looks.** Five skins, light and dark, two accents and three text sizes, up to Huge.
+- **A gentle start.** A three-step welcome sets the text size, shows what voice can do and asks for the microphone once, with plain help if it's blocked. It can be opened again from Settings.
 
 ![Cook mode on a tablet, with the ingredients pinned beside the step](docs/images/tablet.jpg)
 
@@ -80,7 +91,7 @@ Reading aloud works everywhere. Where voice input isn't available, Tell it and J
 
 ## How it's built
 
-React 19, TypeScript (strict), Vite, Tailwind CSS v4, React Aria Components and Dexie (IndexedDB), installable as a PWA. There's no AI and no paid service: a rule-based parser turns spoken and typed recipes into structured ones. It scores 100% on its tuned fixture corpus (`npm run parse:score`); the held-out set scored 72% before any tuning.
+React 19, TypeScript (strict), Vite, Tailwind CSS v4, React Aria Components and Dexie (IndexedDB), installable as a PWA. There's no AI and no paid service: a rule-based parser turns spoken and typed recipes into structured ones. It gets all 214 cases in its fixture corpus right (`npm run parse:score`), across typed, pasted and spoken ingredients, timers, voice commands and steps. The held-out set scored 72% before the parser was tuned on it.
 
 ```
 src/
@@ -111,6 +122,21 @@ scripts/        parser scoring, app icons, screenshot helper
 Tests sit next to the code they cover (`*.test.ts`).
 
 ![The desktop cookbook: sidebar, recipe list and the selected recipe](docs/images/desktop.jpg)
+
+## Quality
+
+**Accessibility.** Every screen is checked in all five skins, light and dark, at Normal and Huge text, on a phone and on a desktop, with an automated audit (axe) that finds no problems. Every target is at least 56px, every label at least 14px at Normal, and everything works from the keyboard with a visible focus ring. The full checklist is in [`ACCEPTANCE.md`](docs/design/ACCEPTANCE.md).
+
+**Lighthouse** on the live site (median of three runs, first visit):
+
+|         | Performance | Accessibility | Best practices | SEO |
+| ------- | ----------- | ------------- | -------------- | --- |
+| Mobile  | 75          | 100           | 100            | 100 |
+| Desktop | 98          | 100           | 100            | 100 |
+
+Mobile performance is held back by the first paint: the app is one script (315 KB compressed) that has to load before anything shows. Splitting it by screen is the next improvement.
+
+**Tests.** 170 unit tests (Vitest) cover the parser, the database, backups, share links and the platform wrappers.
 
 ### Design
 
@@ -159,7 +185,15 @@ On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev serve
 
 From a link needs its function (`functions/api/import.ts`) deployed beside the app, which GitHub Pages can't do: there, every link ends in "We couldn't read that page", and Paste it still works. On Cloudflare Pages the `functions/` folder is picked up as is. To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address.
 
-Still to come: an Android app, onboarding and a final polish, and the move to Cloudflare Pages. See the [roadmap](docs/roadmap.md).
+Still to come: the move to Cloudflare Pages, so From a link works on the live site. See the [roadmap](docs/roadmap.md).
+
+## Android app
+
+The same app also builds as an Android app with Capacitor, using Android's own speech recognition and voices. The [`Android APK`](.github/workflows/android.yml) workflow builds a debug APK on every push to `main`; download it from the workflow run's `bookcook-debug-apk` artifact. To build it locally you need a JDK and the Android SDK:
+
+```sh
+npm run android:build
+```
 
 ## License
 
