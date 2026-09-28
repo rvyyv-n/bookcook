@@ -155,7 +155,7 @@ On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev serve
 
 ## Deployment
 
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then built with the `/bookcook/` base path and published to GitHub Pages. The service worker precaches the app so it works offline once installed. Dependabot opens one grouped update pull request a month for npm packages and one for GitHub Actions.
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then built with the `/bookcook/` base path and published to GitHub Pages. The service worker precaches the app so it works offline once installed.
 
 From a link needs its function (`functions/api/import.ts`) deployed beside the app, which GitHub Pages can't do: there, every link ends in "We couldn't read that page", and Paste it still works. On Cloudflare Pages the `functions/` folder is picked up as is. To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address.
 
