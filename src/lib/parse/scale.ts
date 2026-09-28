@@ -1,6 +1,6 @@
 import { mapQuantity, roundNice } from './numbers';
 import { getUnit } from './units';
-import type { ParsedIngredient, Quantity } from './types';
+import type { ParsedIngredient } from './types';
 
 /** Round a scaled amount to something you'd measure: 1½ cups, 250 g, 3 onions. */
 export function roundForUnit(n: number, unitId: string | undefined): number {
@@ -14,10 +14,6 @@ export function roundForUnit(n: number, unitId: string | undefined): number {
     return Math.round(n * 100) / 100 >= 1 ? roundNice(n) : Math.round(n * 1000) / 1000;
   }
   return roundNice(n);
-}
-
-export function scaleQuantity(q: Quantity, factor: number, unitId?: string): Quantity {
-  return mapQuantity(q, (n) => roundForUnit(n * factor, unitId));
 }
 
 /** When a scaled amount drops below this, say it in the smaller unit: ⅔ kg → 670 g, ⅔ tbsp → 2 tsp. */

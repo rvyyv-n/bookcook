@@ -209,10 +209,6 @@ export function getUnit(id: string | undefined): UnitDef | undefined {
   return id === undefined ? undefined : BY_ID.get(id);
 }
 
-export function isVagueUnit(id: string | undefined): boolean {
-  return getUnit(id)?.vague === true;
-}
-
 interface AliasEntry {
   alias: string;
   unit: UnitDef;

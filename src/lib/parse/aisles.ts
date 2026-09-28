@@ -292,9 +292,6 @@ const BY_AISLE: Record<Exclude<Aisle, 'Other'>, string[]> = {
   Drinks: ['wine', 'white wine', 'red wine', 'beer', 'juice', 'orange juice', 'lemon juice', 'lime juice', 'coffee', 'tea', 'soda'],
 };
 
-/** Every common ingredient name, for autocomplete. */
-export const COMMON_INGREDIENTS: string[] = [...new Set(Object.values(BY_AISLE).flat())].sort();
-
 const ENTRIES: [string, Aisle][] = Object.entries(BY_AISLE)
   .flatMap(([aisle, names]) => names.map((n) => [n, aisle as Aisle] as [string, Aisle]))
   .sort((a, b) => b[0].length - a[0].length);

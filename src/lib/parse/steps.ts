@@ -1,6 +1,4 @@
 import { stripListMarker } from './ingredient';
-import { stepTimer } from './timers';
-import type { ParsedStep } from './types';
 
 /** Spoken cues that start a new step, longest first. */
 const CUES = [
@@ -58,11 +56,4 @@ export function splitSentences(text: string): string[] {
     .split(/(?<=[.!?])\s+(?=[\p{Lu}\d])|\n+/u)
     .map(cleanStep)
     .filter((s) => s.replace(/[^\p{L}]/gu, '').length > 1);
-}
-
-export function toParsedSteps(texts: string[]): ParsedStep[] {
-  return texts.map((text) => {
-    const timerSeconds = stepTimer(text);
-    return timerSeconds ? { text, timerSeconds } : { text };
-  });
 }

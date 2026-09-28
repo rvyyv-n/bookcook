@@ -17,10 +17,6 @@ export async function addRequest(
   return request;
 }
 
-export async function updateRequest(id: string, patch: Partial<RecipeRequest>): Promise<void> {
-  await db.requests.update(id, patch);
-}
-
 export async function deleteRequest(id: string): Promise<RecipeRequest | undefined> {
   const r = await db.requests.get(id);
   await db.requests.delete(id);

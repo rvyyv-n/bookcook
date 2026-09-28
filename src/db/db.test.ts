@@ -6,7 +6,6 @@ import { addManualItem, addToGrocery, clearChecked, listGrocery, restoreGroceryI
 import { getMedia, putMedia } from './media';
 import {
   addSharedRecipe,
-  allTags,
   deleteCookLog,
   deleteRecipe,
   forkRecipe,
@@ -56,7 +55,6 @@ describe('recipes', () => {
     expect(all).toHaveLength(1);
     expect(all[0]!.title).toBe('Biryani');
     expect(all[0]!.createdAt).toBe(saved.createdAt);
-    expect(await allTags()).toEqual(['Eid', 'Rice']);
   });
 
   it('deletes with undo, including media and cook logs', async () => {

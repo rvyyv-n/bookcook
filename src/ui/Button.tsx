@@ -99,27 +99,3 @@ export function ButtonLink({
     </AriaLink>
   );
 }
-
-/** A quiet labelled icon button, the icon above the label (Tell it controls, Speak) or beside it. */
-export function ToolButton({
-  icon,
-  children,
-  className,
-  stacked = false,
-  ...rest
-}: { icon: IconName; children: ReactNode; className?: string; stacked?: boolean } & Omit<AriaButtonProps, 'children' | 'className'>) {
-  return (
-    <AriaButton
-      {...rest}
-      className={cx(
-        'inline-flex min-h-14 min-w-14 items-center justify-center rounded-md px-3 font-bold text-ink transition-colors duration-(--dur)',
-        'data-[hovered]:bg-sunk data-[pressed]:bg-line data-[disabled]:text-ink-muted',
-        stacked ? 'flex-col gap-1 text-sm' : 'gap-2 text-base',
-        className,
-      )}
-    >
-      <Icon name={icon} size={stacked ? '1.4444rem' : '1.3333rem'} className="shrink-0" />
-      <span>{children}</span>
-    </AriaButton>
-  );
-}

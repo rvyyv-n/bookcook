@@ -43,12 +43,6 @@ export async function setChecked(id: string, checked: boolean): Promise<void> {
   await db.grocery.update(id, { checked });
 }
 
-export async function removeGroceryItems(ids: string[]): Promise<GroceryItem[]> {
-  const rows = (await db.grocery.bulkGet(ids)).filter((r): r is GroceryItem => !!r);
-  await db.grocery.bulkDelete(ids);
-  return rows;
-}
-
 /** Remove checked items. Returns them for Undo. */
 export async function clearChecked(): Promise<GroceryItem[]> {
   const checked = (await db.grocery.toArray()).filter((i) => i.checked);

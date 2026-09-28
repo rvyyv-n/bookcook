@@ -49,14 +49,6 @@ export function classifyLine(line: string): LineKind {
   return w.length <= 3 ? 'ingredient' : 'step';
 }
 
-/** Rows the parser was unsure about get a gentle "Check this" marker on review. */
-export function ingredientLooksUnsure(ing: ParsedIngredient): boolean {
-  const n = words(ing.name).length;
-  if (n === 0 || n > 5) return true;
-  if (ing.quantity === undefined && !ing.unit && !isKnownIngredient(ing.name)) return true;
-  return false;
-}
-
 const STOP = new Set(
   "and then in into with until till for to on the a an it of or but so maybe about around roughly like is are was that this you we it’s its it's until when".split(
     ' ',

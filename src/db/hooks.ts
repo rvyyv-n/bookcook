@@ -3,7 +3,7 @@ import { listCollections } from './collections';
 import { getDraft, listDrafts } from './drafts';
 import { listGrocery } from './grocery';
 import { getMedia } from './media';
-import { allTags, getRecipe, listCookLogs, listForks, listRecipes } from './recipes';
+import { getRecipe, listCookLogs, listForks, listRecipes } from './recipes';
 import { listRequests, requestAnsweredBy } from './requests';
 import { DEFAULT_SETTINGS, getSettings, type Settings } from './settings';
 
@@ -18,7 +18,6 @@ export const useRequests = () => useLiveQuery(listRequests);
 /** The request someone sent you that a recipe answers; `null` when there isn't one. */
 export const useRequestAnsweredBy = (recipeId: string) => useLiveQuery(async () => (await requestAnsweredBy(recipeId)) ?? null, [recipeId]);
 export const useCollections = () => useLiveQuery(listCollections);
-export const useTags = () => useLiveQuery(allTags);
 export const useCookLogs = (recipeId: string | undefined) => useLiveQuery(() => (recipeId ? listCookLogs(recipeId) : []), [recipeId]);
 export const useForks = (recipeId: string | undefined) => useLiveQuery(() => (recipeId ? listForks(recipeId) : []), [recipeId]);
 

@@ -34,11 +34,3 @@ export async function deleteMedia(ids: string[]): Promise<Media[]> {
   await db.media.bulkDelete(ids);
   return rows;
 }
-
-export async function restoreMedia(rows: Media[]): Promise<void> {
-  await db.media.bulkPut(rows);
-}
-
-export function listAllMedia(): Promise<Media[]> {
-  return db.media.toArray();
-}

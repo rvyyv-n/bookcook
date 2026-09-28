@@ -90,10 +90,6 @@ export function getRecipe(id: string): Promise<Recipe | undefined> {
   return db.recipes.get(id);
 }
 
-export function countRecipes(): Promise<number> {
-  return db.recipes.count();
-}
-
 /** Create or replace a recipe. Returns the saved recipe. */
 export async function saveRecipe(input: Partial<Recipe>): Promise<Recipe> {
   const existing = input.id ? await db.recipes.get(input.id) : undefined;
@@ -193,16 +189,6 @@ export async function addSharedRecipe(id: string, shared: NewRecipe, requestId?:
 
 export function listForks(id: string): Promise<Recipe[]> {
   return db.recipes.where('forkedFromId').equals(id).toArray();
-}
-
-export async function allTags(): Promise<string[]> {
-  const keys = await db.recipes.orderBy('tags').uniqueKeys();
-  return (keys as string[]).sort((a, b) => a.localeCompare(b));
-}
-
-export async function allAuthors(): Promise<string[]> {
-  const keys = await db.recipes.orderBy('author').uniqueKeys();
-  return (keys as string[]).filter(Boolean);
 }
 
 /** Ingredient names across the cookbook, most used first (for autocomplete). */
