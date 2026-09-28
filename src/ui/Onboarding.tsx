@@ -77,7 +77,7 @@ export function OnboardingFrame({
 /** "Step 2 of 3" over a bar of segments, or just the words. The bar is decoration. */
 export function OnboardingProgress({ label, bar }: { label: string; bar?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-2">
+    <div className="flex flex-col gap-2 text-center">
       <b className="leading-[1.15] whitespace-nowrap">{label}</b>
       {bar}
     </div>
@@ -139,4 +139,31 @@ export function FeatureRow({
 /** The rows sit three across on a wide screen and stack when there's no room, or at large text. */
 export function FeatureList({ children }: { children: ReactNode }) {
   return <ul className="grid w-full gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))]">{children}</ul>;
+}
+
+const discTones = {
+  accent: 'bg-accent-soft text-accent-text',
+  success: 'bg-success-soft text-success animate-pop',
+  blocked: 'border-2 border-dashed border-line-control text-ink-muted',
+  sunk: 'bg-sunk text-ink-muted',
+} as const;
+
+/** The big disc over a microphone state: the mic, a tick that pops once, a dashed mic, or the keyboard. */
+export function StatusDisc({ icon, tone }: { icon: IconName; tone: keyof typeof discTones }) {
+  return (
+    <span className={cx('grid size-[6.6667rem] shrink-0 place-items-center rounded-full', discTones[tone])}>
+      <Icon name={icon} size="3rem" />
+    </span>
+  );
+}
+
+/** The numbered steps to turn the microphone on. */
+export function StepsCard({ steps }: { steps: readonly string[] }) {
+  return (
+    <ol className="flex max-w-[20rem] list-decimal flex-col gap-1.5 rounded-md bg-surface py-3.5 pr-4.5 pl-9 text-left shadow-paper">
+      {steps.map((s, i) => (
+        <li key={i}>{s}</li>
+      ))}
+    </ol>
+  );
 }

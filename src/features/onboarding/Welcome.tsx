@@ -6,10 +6,12 @@ import { setSetting } from '../../db/settings';
 import { skinConfig } from '../../design/skin';
 import { useT } from '../../i18n';
 import { Button } from '../../ui/Button';
+import type { IconName } from '../../ui/Icon';
 import { StepBar, StepNumeral } from '../../ui/Cook';
 import { Logo } from '../../ui/Logo';
 import { OnboardingFrame, OnboardingHeading, OnboardingProgress, Wordmark } from '../../ui/Onboarding';
 import { RestoreButton, useRestore } from '../settings/Backup';
+import { MicStep, useMic } from './MicStep';
 import { VoiceStep } from './VoiceStep';
 import { TextSizeSegmented } from '../settings/TextSizeSegmented';
 
@@ -49,6 +51,7 @@ export function WelcomePage() {
     navigate(from ? '/settings' : '/', { replace: true });
   };
   const restore = useRestore(leave);
+  const mic = useMic(step === 'mic');
 
   useEffect(() => heading.current?.focus(), [index]);
   useEffect(() => {
@@ -62,12 +65,26 @@ export function WelcomePage() {
 
   const label = o.stepOf(index + 1, STEPS.length);
   const numeral = config.stepHeader === 'numeral';
+  const large = (label: string, onPress: () => void, extra?: { icon?: IconName; iconEnd?: IconName; disabled?: boolean }) => (
+    <Button
+      variant="primary"
+      size="XL"
+      onPress={onPress}
+      isDisabled={extra?.disabled}
+      icon={extra?.icon}
+      iconEnd={extra?.iconEnd}
+      className={desktop ? undefined : 'w-full'}
+    >
+      {label}
+    </Button>
+  );
+  const asking = step === 'mic' && mic.state === 'prompt';
   const primary =
-    step !== 'mic' ? (
-      <Button variant="primary" size="XL" iconEnd="next" onPress={next} className={desktop ? undefined : 'w-full'}>
-        {o.next}
-      </Button>
-    ) : null;
+    step !== 'mic'
+      ? large(o.next, next, { iconEnd: 'next' })
+      : asking
+        ? large(o.allowMic, () => void mic.allow(), { icon: 'mic', disabled: mic.busy })
+        : large(o.finish, leave, { disabled: mic.state === null });
   const hint = desktop && index < STEPS.length - 1 && <span className="text-[0.8333rem] text-ink-muted">{o.skipHint}</span>;
 
   let body: ReactNode = null;
@@ -93,6 +110,22 @@ export function WelcomePage() {
     );
 
   if (step === 'voice') body = <VoiceStep heading={heading} />;
+  if (step === 'mic')
+    body = (
+      <>
+        <MicStep heading={heading} mic={mic} />
+        {asking && (
+          <Button variant="quiet" onPress={leave} className="w-fit">
+            {o.notNow}
+          </Button>
+        )}
+        {mic.state === 'denied' && (
+          <Button variant="secondary" icon="retry" isDisabled={mic.busy} onPress={() => void mic.retry()} className="w-fit">
+            {t.ui.capture.tryAgain}
+          </Button>
+        )}
+      </>
+    );
 
   return (
     <OnboardingFrame
@@ -113,7 +146,7 @@ export function WelcomePage() {
         numeral ? (
           <StepNumeral current={index} total={STEPS.length} of={t.ui.cook.of(STEPS.length)} label={label} as="div" />
         ) : (
-          <OnboardingProgress label={label} bar={<StepBar current={index} total={STEPS.length} className="w-28" />} />
+          <OnboardingProgress label={label} bar={<StepBar current={index} total={STEPS.length} />} />
         )
       }
       right={
