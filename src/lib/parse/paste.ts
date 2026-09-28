@@ -1,9 +1,10 @@
+import { checkIngredient } from './check';
 import { classifyLine } from './classify';
 import { parseIngredient, sectionHeading, stripListMarker } from './ingredient';
 import { findNumber, readQuantity } from './numbers';
 import { cleanStep, splitSentences } from './steps';
 import { isoDurationToMinutes, stepTimer } from './timers';
-import type { ParsedRecipe, ParsedStep } from './types';
+import type { ParsedIngredient, ParsedRecipe, ParsedStep } from './types';
 
 type Section = 'none' | 'ingredients' | 'steps' | 'tips' | 'story';
 
@@ -110,6 +111,13 @@ function pushStep(steps: ParsedStep[], text: string) {
  * Smart paste: split text from WhatsApp, Notes, email or websites into title,
  * ingredients and steps. Headings, bullets and numbering first, then line classification.
  */
+/** An ingredient line, flagged for Review when the parser is unsure of it. */
+function withCheck(line: string): ParsedIngredient {
+  const ing = parseIngredient(line);
+  const check = checkIngredient(line, ing);
+  return check ? { ...ing, check } : ing;
+}
+
 export function parsePaste(text: string): ParsedRecipe {
   const lines = text
     .replace(/\r\n?/g, '\n')
@@ -153,7 +161,7 @@ export function parsePaste(text: string): ParsedRecipe {
       ingSection = undefined;
       numbered = false;
       if (heading.rest) {
-        if (section === 'ingredients') heading.rest.split(/\s*[,;]\s*/).forEach((p) => p && recipe.ingredients.push(parseIngredient(p)));
+        if (section === 'ingredients') heading.rest.split(/\s*[,;]\s*/).forEach((p) => p && recipe.ingredients.push(withCheck(p)));
         else if (section === 'steps') stepBuffer.push(heading.rest);
         else if (section === 'tips') tips.push(heading.rest);
         else if (section === 'story') story.push(heading.rest);
@@ -202,7 +210,7 @@ export function parsePaste(text: string): ParsedRecipe {
         continue;
       }
       for (const part of splitMultiIngredient(stripListMarker(line))) {
-        const ing = parseIngredient(part);
+        const ing = withCheck(part);
         if (!ing.name) continue;
         recipe.ingredients.push(ingSection ? { ...ing, section: ingSection } : ing);
       }

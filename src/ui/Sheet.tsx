@@ -4,7 +4,9 @@ import { useT } from '../i18n';
 import { Button } from './Button';
 import { cx } from './cx';
 
-const widths = { md: 'desk:max-w-[36rem]', lg: 'desk:max-w-[42rem]' } as const;
+const widths = { md: 'desk:max-w-[36rem]', lg: 'desk:max-w-[42rem]', wide: 'desk:max-w-[37.7778rem]' } as const;
+/** The wide dialog (the New recipe chooser) has roomier padding on desktop. */
+const pad = (size: keyof typeof widths) => (size === 'wide' ? 'desk:px-7' : 'desk:px-5');
 
 /**
  * A sheet: rises from the bottom on phones, a centred panel on desktop (or pinned to the
@@ -21,6 +23,7 @@ export function Sheet({
   size = 'md',
   placement = 'center',
   isDismissable = true,
+  besideSidebar = false,
 }: {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,6 +35,8 @@ export function Sheet({
   size?: keyof typeof widths;
   placement?: 'center' | 'corner';
   isDismissable?: boolean;
+  /** On desktop, dim only the page and leave the sidebar uncovered. */
+  besideSidebar?: boolean;
 }) {
   const t = useT();
   return (
@@ -42,6 +47,7 @@ export function Sheet({
       className={cx(
         'fixed inset-0 z-40 flex items-end justify-center bg-[rgb(var(--shadow-color)/.42)] desk:p-7',
         placement === 'center' ? 'desk:items-center' : 'desk:justify-end',
+        besideSidebar && 'desk:left-[252px] desk:bg-[rgb(var(--shadow-color)/.32)]',
       )}
     >
       <Modal
@@ -54,7 +60,7 @@ export function Sheet({
         <Dialog className="flex max-h-[92dvh] flex-col outline-none">
           {({ close }) => (
             <>
-              <div className="flex flex-col gap-2 px-4 pt-2.5 desk:px-5 desk:pt-5">
+              <div className={cx('flex flex-col gap-2 px-4 pt-2.5', pad(size), size === 'wide' ? 'desk:pt-7' : 'desk:pt-5')}>
                 <span aria-hidden className="h-1.25 w-11 self-center rounded-full bg-line-strong desk:hidden" />
                 <div className={cx('flex justify-between gap-2 pl-1.5', description ? 'items-start' : 'items-center')}>
                   <div className="flex flex-col gap-1">
@@ -71,7 +77,9 @@ export function Sheet({
                   </Button>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto px-4 pt-3.5 pb-[max(1.5556rem,env(safe-area-inset-bottom))] desk:px-5">{children}</div>
+              <div className={cx('flex-1 overflow-y-auto px-4 pt-3.5 pb-[max(1.5556rem,env(safe-area-inset-bottom))]', pad(size))}>
+                {children}
+              </div>
               {footer && <div className="safe-bottom border-t border-line px-4 py-3 desk:px-5">{footer}</div>}
             </>
           )}

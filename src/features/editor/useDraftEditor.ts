@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getDraft, saveDraft } from '../../db/drafts';
+import { deleteDraft, getDraft, saveDraft } from '../../db/drafts';
 import type { Draft, Recipe } from '../../db/types';
 import { ingredientsToLines, linesToIngredients, type IngredientLine } from './model';
 
@@ -11,12 +11,18 @@ export interface EditorState {
 export type SaveStatus = 'idle' | 'saving' | 'saved';
 
 const HISTORY_LIMIT = 100;
+/** Autosave after this long without a change. */
+const SAVE_MS = 500;
 
 /**
  * Local editing state for a draft, autosaved to IndexedDB on every change (debounced),
- * with an undo history for Ctrl/⌘+Z.
+ * with an undo history for Ctrl/⌘+Z. When the editor goes away the draft is saved, unless
+ * `discard` says it isn't worth keeping (nothing typed yet), in which case it's deleted.
  */
-export function useDraftEditor(draftId: string | undefined) {
+export function useDraftEditor(
+  draftId: string | undefined,
+  { discard }: { discard?: (state: EditorState, draft: Draft, edited: boolean) => boolean } = {},
+) {
   const [draft, setDraft] = useState<Draft | null | undefined>(undefined);
   const [state, setState] = useState<EditorState | null>(null);
   const [status, setStatus] = useState<SaveStatus>('idle');
@@ -24,6 +30,11 @@ export function useDraftEditor(draftId: string | undefined) {
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const latest = useRef<{ draft: Draft; state: EditorState } | null>(null);
   const lastEdit = useRef<{ key?: string; at: number }>({ at: 0 });
+  const discardRef = useRef(discard);
+  const editedRef = useRef(false);
+  useEffect(() => {
+    discardRef.current = discard;
+  });
 
   useEffect(() => {
     let alive = true;
@@ -58,7 +69,12 @@ export function useDraftEditor(draftId: string | undefined) {
     window.addEventListener('pagehide', onHide);
     return () => {
       window.removeEventListener('pagehide', onHide);
-      void persist();
+      const cur = latest.current;
+      if (cur && discardRef.current?.(cur.state, cur.draft, editedRef.current)) {
+        clearTimeout(timer.current);
+        latest.current = null;
+        void deleteDraft(cur.draft.id);
+      } else void persist();
     };
   }, [persist]);
 
@@ -77,10 +93,11 @@ export function useDraftEditor(draftId: string | undefined) {
         if (history.current.length > HISTORY_LIMIT) history.current.shift();
       }
       latest.current = { ...cur, state: next };
+      editedRef.current = true;
       setState(next);
       setStatus('saving');
       clearTimeout(timer.current);
-      timer.current = setTimeout(() => void persist(), 400);
+      timer.current = setTimeout(() => void persist(), SAVE_MS);
     },
     [persist],
   );
@@ -99,9 +116,18 @@ export function useDraftEditor(draftId: string | undefined) {
     if (latest.current) latest.current = { ...latest.current, state: prev };
     setStatus('saving');
     clearTimeout(timer.current);
-    timer.current = setTimeout(() => void persist(), 400);
+    timer.current = setTimeout(() => void persist(), SAVE_MS);
     return true;
   }, [persist]);
 
-  return { draft, state, status, update, setRecipe, undo, flush: persist };
+  /** Whether anything has changed since the editor opened. */
+  const edited = status !== 'idle';
+
+  /** Save now and stop autosaving: the draft is about to be committed or thrown away. */
+  const finish = useCallback(async () => {
+    await persist();
+    latest.current = null;
+  }, [persist]);
+
+  return { draft, state, status, update, setRecipe, undo, flush: persist, finish, edited };
 }

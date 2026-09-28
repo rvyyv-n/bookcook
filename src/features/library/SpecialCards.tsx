@@ -8,6 +8,8 @@ import { Button, ButtonLink } from '../../ui/Button';
 
 export function draftHref(d: Draft): string {
   if (d.mode === 'edit') return `/r/${d.recipeId}/edit`;
+  // Tidied (or heard) and waiting to be checked.
+  if (d.step === 'review') return `/new/review/${d.id}`;
   return `/new/${d.mode}/${d.id}`;
 }
 

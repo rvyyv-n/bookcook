@@ -13,5 +13,3 @@ android/build
 *.log
 shots
 
-# Design handoff (local reference only: stock photo and screenshots must not be pushed)
-design_handoff/

@@ -6,7 +6,7 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 ## Where the app is now
 
-A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can't add your own recipe yet.
+A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by typing them or pasting them in, and edit any recipe; drafts save as you go.
 
 It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions.
 
@@ -57,17 +57,17 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 **Milestone: you can add your own recipes.** Together with phase 6, the app is useful for real.
 
-- [ ] The New recipe chooser: a bottom sheet on phone, a dialog on desktop, the unsupported-speech state.
-- [ ] Draft autosave (about 500ms) with the "Draft saved" indicator.
-- [ ] Type it / Edit: Details, Ingredients, Steps and Story sections. SmartIngredientLine with the live parse preview and autocomplete; StepRow with Move (Up / Down) and drag, timer chips and mentions detected live, and step photos. Undo toasts for deletes.
-- [ ] Review: editable cards, "Check this" rows from the parser's `check`, Save recipe.
-- [ ] Desktop layouts and the editor shortcuts.
+- [x] The New recipe chooser: a bottom sheet on phone, a dialog on desktop, the unsupported-speech state.
+- [x] Draft autosave (about 500ms) with the "Draft saved" indicator.
+- [x] Type it / Edit: Details, Ingredients, Steps and Story sections. SmartIngredientLine with the live parse preview and autocomplete; StepRow with Move (Up / Down) and drag, timer chips and mentions detected live, and step photos. Undo toasts for deletes.
+- [x] Review: editable cards, "Check this" rows from the parser's `check`, Save recipe.
+- [x] Desktop layouts and the editor shortcuts.
 
 ### Phase 8: Voice capture and imports (handoff step 5)
 
 - [ ] Tell it: one question at a time, BigMicButton, live transcript, parsed rows, hands-free, undo, the mic-denied and unsupported states, the story prompt with a voice note.
 - [ ] Just talk: free talk with an elapsed timer, then Review.
-- [ ] Paste it: paste, "Tidy it up", then Review.
+- [x] Paste it: paste, "Tidy it up", then Review.
 - [ ] From a link: a small serverless function that fetches the page, schema.org parsing, the failure state that points to Paste it.
 
 ### Phase 9: Grocery, requests, settings, print (handoff step 6)

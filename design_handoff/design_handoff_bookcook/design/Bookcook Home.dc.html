@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=block">
+<link rel="stylesheet" href="src/design/tokens.css">
+<style>
+body{margin:0;background:var(--sunk);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+button,input,textarea{font-family:inherit;font-size:inherit}
+a{color:var(--accent-text)}a:hover{color:var(--ink)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.material-symbols-rounded{font-size:1.4444rem;line-height:1}
+</style>
+</helmet>
+<div style="min-height:100vh;font-family:var(--font-body);font-size:var(--text-base);line-height:1.5;color:var(--ink)">
+<dc-import name="ThemeBar" page="home" on-change="{{ onTheme }}" hint-size="100%,64px"></dc-import>
+
+<section id="library" style="padding:48px 28px 16px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:920px"><h2 style="margin:0;font:400 34px/1.1 Fraunces,Georgia,serif;letter-spacing:-0.02em">Cookbook (home)</h2><p style="margin:0;font:15px/1.45 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)"><code>/</code> · R Recipe[] (title, author, photoIds, prepMinutes + cookMinutes, cookedCount, forkedFromId), Collection[], latest Draft, open RecipeRequest[]. Collection.emoji is not rendered (gap 3).</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Cookbook · phone" style="width:390px;min-height:844px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:40px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<div style="padding:28px 20px 0;display:flex;flex-direction:column;gap:16px">
+<h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1;letter-spacing:-0.02em">Good evening</h1>
+<label style="display:flex;align-items:center;min-height:3.5556rem;border-radius:min(var(--radius-md),18px);background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line-control)"><span class="material-symbols-rounded" aria-hidden="true" style="padding-left:14px;color:var(--ink-muted)">search</span><span style="flex:1;padding:0 10px;color:var(--ink-muted)">Search recipes</span><span style="min-width:3.5556rem;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.3rem">mic</span>Speak</span></label>
+</div>
+<div style="display:flex;gap:8px;overflow-x:auto;padding:14px 20px 4px;scrollbar-width:none">
+<sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+<sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><button aria-pressed="true" style="flex:none;min-height:3.1111rem;padding:0 1.1rem;border:none;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:700;font-size:var(--text-base);white-space:nowrap;cursor:pointer">{{ c.label }}</button></sc-if>
+<sc-if value="{{ c.off }}" hint-placeholder-val="{{ true }}"><button aria-pressed="false" style="flex:none;min-height:3.1111rem;padding:0 1.1rem;border:none;border-radius:999px;background:var(--control-fill);box-shadow:inset 0 0 0 1.5px var(--line-strong);color:var(--ink);font-weight:700;font-size:var(--text-base);white-space:nowrap;cursor:pointer">{{ c.label }}</button></sc-if>
+</sc-for>
+</div>
+<div style="padding:16px 20px 0;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:var(--radius-lg);background:var(--sunk)"><span style="color:var(--ink-muted);font-weight:700">Continue your draft</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-xl);line-height:1.1">Chicken Karahi</span><span style="color:var(--ink-muted)">Started 2 days ago</span><button style="align-self:flex-start;min-height:3.1111rem;padding:0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--ink);color:var(--paper);font-weight:700;font-size:var(--text-base);cursor:pointer">Continue</button></div>
+<div style="display:flex;flex-direction:column;gap:8px;padding:18px;border-radius:var(--radius-lg);background:var(--accent-soft)"><span><i style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings)">Rayyan</i> would love to learn</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-xl);line-height:1.1">Nihari</span><button style="align-self:flex-start;min-height:3.1111rem;padding:0 1.2rem 0 .9rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">mic</span>Tell it</button></div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:26px 20px 6px"><h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-xl);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">All recipes · 5</h2><button style="min-height:3.1111rem;padding:0 .6rem;border:none;border-radius:var(--radius-md);background:transparent;color:var(--ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">swap_vert</span>Recent</button></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px;padding:6px 20px 28px">
+<sc-for list="{{ cards }}" as="r" hint-placeholder-count="4">
+<a href="#" style="display:flex;flex-direction:column;gap:8px;color:var(--ink);text-decoration:none;min-width:0">
+<sc-if value="{{ r.photo }}" hint-placeholder-val="{{ false }}"><img src="assets/biryani.jpg" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius-lg);display:block"></sc-if>
+<sc-if value="{{ r.noPhoto }}" hint-placeholder-val="{{ true }}"><span style="width:100%;aspect-ratio:4/3;border-radius:var(--radius-lg);background:repeating-linear-gradient(135deg,var(--sunk) 0 9px,var(--line) 9px 10px)"></span></sc-if>
+<span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);line-height:1.12;text-wrap:balance">{{ r.title }}</span>
+<span style="color:var(--ink-muted);line-height:1.3;font-size:var(--text-base)">{{ r.meta }}<br>{{ r.extra }}</span>
+</a>
+</sc-for>
+</div>
+<div style="margin-top:auto"><dc-import name="TabBar" current="cookbook" hint-size="100%,84px"></dc-import></div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Phone · draft and request above the recipes</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Cookbook · empty" style="width:390px;min-height:844px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:40px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:40px 28px">
+<span style="font-family:var(--font-display);font-style:italic;font-weight:var(--eyebrow-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);color:var(--accent-text)">Your cookbook is empty</span>
+<span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1.02;letter-spacing:-0.02em;text-wrap:balance">Every family has a recipe worth keeping.</span>
+<p style="margin:0;color:var(--ink-muted);font-size:var(--text-lg);line-height:1.4;text-wrap:pretty">Say it out loud or type it the way you'd tell a friend. We'll write it down properly.</p>
+<button style="margin-top:10px;min-height:3.5556rem;padding:0 1.5rem 0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">mic</span>Let's save your first recipe</button>
+</div>
+<dc-import name="TabBar" current="cookbook" hint-size="100%,84px"></dc-import>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Empty · onboarding, one big button</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Cookbook · no results" style="width:390px;min-height:844px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:40px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<div style="padding:28px 20px 0;display:flex;flex-direction:column;gap:16px">
+<label style="display:flex;align-items:center;min-height:3.5556rem;border-radius:min(var(--radius-md),18px);background:var(--surface);box-shadow:inset 0 0 0 2px var(--ink);outline:3px solid var(--focus);outline-offset:3px"><span class="material-symbols-rounded" aria-hidden="true" style="padding-left:14px">search</span><span style="flex:1;padding:0 10px">nihari<span style="display:inline-block;width:2px;height:1.1em;vertical-align:-.15em;background:var(--ink);margin-left:1px"></span></span><span style="min-width:3.5556rem;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.3rem">close</span>Clear</span></label>
+</div>
+<div style="padding:48px 28px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1.1">No “nihari” here yet</span>
+<p style="margin:0;color:var(--ink-muted);text-wrap:pretty">Rayyan already asked for it. Tell it now, or ask someone else who knows it.</p>
+<div style="display:flex;flex-wrap:wrap;gap:10px;padding-top:6px"><button style="min-height:3.1111rem;padding:0 1.2rem 0 .9rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;gap:6px;font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">mic</span>Tell it</button><button style="min-height:3.1111rem;padding:0 1rem 0 .7rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">send</span>Ask for it</button></div>
+</div>
+<div style="margin-top:auto"><dc-import name="TabBar" current="cookbook" hint-size="100%,84px"></dc-import></div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Search · no results, points to the open request</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Cookbook · desktop three-pane" style="width:1280px;height:800px;display:flex;border-radius:14px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<dc-import name="Sidebar" style="align-self:stretch" current="cookbook" hint-size="252px,100%"></dc-import>
+<div style="width:380px;flex:none;box-sizing:border-box;display:flex;flex-direction:column;border-right:1px solid var(--line);overflow:hidden">
+<div style="padding:22px 20px 10px;display:flex;flex-direction:column;gap:14px">
+<span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1">Good evening</span>
+<label style="display:flex;align-items:center;min-height:3.1111rem;border-radius:min(var(--radius-md),18px);background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line-control)"><span class="material-symbols-rounded" aria-hidden="true" style="padding-left:12px;color:var(--ink-muted)">search</span><span style="flex:1;padding:0 10px;color:var(--ink-muted)">Search recipes</span><kbd style="margin-right:12px;font:inherit;font-size:14px;font-weight:700;color:var(--ink-muted)">/</kbd></label>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ chips }}" as="c" hint-placeholder-count="4"><sc-if value="{{ c.on }}" hint-placeholder-val="{{ false }}"><button aria-pressed="true" style="min-height:3.1111rem;padding:0 .9rem;border:none;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:700;font-size:15px;white-space:nowrap">{{ c.label }}</button></sc-if><sc-if value="{{ c.off }}" hint-placeholder-val="{{ true }}"><button aria-pressed="false" style="min-height:3.1111rem;padding:0 .9rem;border:none;border-radius:999px;background:var(--control-fill);box-shadow:inset 0 0 0 1.5px var(--line-strong);color:var(--ink);font-weight:700;font-size:15px;white-space:nowrap">{{ c.label }}</button></sc-if></sc-for></div>
+</div>
+<div style="margin:6px 20px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:12px 14px;border-radius:var(--radius-md);background:var(--accent-soft)"><span><i style="font-family:var(--font-display)">Rayyan</i> would love to learn <b>Nihari</b></span><button style="grid-row:span 2;min-height:3.1111rem;padding:0 1rem 0 .7rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;gap:4px;font-weight:700;font-size:var(--text-base)"><span class="material-symbols-rounded" aria-hidden="true">mic</span>Tell it</button><span style="color:var(--ink-muted);font-size:15px">Draft: Chicken Karahi · <a href="#">Continue</a></span></div>
+<div style="flex:1;overflow:hidden;padding:4px 12px">
+<sc-for list="{{ cards }}" as="r" hint-placeholder-count="5">
+<sc-if value="{{ r.sel }}" hint-placeholder-val="{{ false }}"><a href="#" aria-current="true" style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:10px 8px;border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--shadow-paper);color:var(--ink);text-decoration:none"><img src="assets/biryani.jpg" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:var(--radius-sm)"><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-weight:var(--font-display-weight);font-size:var(--text-lg);line-height:1.1">{{ r.title }}</b><span style="color:var(--ink-muted);font-size:15px">{{ r.meta }} · {{ r.extra }}</span></span></a></sc-if>
+<sc-if value="{{ r.unsel }}" hint-placeholder-val="{{ true }}"><a href="#" style="display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;align-items:center;padding:10px 8px;border-radius:var(--radius-md);color:var(--ink);text-decoration:none" style-hover="background:var(--sunk)"><span style="width:64px;height:64px;border-radius:var(--radius-sm);background:repeating-linear-gradient(135deg,var(--sunk) 0 7px,var(--line) 7px 8px)"></span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-weight:var(--font-display-weight);font-size:var(--text-lg);line-height:1.1">{{ r.title }}</b><span style="color:var(--ink-muted);font-size:15px">{{ r.meta }}<sc-if value="{{ r.hasExtra }}" hint-placeholder-val="{{ true }}"> · {{ r.extra }}</sc-if></span></span></a></sc-if>
+</sc-for>
+</div>
+</div>
+<div style="flex:1;min-width:0;overflow:hidden;display:flex;flex-direction:column">
+<img src="assets/biryani.jpg" alt="Chicken biryani in a pot" style="width:100%;height:250px;object-fit:cover;display:block">
+<div style="padding:22px 32px 0;display:flex;flex-direction:column;gap:8px">
+<span style="font-family:var(--font-display);font-style:italic;font-weight:var(--eyebrow-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);color:var(--accent-text)">From Mom's kitchen</span>
+<h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1.02;letter-spacing:-0.02em">Mom's Chicken Biryani</h1>
+<span style="color:var(--ink-muted)">Serves 6 · Prep 30 min · Cook 1 hr 15 min · Made 12 times</span>
+<div style="display:flex;flex-wrap:wrap;gap:8px;padding-top:8px"><button style="min-height:3.5556rem;padding:0 1.5rem 0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;gap:8px;font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size)"><span class="material-symbols-rounded" aria-hidden="true">skillet</span>Start cooking</button><button style="min-height:3.5556rem;padding:0 1rem 0 .7rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base)"><span class="material-symbols-rounded" aria-hidden="true">edit</span>Edit</button><button style="min-height:3.5556rem;padding:0 1rem 0 .7rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base)"><span class="material-symbols-rounded" aria-hidden="true">add_shopping_cart</span>Grocery</button></div>
+<blockquote style="margin:18px 0 0;padding-left:16px;border-left:2px solid var(--accent-mark);font-family:var(--font-display);font-style:italic;font-weight:calc(var(--font-display-weight) - 30);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);line-height:1.3">“My mother made this every Eid. I learned by watching her hands, not measuring.”</blockquote>
+</div>
+</div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Desktop · sidebar, searchable list, recipe open on the right</figcaption>
+</figure>
+</div>
+</section>
+
+<section id="grocery" style="padding:48px 28px 16px;display:flex;flex-direction:column;gap:22px;border-top:1px solid var(--line-strong)">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:920px"><h2 style="margin:0;font:400 34px/1.1 Fraunces,Georgia,serif;letter-spacing:-0.02em">Grocery</h2><p style="margin:0;font:15px/1.45 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)"><code>/grocery</code> · RW GroceryItem[] (name, quantity, unit, aisle, checked, fromRecipeIds, order). Merging "3 onions" needs a rule for ranges (gap 5). Checked items stay put until Clear checked.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+<sc-for list="{{ groceryFrames }}" as="gf" hint-placeholder-count="2">
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="{{ gf.caption }}" style="width:390px;min-height:844px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:40px;overflow:hidden;position:relative;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<div style="padding:28px 20px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:10px"><span style="display:flex;flex-direction:column;gap:4px"><h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1;letter-spacing:-0.02em">Grocery</h1><span style="color:var(--ink-muted)">{{ gf.count }}</span></span>
+<sc-if value="{{ gf.clear }}" hint-placeholder-val="{{ true }}"><button style="min-height:3.1111rem;padding:0 1rem 0 .7rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">remove_done</span>Clear checked</button></sc-if></div>
+<div style="padding:18px 20px 4px;display:flex;gap:8px"><label style="flex:1;min-width:0;display:flex;align-items:center;min-height:3.5556rem;border-radius:min(var(--radius-md),18px);background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line-control)"><span style="flex:1;min-width:0;padding:0 14px;color:var(--ink-muted)">Add an item</span><span style="min-width:3.5556rem;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.3rem">mic</span>Speak</span></label><button style="min-height:3.5556rem;padding:0 1.1rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size);cursor:pointer">Add</button></div>
+<sc-if value="{{ gf.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:56px 28px;display:flex;flex-direction:column;gap:12px"><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1.1">Nothing to buy</span><p style="margin:0;color:var(--ink-muted);text-wrap:pretty">Tap Add to grocery on any recipe, or add things here yourself.</p></div></sc-if>
+<sc-for list="{{ gf.aisles }}" as="a" hint-placeholder-count="3">
+<div style="padding:18px 20px 0;display:flex;flex-direction:column">
+<h2 style="margin:0 0 4px;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">{{ a.name }}</h2>
+<sc-for list="{{ a.items }}" as="k" hint-placeholder-count="3">
+<sc-if value="{{ k.on }}" hint-placeholder-val="{{ false }}"><button role="checkbox" aria-checked="true" style="min-height:3.5556rem;display:flex;align-items:center;gap:14px;padding:8px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink-muted);text-align:left;font-size:var(--text-base);cursor:pointer"><span aria-hidden="true" style="width:30px;height:30px;flex:none;border-radius:8px;background:var(--success);color:var(--paper);display:grid;place-items:center"><span class="material-symbols-rounded" style="font-size:22px">check</span></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-weight:700;text-decoration:line-through">{{ k.name }}</span><span style="font-size:16px">{{ k.from }}</span></span></button></sc-if>
+<sc-if value="{{ k.off }}" hint-placeholder-val="{{ true }}"><button role="checkbox" aria-checked="false" style="min-height:3.5556rem;display:flex;align-items:center;gap:14px;padding:8px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer" style-hover="background:var(--sunk)"><span aria-hidden="true" style="width:30px;height:30px;flex:none;box-sizing:border-box;border-radius:8px;border:2px solid var(--line-control)"></span><span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px"><span style="font-weight:700">{{ k.name }}</span><span style="font-size:16px;color:var(--ink-muted)">{{ k.from }}</span></span></button></sc-if>
+</sc-for>
+</div>
+</sc-for>
+<div style="margin-top:auto;position:relative;padding-top:24px">
+<sc-if value="{{ gf.toast }}" hint-placeholder-val="{{ false }}"><div role="status" style="position:absolute;left:12px;right:12px;bottom:calc(100% - 12px);display:flex;align-items:center;gap:12px;min-height:3.5556rem;padding:6px 6px 6px 18px;border-radius:var(--radius-md);background:var(--ink);color:var(--paper);box-shadow:var(--shadow-lift)"><span style="flex:1;font-weight:700">4 items cleared</span><button style="min-height:3.1111rem;padding:0 1.1rem 0 .8rem;border:none;border-radius:var(--radius-md);background:transparent;color:var(--paper);box-shadow:inset 0 0 0 1.5px var(--paper);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">undo</span>Undo</button></div></sc-if>
+<dc-import name="TabBar" current="grocery" hint-size="100%,84px"></dc-import>
+</div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">{{ gf.caption }}</figcaption>
+</figure>
+</sc-for>
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Grocery · desktop" style="width:1280px;height:800px;display:flex;border-radius:14px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<dc-import name="Sidebar" style="align-self:stretch" current="grocery" hint-size="252px,100%"></dc-import>
+<div style="flex:1;min-width:0;padding:32px 40px;display:flex;flex-direction:column;gap:20px;overflow:hidden">
+<div style="display:flex;align-items:flex-end;gap:16px"><h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1">Grocery</h1><span style="color:var(--ink-muted);white-space:nowrap">9 to buy · 3 in the basket</span><button style="margin-left:auto;min-height:3.1111rem;padding:0 1rem 0 .7rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base)"><span class="material-symbols-rounded" aria-hidden="true">remove_done</span>Clear checked</button></div>
+<div style="display:flex;gap:8px;max-width:620px"><label style="flex:1;display:flex;align-items:center;min-height:3.5556rem;border-radius:min(var(--radius-md),18px);background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line-control)"><span style="flex:1;padding:0 14px;color:var(--ink-muted)">Add an item</span><span style="min-width:3.5556rem;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.3rem">mic</span>Speak</span></label><button style="min-height:3.5556rem;padding:0 1.3rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size)">Add</button></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:4px 32px;align-items:start">
+<sc-for list="{{ aisles }}" as="a" hint-placeholder-count="4">
+<div style="padding-bottom:18px;display:flex;flex-direction:column">
+<h2 style="margin:0 0 4px;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">{{ a.name }}</h2>
+<sc-for list="{{ a.items }}" as="k" hint-placeholder-count="2">
+<sc-if value="{{ k.on }}" hint-placeholder-val="{{ false }}"><div role="checkbox" aria-checked="true" style="min-height:3.1111rem;display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);color:var(--ink-muted)"><span aria-hidden="true" style="width:28px;height:28px;flex:none;border-radius:8px;background:var(--success);color:var(--paper);display:grid;place-items:center"><span class="material-symbols-rounded" style="font-size:20px">check</span></span><span style="flex:1;min-width:0;display:flex;flex-direction:column"><b style="text-decoration:line-through">{{ k.name }}</b><span style="font-size:15px">{{ k.from }}</span></span></div></sc-if>
+<sc-if value="{{ k.off }}" hint-placeholder-val="{{ true }}"><div role="checkbox" aria-checked="false" style="min-height:3.1111rem;display:flex;align-items:center;gap:12px;padding:6px 0;border-bottom:1px solid var(--line)"><span aria-hidden="true" style="width:28px;height:28px;flex:none;box-sizing:border-box;border-radius:8px;border:2px solid var(--line-control)"></span><span style="flex:1;min-width:0;display:flex;flex-direction:column"><b>{{ k.name }}</b><span style="font-size:15px;color:var(--ink-muted)">{{ k.from }}</span></span></div></sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Desktop · aisles in columns</figcaption>
+</figure>
+</div>
+</section>
+
+<section id="requests" style="padding:48px 28px 16px;display:flex;flex-direction:column;gap:22px;border-top:1px solid var(--line-strong)">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:920px"><h2 style="margin:0;font:400 34px/1.1 Fraunces,Georgia,serif;letter-spacing:-0.02em">Requests</h2><p style="margin:0;font:15px/1.45 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)"><code>/requests</code> · RW RecipeRequest[] (title, requestedBy, note, createdAt, fulfilledRecipeId). Tell it now creates a Draft {requestId}. Send request shares a link.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+<sc-for list="{{ reqFrames }}" as="rf" hint-placeholder-count="2">
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="{{ rf.caption }}" style="width:390px;min-height:844px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:40px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<div style="padding:28px 20px 0;display:flex;flex-direction:column;gap:12px">
+<h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1;letter-spacing:-0.02em">Requests</h1>
+<p style="margin:0;color:var(--ink-muted);text-wrap:pretty">Ask for a recipe that only lives in someone's head. They answer by telling it.</p>
+<button style="min-height:3.5556rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;gap:8px;font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">send</span>Send request</button>
+</div>
+<sc-if value="{{ rf.empty }}" hint-placeholder-val="{{ false }}"><div style="padding:56px 28px;display:flex;flex-direction:column;gap:12px"><span style="font-family:var(--font-display);font-style:italic;font-weight:var(--eyebrow-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);color:var(--accent-text)">No requests yet</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1.1;text-wrap:balance">Which dish do you wish you could make like they do?</span></div></sc-if>
+<sc-if value="{{ rf.list }}" hint-placeholder-val="{{ true }}">
+<div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Waiting to be told</h2>
+<div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-paper)"><span><i style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings)">Rayyan</i> would love to learn · 3 days ago</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-xl);line-height:1.1">Nihari</span><span style="color:var(--ink-muted)">“The one you made for Nani's birthday.”</span><button style="align-self:flex-start;min-height:3.1111rem;padding:0 1.2rem 0 .9rem;border:none;border-radius:var(--radius-md);background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">mic</span>Tell it now</button></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:18px;border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-paper)"><span><i style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings)">Rayyan</i> asked · 2 weeks ago</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-xl);line-height:1.1">Chicken Karahi</span><span style="display:flex;align-items:center;gap:6px;color:var(--ink-muted)"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.2rem">edit_note</span>Draft started 2 days ago</span><button style="align-self:flex-start;min-height:3.1111rem;padding:0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);font-weight:700;font-size:var(--text-base);cursor:pointer">Continue</button></div>
+<h2 style="margin:14px 0 0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Told</h2>
+<a href="#" style="display:grid;grid-template-columns:3.2rem minmax(0,1fr);gap:14px;align-items:center;padding:16px 18px;border-radius:var(--radius-lg);background:var(--success-soft);color:var(--ink);text-decoration:none"><span style="width:3.2rem;height:3.2rem;border-radius:999px;background:var(--success);color:var(--paper);display:grid;place-items:center"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.7rem;font-variation-settings:'FILL' 1">celebration</span></span><span style="display:flex;flex-direction:column;gap:2px"><b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-weight:var(--font-display-weight);font-size:var(--text-lg);line-height:1.1">Grandma's Banana Bread</b><span>Nani told it. It's in your cookbook.</span></span></a>
+</div>
+</sc-if>
+<div style="margin-top:auto;padding-top:24px"><dc-import name="TabBar" current="requests" hint-size="100%,84px"></dc-import></div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">{{ rf.caption }}</figcaption>
+</figure>
+</sc-for>
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Requests · desktop" style="width:1280px;height:720px;display:flex;border-radius:14px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<dc-import name="Sidebar" style="align-self:stretch" current="requests" hint-size="252px,100%"></dc-import>
+<div style="flex:1;min-width:0;padding:32px 40px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:flex-end;gap:16px"><span style="display:flex;flex-direction:column;gap:6px"><h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1">Requests</h1><span style="color:var(--ink-muted)">Ask for a recipe that only lives in someone's head.</span></span><button style="margin-left:auto;min-height:3.5556rem;padding:0 1.4rem 0 1.1rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;gap:8px;font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size)"><span class="material-symbols-rounded" aria-hidden="true">send</span>Send request</button></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px">
+<div style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-paper)"><span><i style="font-family:var(--font-display)">Rayyan</i> would love to learn · 3 days ago</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1.05">Nihari</span><span style="color:var(--ink-muted)">“The one you made for Nani's birthday.”</span><button style="margin-top:auto;align-self:flex-start;min-height:3.1111rem;padding:0 1.2rem 0 .9rem;border:none;border-radius:var(--radius-md);background:var(--ink);color:var(--paper);display:flex;align-items:center;gap:6px;font-weight:700;font-size:var(--text-base)"><span class="material-symbols-rounded" aria-hidden="true">mic</span>Tell it now</button></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow-paper)"><span><i style="font-family:var(--font-display)">Rayyan</i> asked · 2 weeks ago</span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1.05">Chicken Karahi</span><span style="color:var(--ink-muted)">Draft started 2 days ago</span><button style="margin-top:auto;align-self:flex-start;min-height:3.1111rem;padding:0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 var(--control-border) var(--line-strong);color:var(--ink);font-weight:700;font-size:var(--text-base)">Continue</button></div>
+<a href="#" style="display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:var(--radius-lg);background:var(--success-soft);color:var(--ink);text-decoration:none"><span style="width:3.2rem;height:3.2rem;border-radius:999px;background:var(--success);color:var(--paper);display:grid;place-items:center"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.7rem;font-variation-settings:'FILL' 1">celebration</span></span><span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-2xl);line-height:1.05">Grandma's Banana Bread</span><span>Nani told it. It's in your cookbook.</span></a>
+</div>
+</div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Desktop · open and fulfilled</figcaption>
+</figure>
+</div>
+</section>
+
+<section id="settings" style="padding:48px 28px 64px;display:flex;flex-direction:column;gap:22px;border-top:1px solid var(--line-strong)">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:920px"><h2 style="margin:0;font:400 34px/1.1 Fraunces,Georgia,serif;letter-spacing:-0.02em">Settings</h2><p style="margin:0;font:15px/1.45 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)"><code>/settings</code> · RW Setting[] keys: skin, theme, accent, textSize, spiceColours, stepPhoto, readSteps, speakQuestions, speechRate, voice, name, defaultAuthor, cookbookTitle, lastBackupAt. Try the text size control: it drives the real setting.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Settings · phone" style="width:390px;min-height:844px;box-sizing:border-box;display:flex;flex-direction:column;border-radius:40px;overflow:hidden;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<div style="padding:28px 20px 0"><h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1;letter-spacing:-0.02em">Settings</h1></div>
+<div role="status" style="margin:20px 16px 0;padding:16px 18px;border-radius:var(--radius-lg);background:var(--accent-soft);display:flex;flex-direction:column;gap:10px"><span style="display:flex;align-items:center;gap:8px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--accent-text)">cloud_upload</span>Last backup: 34 days ago</span><span style="text-wrap:pretty">Save a copy so your recipes are safe if this phone is lost.</span><div style="display:flex;flex-wrap:wrap;gap:8px"><button style="min-height:3.1111rem;padding:0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size);cursor:pointer">Back up now</button><button style="min-height:3.1111rem;padding:0 1rem;border:none;border-radius:var(--radius-md);background:transparent;color:var(--ink);font-weight:700;font-size:var(--text-base);cursor:pointer">Restore</button></div></div>
+<div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Text size</h2>
+<div role="radiogroup" aria-label="Text size" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:3.5556rem;padding:4px;box-sizing:border-box;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 1.5px var(--line-strong)">
+<sc-for list="{{ sizes }}" as="z" hint-placeholder-count="3">
+<sc-if value="{{ z.on }}" hint-placeholder-val="{{ false }}"><button role="radio" aria-checked="true" style="border:none;border-radius:var(--radius-md);background:var(--ink);color:var(--paper);font-weight:700;font-size:{{ z.px }};cursor:pointer">{{ z.label }}</button></sc-if>
+<sc-if value="{{ z.off }}" hint-placeholder-val="{{ true }}"><button role="radio" aria-checked="false" onClick="{{ z.pick }}" style="border:none;border-radius:var(--radius-md);background:transparent;color:var(--ink);font-weight:700;font-size:{{ z.px }};cursor:pointer">{{ z.label }}</button></sc-if>
+</sc-for>
+</div>
+<p style="margin:0;padding:16px 18px;border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--shadow-paper);font-family:var(--font-display);font-weight:var(--step-weight);font-variation-settings:var(--step-settings);font-size:var(--text-xl);line-height:1.2;text-wrap:pretty">Cover tightly and keep on the lowest heat for 20 minutes.</p>
+</div>
+<div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:10px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Look</h2>
+<div role="radiogroup" aria-label="Theme" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:3.1111rem;padding:4px;box-sizing:border-box;border-radius:999px;background:var(--control-fill);box-shadow:inset 0 0 0 1.5px var(--line-strong)"><button role="radio" aria-checked="true" style="border:none;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:700;font-size:var(--text-base)">Light</button><button role="radio" aria-checked="false" style="border:none;border-radius:999px;background:transparent;color:var(--ink);font-weight:700;font-size:var(--text-base)">Dark</button><button role="radio" aria-checked="false" style="border:none;border-radius:999px;background:transparent;color:var(--ink);font-weight:700;font-size:var(--text-base)">System</button></div>
+<sc-for list="{{ lookRows }}" as="lr" hint-placeholder-count="3"><button style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span style="flex:1;font-weight:700">{{ lr.label }}</span><span style="color:var(--ink-muted)">{{ lr.value }}</span><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ink-muted)">chevron_right</span></button></sc-for>
+<sc-for list="{{ lookSwitches }}" as="sw" hint-placeholder-count="2">
+<button role="switch" aria-checked="{{ sw.on }}" style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span style="flex:1;display:flex;flex-direction:column"><b>{{ sw.label }}</b><span style="color:var(--ink-muted);font-size:16px">{{ sw.hint }}</span></span><sc-if value="{{ sw.on }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:52px;height:32px;flex:none;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:flex-end;padding:3px;box-sizing:border-box"><span style="width:26px;height:26px;border-radius:999px;background:var(--accent-ink)"></span></span></sc-if><sc-if value="{{ sw.offv }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:52px;height:32px;flex:none;border-radius:999px;box-shadow:inset 0 0 0 2px var(--line-control);display:flex;align-items:center;padding:3px;box-sizing:border-box"><span style="width:26px;height:26px;border-radius:999px;background:var(--line-control)"></span></span></sc-if></button>
+</sc-for>
+</div>
+<div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:14px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">About you</h2>
+<sc-for list="{{ about }}" as="ab" hint-placeholder-count="3"><label style="display:flex;flex-direction:column;gap:6px"><b>{{ ab.label }}</b><span style="display:flex;align-items:center;min-height:3.5556rem;border-radius:min(var(--radius-md),18px);background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line-control)"><span style="flex:1;padding:0 14px">{{ ab.value }}</span><span style="min-width:3.5556rem;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:700"><span class="material-symbols-rounded" aria-hidden="true" style="font-size:1.3rem">mic</span>Speak</span></span></label></sc-for>
+</div>
+<div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:10px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Voice</h2>
+<sc-for list="{{ voiceSwitches }}" as="sw" hint-placeholder-count="2">
+<button role="switch" aria-checked="{{ sw.on }}" style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span style="flex:1;display:flex;flex-direction:column"><b>{{ sw.label }}</b><span style="color:var(--ink-muted);font-size:16px">{{ sw.hint }}</span></span><sc-if value="{{ sw.on }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:52px;height:32px;flex:none;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:flex-end;padding:3px;box-sizing:border-box"><span style="width:26px;height:26px;border-radius:999px;background:var(--accent-ink)"></span></span></sc-if><sc-if value="{{ sw.offv }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:52px;height:32px;flex:none;border-radius:999px;box-shadow:inset 0 0 0 2px var(--line-control);display:flex;align-items:center;padding:3px;box-sizing:border-box"><span style="width:26px;height:26px;border-radius:999px;background:var(--line-control)"></span></span></sc-if></button>
+</sc-for>
+<b style="padding-top:8px">Speech speed</b>
+<div role="radiogroup" aria-label="Speech speed" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:3.1111rem;padding:4px;box-sizing:border-box;border-radius:999px;background:var(--control-fill);box-shadow:inset 0 0 0 1.5px var(--line-strong)"><button role="radio" aria-checked="false" style="border:none;border-radius:999px;background:transparent;color:var(--ink);font-weight:700;font-size:var(--text-base)">Slower</button><button role="radio" aria-checked="true" style="border:none;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:700;font-size:var(--text-base)">Normal</button><button role="radio" aria-checked="false" style="border:none;border-radius:999px;background:transparent;color:var(--ink);font-weight:700;font-size:var(--text-base)">Faster</button></div>
+<button style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span style="flex:1;font-weight:700">Voice</span><span style="color:var(--ink-muted)">Warm · English</span><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ink-muted)">chevron_right</span></button>
+<button style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span style="flex:1;font-weight:700">Voice commands</span><span style="color:var(--ink-muted)">next, back, repeat…</span><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ink-muted)">chevron_right</span></button>
+</div>
+<div style="padding:26px 20px 28px;display:flex;flex-direction:column">
+<button style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">keyboard</span><span style="flex:1;font-weight:700">Keyboard shortcuts</span><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ink-muted)">chevron_right</span></button>
+<button style="min-height:3.5556rem;display:flex;align-items:center;gap:12px;padding:6px 2px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;font-size:var(--text-base);cursor:pointer"><span class="material-symbols-rounded" aria-hidden="true">print</span><span style="flex:1;font-weight:700">Print the family cookbook</span><span class="material-symbols-rounded" aria-hidden="true" style="color:var(--ink-muted)">chevron_right</span></button>
+</div>
+<div style="margin-top:auto"><dc-import name="TabBar" current="settings" hint-size="100%,84px"></dc-import></div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Phone · full scroll, backup overdue nudge</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Settings · desktop" style="width:1280px;height:800px;display:flex;border-radius:14px;overflow:hidden;position:relative;background-color:var(--paper);background-image:var(--grain);color:var(--ink);box-shadow:0 0 0 1px var(--line-strong),var(--shadow-lift)">
+<dc-import name="Sidebar" style="align-self:stretch" current="settings" hint-size="252px,100%"></dc-import>
+<div style="flex:1;min-width:0;padding:32px 40px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px 48px;align-content:start;overflow:hidden">
+<h1 style="grid-column:1 / -1;margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-3xl);line-height:1">Settings</h1>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h2 style="margin:0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Text size</h2>
+<div role="radiogroup" aria-label="Text size" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:3.5556rem;padding:4px;box-sizing:border-box;border-radius:var(--radius-md);background:var(--control-fill);box-shadow:inset 0 0 0 1.5px var(--line-strong)">
+<sc-for list="{{ sizes }}" as="z" hint-placeholder-count="3">
+<sc-if value="{{ z.on }}" hint-placeholder-val="{{ false }}"><button role="radio" aria-checked="true" style="border:none;border-radius:var(--radius-md);background:var(--ink);color:var(--paper);font-weight:700;font-size:{{ z.px }};cursor:pointer">{{ z.label }}</button></sc-if>
+<sc-if value="{{ z.off }}" hint-placeholder-val="{{ true }}"><button role="radio" aria-checked="false" onClick="{{ z.pick }}" style="border:none;border-radius:var(--radius-md);background:transparent;color:var(--ink);font-weight:700;font-size:{{ z.px }};cursor:pointer">{{ z.label }}</button></sc-if>
+</sc-for>
+</div>
+<p style="margin:0;padding:16px 18px;border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--shadow-paper);font-family:var(--font-display);font-weight:var(--step-weight);font-variation-settings:var(--step-settings);font-size:var(--text-xl);line-height:1.2">Cover tightly and keep on the lowest heat for 20 minutes.</p>
+<h2 style="margin:12px 0 0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">About you</h2>
+<sc-for list="{{ about }}" as="ab" hint-placeholder-count="3"><div style="display:grid;grid-template-columns:10rem minmax(0,1fr);gap:12px;align-items:center;min-height:3.1111rem;border-bottom:1px solid var(--line)"><b>{{ ab.label }}</b><span>{{ ab.value }}</span></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div role="status" style="padding:16px 18px;border-radius:var(--radius-lg);background:var(--accent-soft);display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px"><span style="flex:1 1 200px;display:flex;flex-direction:column"><b>Last backup: 34 days ago</b><span>Save a copy so your recipes are safe.</span></span><button style="min-height:3.1111rem;padding:0 1.2rem;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--action-size)">Back up now</button><button style="min-height:3.1111rem;padding:0 .9rem;border:none;border-radius:var(--radius-md);background:transparent;color:var(--ink);font-weight:700;font-size:var(--text-base)">Restore</button></div>
+<h2 style="margin:6px 0 0;font-family:var(--font-display);font-weight:var(--heading-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-lg);font-variant-caps:var(--heading-case);letter-spacing:var(--heading-tracking)">Voice</h2>
+<sc-for list="{{ voiceSwitches }}" as="sw" hint-placeholder-count="2"><div role="switch" aria-checked="{{ sw.on }}" style="min-height:3.1111rem;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)"><b style="flex:1">{{ sw.label }}</b><sc-if value="{{ sw.on }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:52px;height:32px;border-radius:999px;background:var(--accent);display:flex;align-items:center;justify-content:flex-end;padding:3px;box-sizing:border-box"><span style="width:26px;height:26px;border-radius:999px;background:var(--accent-ink)"></span></span></sc-if><sc-if value="{{ sw.offv }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:52px;height:32px;border-radius:999px;box-shadow:inset 0 0 0 2px var(--line-control);display:flex;align-items:center;padding:3px;box-sizing:border-box"><span style="width:26px;height:26px;border-radius:999px;background:var(--line-control)"></span></span></sc-if></div></sc-for>
+<div style="display:grid;grid-template-columns:10rem minmax(0,1fr);gap:12px;align-items:center;min-height:3.1111rem;border-bottom:1px solid var(--line)"><b>Speech speed</b><span>Normal</span></div>
+<div style="display:grid;grid-template-columns:10rem minmax(0,1fr);gap:12px;align-items:center;min-height:3.1111rem;border-bottom:1px solid var(--line)"><b>Look</b><span>{{ skinName }} · Light</span></div>
+</div>
+<div aria-hidden="true" style="position:absolute;inset:0 0 0 252px;background:rgb(var(--shadow-color) / .28)"></div>
+<div style="position:absolute;right:28px;bottom:28px;width:420px;box-sizing:border-box;padding:20px 22px;border-radius:var(--radius-xl);background:var(--surface);box-shadow:var(--shadow-lift);display:flex;flex-direction:column;gap:10px" role="dialog" aria-label="Keyboard shortcuts">
+<div style="display:flex;align-items:center;justify-content:space-between"><b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-weight:var(--font-display-weight);font-size:var(--text-xl)">Keyboard shortcuts</b><button style="min-height:3.1111rem;padding:0 .6rem;border:none;background:transparent;color:var(--ink);display:flex;align-items:center;gap:4px;font-weight:700;font-size:var(--text-base)"><span class="material-symbols-rounded" aria-hidden="true">close</span>Close</button></div>
+<sc-for list="{{ keys }}" as="ky" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:6rem minmax(0,1fr);gap:12px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)"><kbd style="justify-self:start;font:inherit;font-weight:700;padding:2px 8px;border-radius:6px;box-shadow:inset 0 0 0 1.5px var(--line-strong)">{{ ky.k }}</kbd><span>{{ ky.d }}</span></div></sc-for>
+</div>
+</div>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Desktop · with the ? shortcuts sheet open</figcaption>
+</figure>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { theme: (() => { try { return JSON.parse(localStorage.getItem('bookcook-theme')) || {}; } catch (e) { return {}; } })() };
+  setSize(size) {
+    window.dispatchEvent(new CustomEvent('bookcook-set', { detail: { size } }));
+  }
+  renderVals() {
+    const t = this.state.theme, size = t.size || 'normal';
+    const chips = ['All', "Mom's classics", 'Eid', 'Quick weeknights'].map((label, i) => ({ label, on: i === 0, off: i !== 0 }));
+    const cards = [
+      { title: "Mom's Chicken Biryani", meta: 'Mom · 1 hr 45 min', extra: 'Made 12 times', photo: true },
+      { title: 'Sunday Lentil Soup', meta: 'Dad · 40 min', extra: 'Made 8 times' },
+      { title: 'Aloo Paratha', meta: 'Mom · 35 min', extra: '' },
+      { title: "Grandma's Banana Bread", meta: 'Nani · 1 hr 10 min', extra: 'Made 15 times' },
+      { title: 'Quick Tomato Pasta', meta: 'Me · 20 min', extra: "Based on Mom's Pasta" }
+    ].map(c => ({ ...c, photo: !!c.photo, noPhoto: !c.photo, sel: !!c.photo, unsel: !c.photo, hasExtra: !!c.extra }));
+    const it = (name, from, on) => ({ name, from, on: !!on, off: !on });
+    const aisles = [
+      { name: 'Produce', items: [it('3 onions', 'From Biryani, Karahi'), it('A bunch of mint', 'From Biryani', true), it('A bunch of coriander', 'From Biryani, Karahi')] },
+      { name: 'Meat', items: [it('1 kg chicken, bone-in', 'From Biryani')] },
+      { name: 'Dairy', items: [it('1 cup yogurt', 'From Biryani', true), it('Milk', 'Added by you')] },
+      { name: 'Spices', items: [it('Green cardamom', 'From Biryani', true), it('Bay leaves', 'From Biryani'), it('Saffron', 'From Biryani', true)] },
+      { name: 'Rice and grains', items: [it('3 cups basmati rice', 'From Biryani')] }
+    ];
+    const unchecked = aisles.map(a => ({ ...a, items: a.items.filter(i => !i.on) })).filter(a => a.items.length);
+    const groceryFrames = [
+      { caption: 'Phone · grouped by aisle, some checked', count: '7 to buy · 4 in the basket', clear: true, empty: false, toast: false, aisles },
+      { caption: 'After Clear checked · Undo toast', count: '7 to buy', clear: false, empty: false, toast: true, aisles: unchecked },
+      { caption: 'Empty', count: 'Nothing yet', clear: false, empty: true, toast: false, aisles: [] }
+    ];
+    const reqFrames = [{ caption: 'Phone · open and fulfilled', list: true, empty: false }, { caption: 'Empty', list: false, empty: true }];
+    const sizes = [['normal', 'Normal', '18px'], ['large', 'Large', '21px'], ['huge', 'Huge', '25px']].map(([v, label, px]) => ({ label, px, on: v === size, off: v !== size, pick: () => this.setSize(v) }));
+    const names = { quiet: 'The Quiet Page', heirloom: 'Letterpress Heirloom', 'spice-tin': 'Spice Tin', 'colour-coded': 'Colour-coded', 'colour-field': 'Colour field' };
+    const skinName = names[t.skin || 'quiet'];
+    const sw = (label, hint, on) => ({ label, hint, on: !!on, offv: !on });
+    return {
+      onTheme: theme => this.setState({ theme }), chips, cards, aisles, groceryFrames, reqFrames, sizes, skinName,
+      lookRows: [{ label: 'Style', value: skinName }, { label: 'Accent', value: t.skin === 'colour-field' ? 'Tomato (fixed)' : (t.accent === 'saffron' ? 'Saffron' : 'Tomato') }],
+      lookSwitches: [sw('Ingredient colours', 'A colour for each part of the recipe', (t.spice || 'off') === 'on'), sw('Step photos', 'Show “It should look like this”', (t.photo || 'on') === 'on')],
+      about: [{ label: 'Your name', value: 'Mom' }, { label: 'Default author', value: "From Mom's kitchen" }, { label: 'Cookbook title', value: "Mom's Kitchen" }],
+      voiceSwitches: [sw('Read steps aloud', 'In cook mode, each new step is read', true), sw('Speak the questions', 'Tell it asks each question out loud', true)],
+      keys: [{ k: 'N', d: 'New recipe' }, { k: '/', d: 'Search' }, { k: 'C', d: 'Start cooking' }, { k: 'E', d: 'Edit recipe' }, { k: '← →', d: 'Steps in cook mode' }, { k: 'Ctrl+S', d: 'Save' }]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -21,6 +21,8 @@ import {
   segmentMentions,
   splitOnSeparator,
   aisleFor,
+  checkIngredient,
+  parsePaste,
   formatClock,
   extractInlineIngredients,
   type MergeableItem,
@@ -270,5 +272,23 @@ describe('schema.org import', () => {
   it('accepts plain string instructions', () => {
     const r = recipeFromSchema({ '@type': 'Recipe', name: 'X', recipeIngredient: ['1 egg'], recipeInstructions: 'Beat the egg.\nFry it.' });
     expect(r?.steps.map((s) => s.text)).toEqual(['Beat the egg.', 'Fry it.']);
+  });
+});
+
+describe('checks for Review', () => {
+  it('flags a second amount hiding in the line', () => {
+    expect(checkIngredient('a pinch saffron in 2 tbsp warm milk')).toEqual({ reason: 'twoAmounts' });
+    expect(checkIngredient('1 (400 g) can chopped tomatoes')).toBeUndefined();
+    expect(checkIngredient('3 cups basmati rice, washed and soaked')).toBeUndefined();
+  });
+
+  it('flags lines that are not really ingredients', () => {
+    expect(checkIngredient('2 cups')?.reason).toBe('unclear');
+    expect(checkIngredient('then you put it all in the pot and wait for it')?.reason).toBe('unclear');
+  });
+
+  it('marks unsure rows in pasted recipes', () => {
+    const r = parsePaste(['Ingredients', '1 kg chicken', 'a pinch saffron in 2 tbsp warm milk', 'Method', 'Mix it.'].join('\n'));
+    expect(r.ingredients.map((i) => i.check?.reason)).toEqual([undefined, 'twoAmounts']);
   });
 });

@@ -120,6 +120,19 @@ describe('drafts', () => {
     expect((await listRecipes()).map((x) => x.title)).toEqual(['Better biryani']);
   });
 
+  it('keeps cooks logged while an edit was open, and drops a replaced photo', async () => {
+    const oldPhoto = await putMedia(new Blob(['a'], { type: 'image/webp' }), 'photo');
+    const r = await saveRecipe({ ...biryani, photoIds: [oldPhoto] });
+    const d = await editDraftFor(r);
+    await logCook({ recipeId: r.id, cookedAt: Date.now() });
+    const newPhoto = await putMedia(new Blob(['b'], { type: 'image/webp' }), 'photo');
+    await patchDraft(d.id, { recipe: { ...d.recipe, photoIds: [newPhoto] } });
+    const saved = await commitDraft(d.id);
+    expect(saved.cookedCount).toBe(1);
+    expect(await getMedia(oldPhoto)).toBeUndefined();
+    expect((await getMedia(newPhoto))?.recipeId).toBe(r.id);
+  });
+
   it('fulfils the request a draft was started from', async () => {
     const req = await addRequest({ title: 'Nihari', direction: 'incoming', requestedBy: 'Rayyan' });
     const d = await createDraft('tell', { title: 'Nihari' }, { requestId: req.id });

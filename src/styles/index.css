@@ -25,6 +25,13 @@
       transform: translateX(-24px);
     }
   }
+  /* The editor's parse preview fades in once typing pauses. */
+  --animate-fade-in: fade-in 150ms var(--ease-out) both;
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
 }
 
 /*
@@ -118,7 +125,10 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Toasts sit above the phone tab bar (64px items plus its padding). */
+/* Toasts sit above the phone tab bar (64px items plus its padding), or 12px above the editor's save bar. */
 :root:has([data-tab-bar]) {
   --toast-offset: calc(3.5556rem + 2.25rem);
+}
+:root:has([data-save-bar]) {
+  --toast-offset: calc(3.5556rem + 2.3333rem);
 }

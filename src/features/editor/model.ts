@@ -1,14 +1,17 @@
 import { newId } from '../../db/db';
 import type { Ingredient, Recipe, Step } from '../../db/types';
 import { formatIngredient, parseIngredient, sectionHeading } from '../../lib/parse/ingredient';
-import { quantityMax } from '../../lib/parse/numbers';
-import type { ParsedRecipe } from '../../lib/parse/types';
+import { parseNumber, quantityMax } from '../../lib/parse/numbers';
+import { formatDuration, stepTimer } from '../../lib/parse/timers';
+import type { ParseCheck, ParsedRecipe } from '../../lib/parse/types';
 import { getUnit, SUGGESTED_UNITS, unitLabel } from '../../lib/parse/units';
 
 /** One line in the ingredient editor, exactly as typed. A line ending in ":" is a section heading. */
 export interface IngredientLine {
   id: string;
   text: string;
+  /** Set by the parser for Review; editing the line clears it. */
+  check?: ParseCheck;
 }
 
 export function isHeadingLine(text: string): boolean {
@@ -29,7 +32,7 @@ export function linesToIngredients(lines: IngredientLine[]): Ingredient[] {
     }
     const parsed = parseIngredient(text);
     if (!parsed.name) continue;
-    out.push({ id: line.id, ...parsed, ...(section ? { section } : {}) });
+    out.push({ id: line.id, ...parsed, ...(section ? { section } : {}), ...(line.check ? { check: line.check } : {}) });
   }
   return out;
 }
@@ -43,13 +46,54 @@ export function ingredientsToLines(ings: Ingredient[] | undefined): IngredientLi
       section = i.section;
       if (section) lines.push({ id: newId(), text: `${section}:` });
     }
-    lines.push({ id: i.id, text: formatIngredient(i) });
+    lines.push({ id: i.id, text: formatIngredient(i), ...(i.check ? { check: i.check } : {}) });
   }
   return lines;
 }
 
 export function newStep(text = ''): Step {
   return { id: newId(), text };
+}
+
+/** "30 min", "1 hr 15 min", "45", "an hour" → minutes. A bare number is minutes. */
+export function parseMinutes(text: string): number | undefined {
+  const t = text.trim();
+  if (!t) return undefined;
+  if (/^\d+(?:\.\d+)?$/.test(t)) return Math.round(Number(t)) || undefined;
+  const seconds = stepTimer(t);
+  if (seconds) return Math.max(1, Math.round(seconds / 60));
+  const n = parseNumber(t);
+  return n ? Math.round(n) : undefined;
+}
+
+/** 75 → "1 hr 15 min". */
+export function minutesText(minutes: number | undefined): string {
+  return minutes ? formatDuration(minutes * 60) : '';
+}
+
+/** "Eid, rice,  family " → ["Eid", "rice", "family"]. */
+export function splitTags(text: string): string[] {
+  return [
+    ...new Set(
+      text
+        .split(/[,;\n]/)
+        .map((t) => t.trim())
+        .filter(Boolean),
+    ),
+  ];
+}
+
+/** Nothing typed, spoken or added yet: closing throws the draft away instead of keeping it. */
+export function isBlankDraft(recipe: Partial<Recipe>, lines: IngredientLine[]): boolean {
+  return (
+    !recipe.title?.trim() &&
+    lines.every((l) => !l.text.trim()) &&
+    !recipe.steps?.some((s) => s.text.trim() || s.photoId) &&
+    !recipe.tips?.trim() &&
+    !recipe.story?.some((s) => s.answer.trim() || s.audioId) &&
+    !recipe.photoIds?.length &&
+    !recipe.voiceNoteIds?.length
+  );
 }
 
 /** Parsed recipe (paste, web, voice) → draft fields. */

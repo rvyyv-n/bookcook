@@ -193,6 +193,13 @@ function AutoClose({ close }: { close: () => void }) {
   return null;
 }
 
+/** How an ingredient named in step text looks, from the skin's mention tokens (cook mode and the editor). */
+export const mentionClass = cx(
+  'text-(color:--mention-fg) [background:var(--mention-bg)] [font-style:var(--mention-style)] rounded-(--mention-radius) [padding:var(--mention-pad)]',
+  'underline decoration-(color:--mention-line) [text-decoration-style:var(--mention-line-style)] [text-decoration-thickness:var(--mention-line-width)] underline-offset-[.2em]',
+  '[box-decoration-break:clone] [-webkit-box-decoration-break:clone]',
+);
+
 /**
  * An ingredient named in a step, styled by the skin's mention tokens. Tapping it shows the amount
  * (already scaled) in an ink chip below; it closes on the next tap, on Esc, or after 4 seconds.
@@ -212,15 +219,7 @@ export function Mention({
 }) {
   return (
     <DialogTrigger>
-      <AriaButton
-        data-spice-group={spiceGroup}
-        aria-label={label}
-        className={cx(
-          'inline cursor-pointer leading-none text-(color:--mention-fg) [background:var(--mention-bg)] [font-style:var(--mention-style)] rounded-(--mention-radius) [padding:var(--mention-pad)]',
-          'underline decoration-(color:--mention-line) [text-decoration-style:var(--mention-line-style)] [text-decoration-thickness:var(--mention-line-width)] underline-offset-[.2em]',
-          '[box-decoration-break:clone] [-webkit-box-decoration-break:clone]',
-        )}
-      >
+      <AriaButton data-spice-group={spiceGroup} aria-label={label} className={cx('inline cursor-pointer leading-none', mentionClass)}>
         {children}
       </AriaButton>
       <Popover

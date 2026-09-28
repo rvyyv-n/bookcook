@@ -1,0 +1,246 @@
+/* Bookcook design tokens — src/design/tokens.css
+ *
+ * Runtime switches (all on <html>):
+ *   data-skin       quiet | heirloom | spice-tin | colour-coded | colour-field   (default quiet)
+ *   data-theme      light | dark                                                  (default light)
+ *   data-accent     tomato | saffron   (ignored by colour-field, which is fixed tomato)
+ *   data-text-size  normal | large | huge   (scales rem: 1rem = 18px × scale)
+ *   data-spice      on | off   (ingredient colours; any skin. colour-coded ships with it on)
+ * Local switches:
+ *   data-surface="field"     remaps colours to the accent field (colour-field cook mode, detail header)
+ *   data-spice-group="1..4"  on an ingredient section / mention / timer: picks its spice colour
+ *
+ * Section 9 names are kept exactly. Everything under "Skin extras" is additive;
+ * a skin may leave an extra at its quiet default.
+ */
+
+/* ---------- Tailwind v4 scale (1rem = 18px) ---------- */
+@theme {
+  --spacing: 0.2222rem;                 /* 4px grid unit */
+  --text-sm: 0.7778rem;   --text-sm--line-height: 1.35;    /* 14 caption, rare */
+  --text-base: 1rem;      --text-base--line-height: 1.5;   /* 18 body */
+  --text-lg: 1.2222rem;   --text-lg--line-height: 1.4;     /* 22 */
+  --text-xl: 1.5556rem;   --text-xl--line-height: 1.25;    /* 28 */
+  --text-2xl: 2rem;       --text-2xl--line-height: 1.1;    /* 36 */
+  --text-3xl: 2.6667rem;  --text-3xl--line-height: 1.05;   /* 48 */
+  --text-4xl: 3.5556rem;  --text-4xl--line-height: 1.08;   /* 64 cook step (tablet) */
+  --radius-sm: 8px;  --radius-md: 16px;  --radius-lg: 18px;  --radius-xl: 28px;
+  --shadow-paper: 0 1px 2px rgb(var(--shadow-color) / .08), 0 10px 24px -14px rgb(var(--shadow-color) / .22);
+  --shadow-lift: 0 2px 4px rgb(var(--shadow-color) / .08), 0 18px 40px -16px rgb(var(--shadow-color) / .38);
+  --animate-breathe: bc-breathe 2.4s ease-in-out infinite;
+  --animate-rise: bc-rise var(--dur) var(--ease-out) both;
+  --animate-pop: bc-pop 260ms var(--ease-out) both;
+}
+/* Mirror of @theme for non-Tailwind consumers (the reference page). Keep in sync. */
+:root {
+  --spacing: 0.2222rem;
+  --text-sm: 0.7778rem; --text-base: 1rem; --text-lg: 1.2222rem; --text-xl: 1.5556rem;
+  --text-2xl: 2rem; --text-3xl: 2.6667rem; --text-4xl: 3.5556rem;
+  --radius-sm: 8px; --radius-md: 16px; --radius-lg: 18px; --radius-xl: 28px;
+  --shadow-paper: 0 1px 2px rgb(var(--shadow-color) / .08), 0 10px 24px -14px rgb(var(--shadow-color) / .22);
+  --shadow-lift: 0 2px 4px rgb(var(--shadow-color) / .08), 0 18px 40px -16px rgb(var(--shadow-color) / .38);
+  --animate-breathe: bc-breathe 2.4s ease-in-out infinite;
+  --animate-rise: bc-rise var(--dur) var(--ease-out) both;
+  --animate-pop: bc-pop 260ms var(--ease-out) both;
+}
+
+/* ---------- Text size ---------- */
+:root { --text-scale: 1; font-size: calc(18px * var(--text-scale)); }
+:root[data-text-size='large'] { --text-scale: 1.2; }
+:root[data-text-size='huge']  { --text-scale: 1.45; }
+
+/* ---------- Motion ---------- */
+:root { --ease-out: cubic-bezier(.2, .7, .2, 1); --dur: 200ms; }
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur: 1ms; --animate-breathe: none; --animate-pop: none; }
+}
+@keyframes bc-breathe { 0%,100% { transform: scale(1); box-shadow: 0 0 0 0 var(--accent-soft); } 50% { transform: scale(1.08); box-shadow: 0 0 0 10px var(--accent-soft); } }
+@keyframes bc-rise { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes bc-pop { 0% { transform: scale(.6); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes bc-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Skin: 1 The Quiet Page (base) ---------- */
+:root {
+  --paper: #FBF7F0; --surface: #FFFFFF; --sunk: #F3ECE1;
+  --ink: #1F1B16; --ink-muted: #574E45;
+  --line: #E6DDD0; --line-strong: #C9BBA9;
+  --success: #2F5E2A; --success-soft: #DCEAD0; --danger: #9B2C1F; --danger-soft: #F6DAD4;
+  --shadow-color: 80 50 25;
+  --font-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --font-display-settings: 'SOFT' 20;
+  --font-display-weight: 380;
+  --font-body: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --font-handwritten: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --font-handwritten-settings: 'SOFT' 100, 'WONK' 1;
+
+  /* Skin extras */
+  --line-control: #8F8172;                 /* ≥3:1 borders: inputs, checkboxes, switches */
+  --grain: none;
+  --heading-size: var(--text-2xl); --heading-weight: 300; --heading-case: normal;
+  --heading-tracking: -0.02em; --heading-align: start; --heading-rule: none;   /* none | block */
+  --eyebrow-weight: 400;
+  --step-size: 2.3333rem; --step-weight: 340; --step-settings: 'SOFT' 30;   /* phone: 42px */
+  --handwritten-weight: 380;
+  --mention-bg: linear-gradient(transparent 58%, var(--accent-soft) 58%);
+  --mention-fg: currentColor; --mention-style: normal; --mention-radius: 0; --mention-pad: 0;
+  --mention-line: var(--accent-mark); --mention-line-style: solid; --mention-line-width: 2px;
+  --control-fill: transparent; --control-fill-hover: var(--sunk); --control-border: 1.5px;
+  --action-font: var(--font-body); --action-weight: 700; --action-size: var(--text-base); --action-settings: normal;
+  --cook-btn-direction: column;
+  /* Timer: the ring box holds the icon; skins without a ring keep it icon-sized and transparent */
+  --timer-ring: 1.5556rem; --timer-ring-track: transparent; --timer-ring-fill: transparent; --timer-disc: var(--disc);
+  --timer-bg: transparent; --timer-shadow: inset 0 0 0 var(--control-border) var(--line-strong);
+  --timer-hot-bg: var(--accent); --timer-hot-fg: var(--accent-ink);
+  --timer-group-bg: transparent; --timer-group-shadow: none;
+  --ring: var(--accent-mark);
+  --tab-new-bg: var(--accent); --tab-new-fg: var(--accent-ink);
+}
+:root[data-theme='dark'] {
+  --paper: #171411; --surface: #221E1A; --sunk: #110E0C;
+  --ink: #F3EDE4; --ink-muted: #BDB3A7;
+  --line: #342E28; --line-strong: #544B42; --line-control: #766A5C;
+  --success: #9CCB8A; --success-soft: #22301D; --danger: #F29A8A; --danger-soft: #45201A;
+  --shadow-color: 0 0 0;
+}
+
+/* ---------- Skin: 2 Letterpress Heirloom ---------- */
+:root[data-skin='heirloom'] {
+  --paper: #F3EBDC; --surface: #F9F3E7; --sunk: #E9DFCB;
+  --ink: #2A2119; --ink-muted: #56473A;
+  --line: #D9CAB1; --line-strong: #B9A484; --line-control: #857767;
+  --shadow-color: 92 64 36;
+  --font-display: 'EB Garamond Variable', 'EB Garamond', Georgia, serif;
+  --font-display-settings: normal; --font-display-weight: 500;
+  --font-handwritten: 'EB Garamond Variable', 'EB Garamond', Georgia, serif; --font-handwritten-settings: normal;
+  --handwritten-weight: 400;
+  --radius-sm: 3px; --radius-md: 12px; --radius-lg: 12px; --radius-xl: 16px;
+  --shadow-paper: inset 0 1px 3px rgb(var(--shadow-color) / .24), 0 1px 0 rgb(255 255 255 / .8);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .25 0 0 0 0 .14 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --heading-size: var(--text-lg); --heading-weight: 600; --heading-case: all-small-caps;
+  --heading-tracking: .14em; --heading-align: center; --heading-rule: block;
+  --step-size: 2.2222rem; --step-weight: 560; --step-settings: normal;   /* 40px; never thinner */
+  --mention-bg: none; --mention-fg: var(--accent-text); --mention-style: italic;
+  --mention-line-style: dotted; --mention-line-width: 2px;
+  --control-border: 1px;
+  --timer-shadow: none; --timer-hot-bg: transparent; --timer-hot-fg: var(--accent-text);
+  --timer-group-bg: var(--sunk); --timer-group-shadow: var(--shadow-paper);
+}
+:root[data-skin='heirloom'][data-theme='dark'] {
+  --paper: #1B1612; --surface: #241E18; --sunk: #130F0C;
+  --ink: #EFE4D2; --ink-muted: #C4B5A0;
+  --line: #3A3128; --line-strong: #5A4C3E; --line-control: #766A5C;
+  --shadow-color: 0 0 0;
+  --shadow-paper: inset 0 1px 3px rgb(0 0 0 / .55), 0 1px 0 rgb(255 255 255 / .06);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .92 0 0 0 0 .8 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Skins: 3a Spice Tin · 3b Colour-coded · 3c Colour field ---------- */
+:root:is([data-skin='spice-tin'], [data-skin='colour-coded'], [data-skin='colour-field']) {
+  --paper: #F8EEDD; --surface: #FFFCF6; --sunk: #EFE1C9;
+  --ink: #221A12; --ink-muted: #57483A;
+  --line: #E5D5BA; --line-strong: #CBB590; --line-control: #8F8172;
+  --shadow-color: 80 50 20;
+  --font-display-settings: 'SOFT' 100, 'WONK' 1; --font-display-weight: 800;
+  --handwritten-weight: 420;
+  --radius-sm: 12px; --radius-md: 999px; --radius-lg: 28px; --radius-xl: 32px;
+  --shadow-paper: 0 1px 2px rgb(var(--shadow-color) / .2), 0 8px 18px -12px rgb(var(--shadow-color) / .2);
+  --heading-weight: 800; --heading-tracking: -0.01em;
+  --step-size: 2.1111rem; --step-weight: 600; --step-settings: 'SOFT' 100;   /* 38px */
+  --mention-bg: none; --mention-fg: var(--accent-text); --mention-line-width: 3px;
+  --control-fill: var(--sunk); --control-fill-hover: var(--line); --control-border: 0px;
+  --action-font: var(--font-display); --action-size: var(--text-lg); --action-settings: 'SOFT' 100, 'WONK' 1;
+  --cook-btn-direction: row;
+  --timer-ring: 3.1111rem; --timer-ring-track: var(--sunk); --timer-ring-fill: var(--ring);
+  --timer-bg: var(--surface); --timer-shadow: var(--shadow-paper);
+  --timer-hot-bg: var(--accent-soft); --timer-hot-fg: var(--ink);
+  --tab-new-bg: var(--ink); --tab-new-fg: var(--paper);
+}
+:root[data-skin='colour-coded'] { --timer-ring: 3.5556rem; --timer-bg: transparent; --timer-shadow: none; --timer-hot-bg: transparent; --timer-disc: var(--paper); }
+:root[data-skin='colour-field'] { --eyebrow-weight: 340; --step-size: 2.3333rem; --step-weight: 700; }
+:root:is([data-skin='spice-tin'], [data-skin='colour-coded'], [data-skin='colour-field'])[data-theme='dark'] {
+  --paper: #1A1410; --surface: #261E17; --sunk: #30261D;
+  --ink: #F4EADB; --ink-muted: #C6B6A2;
+  --line: #3D3228; --line-strong: #5C4B3A; --line-control: #766A5C;
+  --shadow-color: 0 0 0;
+}
+
+/* ---------- Accent: tomato (default) / saffron ---------- */
+:root {
+  --accent: #B63E26; --accent-strong: #9A3320; --accent-soft: #F7DCD2;
+  --accent-ink: #FFFFFF; --accent-text: #93321D;
+  --accent-mark: #B63E26;                 /* extra: non-text marks (progress, pulse, rings) ≥3:1 */
+  --focus: var(--accent-text);
+  --field: #9A3320; --field-ink: #FFFFFF;
+}
+:root[data-accent='saffron'] {
+  --accent: #E9A23B; --accent-strong: #D48A22; --accent-soft: #F8E6C3;
+  --accent-ink: #1F1B16; --accent-text: #714708; --accent-mark: #B8791A;
+  --field: #EDB04F; --field-ink: #1F1B16;
+}
+:root[data-theme='dark'] {
+  --accent: #EE7A5F; --accent-strong: #F29479; --accent-soft: #4A2419;
+  --accent-ink: #1A0F0B; --accent-text: #F29A82; --accent-mark: #EE7A5F;
+  --field: #7A2616; --field-ink: #FBEDE6;
+}
+:root[data-theme='dark'][data-accent='saffron'] {
+  --accent: #F0B452; --accent-strong: #F5C46F; --accent-soft: #47341A;
+  --accent-ink: #1A120A; --accent-text: #F3C272; --accent-mark: #F0B452;
+  --field: #DBA040; --field-ink: #1A120A;
+}
+/* Colour field is fixed tomato (must stay after the accent rules) */
+:root[data-skin='colour-field'] {
+  --accent: #B63E26; --accent-strong: #9A3320; --accent-soft: #F7DCD2;
+  --accent-ink: #FFFFFF; --accent-text: #93321D; --accent-mark: #B63E26;
+  --field: #9A3320; --field-ink: #FFFFFF;
+}
+:root[data-skin='colour-field'][data-theme='dark'] {
+  --accent: #EE7A5F; --accent-strong: #F29479; --accent-soft: #4A2419;
+  --accent-ink: #1A0F0B; --accent-text: #F29A82; --accent-mark: #EE7A5F;
+  --field: #7A2616; --field-ink: #FBEDE6;
+}
+
+/* ---------- Field surface (3c cook mode + detail header) ---------- */
+[data-surface='field'] {
+  --paper: var(--field); --surface: color-mix(in srgb, var(--field-ink) 14%, var(--field));
+  --sunk: color-mix(in srgb, var(--field-ink) 14%, var(--field));
+  --ink: var(--field-ink); --ink-muted: var(--field-ink);
+  --line: color-mix(in srgb, var(--field-ink) 40%, var(--field)); --line-strong: var(--line); --line-control: var(--field-ink);
+  --accent: var(--field-ink); --accent-strong: var(--field-ink); --accent-ink: var(--field);
+  --accent-soft: color-mix(in srgb, var(--field-ink) 30%, var(--field));
+  --accent-text: var(--field-ink); --accent-mark: var(--field-ink); --focus: var(--field-ink);
+  --mention-bg: var(--field-ink); --mention-fg: var(--field); --mention-line: transparent;
+  --mention-radius: 14px; --mention-pad: 0 .22em;
+  --control-fill: var(--sunk); --control-fill-hover: var(--accent-soft);
+  --timer-bg: var(--sunk); --timer-shadow: none; --timer-hot-bg: var(--field-ink); --timer-hot-fg: var(--field);
+  --ring: var(--field-ink);
+  background: var(--paper); color: var(--ink);
+}
+
+/* ---------- Ingredient colours (spice) ---------- */
+:root {
+  --spice-1: #6E4700; --spice-1-soft: #F4E4C0;   /* turmeric */
+  --spice-2: #2B5421; --spice-2-soft: #DCEAD0;   /* cardamom */
+  --spice-3: #16524D; --spice-3-soft: #D2E8E4;   /* mint */
+  --spice-4: #8A2238; --spice-4-soft: #F3D7DD;   /* chilli */
+}
+:root[data-theme='dark'] {
+  --spice-1: #E8C46A; --spice-1-soft: #3D3016;
+  --spice-2: #A9D08F; --spice-2-soft: #25331D;
+  --spice-3: #86CFC6; --spice-3-soft: #1A3330;
+  --spice-4: #EFA0AE; --spice-4-soft: #3F1B22;
+}
+/* Off by default: groups render as plain ink. --sp-show hides dots and hairlines. */
+[data-spice-group] { --sp: currentColor; --sp-soft: transparent; --sp-show: none; --sp-rule: none; --sp-heading: currentColor; }
+:root[data-spice='on'] [data-spice-group='1'] { --sp: var(--spice-1); --sp-soft: var(--spice-1-soft); --sp-show: inline-block; }
+:root[data-spice='on'] [data-spice-group='2'] { --sp: var(--spice-2); --sp-soft: var(--spice-2-soft); --sp-show: inline-block; }
+:root[data-spice='on'] [data-spice-group='3'] { --sp: var(--spice-3); --sp-soft: var(--spice-3-soft); --sp-show: inline-block; }
+:root[data-spice='on'] [data-spice-group='4'] { --sp: var(--spice-4); --sp-soft: var(--spice-4-soft); --sp-show: inline-block; }
+/* Quiet skins: dot + coloured hairline, text stays ink */
+:root[data-spice='on']:is(:not([data-skin]), [data-skin='quiet'], [data-skin='heirloom']) [data-spice-group] {
+  --mention-line: var(--sp); --ring: var(--sp); --sp-rule: block;
+}
+/* Tin family: tinted pill, text in the spice colour */
+:root[data-spice='on']:is([data-skin='spice-tin'], [data-skin='colour-coded'], [data-skin='colour-field']) [data-spice-group] {
+  --mention-bg: var(--sp-soft); --mention-fg: var(--sp); --mention-line: transparent;
+  --mention-radius: 12px; --mention-pad: 0 .22em; --sp-heading: var(--sp); --ring: var(--sp);
+}

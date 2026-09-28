@@ -1,5 +1,9 @@
 import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
+import { CaptureSoonPage, NewRecipePage } from '../features/capture/NewRecipe';
+import { PasteItPage } from '../features/capture/PasteIt';
 import { CookModePage } from '../features/cook/CookMode';
+import { EditRecipePage, TypeItPage } from '../features/editor/RecipeEditor';
+import { ReviewPage } from '../features/editor/Review';
 import { CollectionPage, CollectionsPage, TagPage, TagsPage } from '../features/library/Browse';
 import { CookbookPage } from '../features/library/Cookbook';
 import { RecipeDetailPage } from '../features/recipe/RecipeDetail';
@@ -53,22 +57,21 @@ const router = createBrowserRouter(
       element: <Root />,
       errorElement: <RouteError />,
       children: [
-        // Full-screen, no app shell.
+        // Full-screen, no app shell: cook mode and Check your recipe.
         { path: '/r/:id/cook', element: <CookModePage /> },
+        { path: '/new/review/:draftId', element: <ReviewPage /> },
         { path: '/print', element: <Placeholder title="Print the family cookbook" /> },
         {
           element: <AppShell />,
           children: [
             { path: '/', element: <CookbookPage /> },
             { path: '/r/:id', element: <RecipeDetailPage /> },
-            { path: '/r/:id/edit', element: <Placeholder title="Edit recipe" /> },
-            { path: '/new', element: <Placeholder title="New recipe" /> },
-            { path: '/new/tell/:draftId', element: <Placeholder title="Tell it" /> },
-            { path: '/new/talk/:draftId', element: <Placeholder title="Just talk" /> },
-            { path: '/new/type/:draftId', element: <Placeholder title="Type it" /> },
-            { path: '/new/paste/:draftId', element: <Placeholder title="Paste it" /> },
-            { path: '/new/link/:draftId', element: <Placeholder title="From a link" /> },
-            { path: '/new/review/:draftId', element: <Placeholder title="Check your recipe" /> },
+            { path: '/r/:id/edit', element: <EditRecipePage /> },
+            { path: '/new', element: <NewRecipePage /> },
+            { path: '/new/type/:draftId', element: <TypeItPage /> },
+            { path: '/new/paste/:draftId', element: <PasteItPage /> },
+            // Tell it, Just talk and From a link (phase 8).
+            { path: '/new/:mode/:draftId', element: <CaptureSoonPage /> },
             { path: '/c', element: <CollectionsPage /> },
             { path: '/c/:id', element: <CollectionPage /> },
             { path: '/t', element: <TagsPage /> },

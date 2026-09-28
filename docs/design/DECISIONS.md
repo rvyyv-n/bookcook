@@ -1,6 +1,6 @@
 # Decisions on the design handoff
 
-The other files in this folder are copied verbatim from the design handoff. The full package (the HTML prototypes, the stock photo and the screenshots) stays local in `design_handoff/`, which is gitignored: the photo is watermarked stock and must never be pushed. Paths in the copied docs such as `design/*.dc.html` and `screenshots/` refer to that local folder.
+The other files in this folder are copied verbatim from the design handoff. The full package (the HTML prototypes and the screenshots) is in `design_handoff/` for reference; paths in the copied docs such as `design/*.dc.html` and `screenshots/` refer to that folder. Its stock photo was removed: the example recipes use pixel-art pictures instead.
 
 ## Design
 
@@ -59,3 +59,13 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 - **Scaled amounts move to a smaller unit below 1**: 1 kg for 4 of 6 is 670 g, 1 tbsp is 2 tsp, as in the ingredients-sheet mock.
 - **The keyboard hint shows only with a mouse or trackpad** (`pointer: fine`), so touch tablets don't see it.
 
+## New recipe and Type it
+
+- **Tell it, Just talk and From a link open a holding page** until phase 8, saying they're coming, with a primary button to type the recipe instead (the draft switches to Type it).
+- **Paste it is built now** (brought forward from phase 8) because it's the way into Check your recipe: paste, Tidy it up, then Review.
+- **Check your recipe is full screen**, without the app shell, as in the Review mock.
+- **An empty new draft is thrown away on Close**, and an edit draft opened and left untouched is too, so neither leaves a "Continue your draft" card behind.
+- **Prep and Cook are typed as words** ("1 hr 15 min", "45") and stored as minutes; a time that can't be read is marked when you leave the field.
+
+- **The desktop editor has a Tags pill** beside Serves, Prep and Cook, which the mock leaves out, so tags can be edited on desktop too.
+- **Desktop steps have Add photo**, as on the phone, though the desktop mock draws the steps without it.

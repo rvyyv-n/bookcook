@@ -12,9 +12,9 @@ import { skinConfig, spiceGroups } from '../../design/skin';
 import { useT } from '../../i18n';
 import type { Command } from '../../lib/parse/commands';
 import { formatIngredient, ingredientParts } from '../../lib/parse/ingredient';
-import { findMentions } from '../../lib/parse/mentions';
+import { segmentStep } from '../../lib/parse/segments';
 import { getUnit } from '../../lib/parse/units';
-import { findDurations, formatClock, formatDuration, spokenDuration, type DurationMatch } from '../../lib/parse/timers';
+import { formatClock, formatDuration, spokenDuration, type DurationMatch } from '../../lib/parse/timers';
 import { compressImage } from '../../lib/platform/image';
 import { useWakeLock } from '../../lib/platform/wakeLock';
 import { newId } from '../../db/db';
@@ -71,25 +71,7 @@ function StepText({
   const groups = useMemo(() => spiceGroups(ingredients.map((i) => i.section)), [ingredients]);
   const parts = useMemo(() => {
     const byId = new Map(ingredients.map((i) => [i.id, i]));
-    const marks: { index: number; length: number; ingredient?: Ingredient; duration?: DurationMatch }[] = findDurations(text).map((d) => ({
-      index: d.index,
-      length: d.length,
-      duration: d,
-    }));
-    for (const m of findMentions(text, ingredients)) {
-      if (marks.some((x) => m.index < x.index + x.length && x.index < m.index + m.length)) continue;
-      marks.push({ index: m.index, length: m.length, ingredient: byId.get(m.ingredientId) });
-    }
-    marks.sort((a, b) => a.index - b.index);
-    const out: { text: string; ingredient?: Ingredient; duration?: DurationMatch }[] = [];
-    let last = 0;
-    for (const m of marks) {
-      if (m.index > last) out.push({ text: text.slice(last, m.index) });
-      out.push({ text: text.slice(m.index, m.index + m.length), ingredient: m.ingredient, duration: m.duration });
-      last = m.index + m.length;
-    }
-    if (last < text.length) out.push({ text: text.slice(last) });
-    return out;
+    return segmentStep(text, ingredients).map((s) => ({ ...s, ingredient: s.ingredientId ? byId.get(s.ingredientId) : undefined }));
   }, [text, ingredients]);
   return parts.map((p, i) => {
     if (p.duration) return <Fragment key={i}>{duration(p.duration)}</Fragment>;

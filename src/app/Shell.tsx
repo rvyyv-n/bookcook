@@ -11,14 +11,14 @@ import { useIsDesktop } from './useMediaQuery';
 /** Routes that take over the phone screen (no tab bar): editors and guided capture. */
 const FOCUSED = ['/new/:mode/:draftId', '/r/:id/edit', '/import'];
 
-/** Routes that lay themselves out edge to edge: the cookbook panes and the recipe's photo hero. */
-const BLEED = ['/r/:id'];
-const DESK_BLEED = ['/', '/r/:id'];
+/** Routes that lay themselves out edge to edge: the cookbook panes, the recipe's photo hero and the editors. */
+const BLEED = ['/r/:id', '/new/:mode/:draftId', '/r/:id/edit'];
+const DESK_BLEED = ['/', '/new', '/r/:id', '/new/:mode/:draftId', '/r/:id/edit'];
 
 type Section = 'cookbook' | 'collections' | 'tags' | 'grocery' | 'requests' | 'settings';
 
 const SECTIONS: { id: Section; href: string; icon: IconName; match: string[] }[] = [
-  { id: 'cookbook', href: '/', icon: 'cookbook', match: ['/', '/r/*'] },
+  { id: 'cookbook', href: '/', icon: 'cookbook', match: ['/', '/r/*', '/new', '/new/*'] },
   { id: 'collections', href: '/c', icon: 'collections', match: ['/c', '/c/*'] },
   { id: 'tags', href: '/t', icon: 'tags', match: ['/t', '/t/*'] },
   { id: 'grocery', href: '/grocery', icon: 'grocery', match: ['/grocery'] },
@@ -48,7 +48,7 @@ function PhoneShell() {
         className={cx(
           'mx-auto w-full max-w-3xl',
           !bleed && 'px-5 pt-[max(1.25rem,env(safe-area-inset-top))]',
-          focused ? 'pb-8' : 'pb-[calc(3.5556rem+1.5rem+env(safe-area-inset-bottom))]',
+          focused ? !bleed && 'pb-8' : 'pb-[calc(3.5556rem+1.5rem+env(safe-area-inset-bottom))]',
         )}
       >
         <Outlet />

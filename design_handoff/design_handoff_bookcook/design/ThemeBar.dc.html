@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<header style="position:sticky;top:0;z-index:50;background-color:var(--paper);background-image:var(--grain);border-bottom:1px solid var(--line);box-shadow:0 6px 18px -14px rgb(var(--shadow-color) / .5)">
+<div style="padding:10px 28px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px">
+<div style="display:flex;flex-direction:column;gap:3px;margin-right:auto">
+<span style="font:700 17px/1.2 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink)">Bookcook screens</span>
+<nav aria-label="Screen files" style="display:flex;flex-wrap:wrap;gap:4px 14px;font:600 14px/1.4 'Atkinson Hyperlegible Next',sans-serif">
+<sc-for list="{{ pages }}" as="p" hint-placeholder-count="6">
+<sc-if value="{{ p.on }}" hint-placeholder-val="{{ false }}"><a href="{{ p.href }}" aria-current="page" style="color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;text-decoration-color:var(--accent-mark)">{{ p.name }}</a></sc-if>
+<sc-if value="{{ p.off }}" hint-placeholder-val="{{ true }}"><a href="{{ p.href }}" style="color:var(--ink-muted);text-decoration:none" style-hover="color:var(--ink)">{{ p.name }}</a></sc-if>
+</sc-for>
+</nav>
+</div>
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="6">
+<div role="radiogroup" aria-label="{{ g.label }}" style="display:flex;align-items:center;gap:4px;font:600 13px/1 'Atkinson Hyperlegible Next',sans-serif">
+<span style="color:var(--ink-muted);margin-right:4px">{{ g.label }}</span>
+<sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="2">
+<sc-if value="{{ o.on }}" hint-placeholder-val="{{ false }}"><button role="radio" aria-checked="true" onClick="{{ o.pick }}" style="min-height:40px;padding:0 12px;border:none;border-radius:999px;background:var(--ink);color:var(--paper);font:600 13px/1 'Atkinson Hyperlegible Next',sans-serif;cursor:pointer">{{ o.name }}</button></sc-if>
+<sc-if value="{{ o.off }}" hint-placeholder-val="{{ true }}"><button role="radio" aria-checked="false" disabled="{{ o.disabled }}" onClick="{{ o.pick }}" style="min-height:40px;padding:0 12px;border:none;border-radius:999px;background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-strong);font:600 13px/1 'Atkinson Hyperlegible Next',sans-serif;cursor:pointer" style-hover="background:var(--sunk)">{{ o.name }}</button></sc-if>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;page&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;capture&quot;,&quot;editor&quot;,&quot;cook&quot;,&quot;home&quot;,&quot;print&quot;,&quot;ds&quot;],&quot;default&quot;:&quot;capture&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onChange&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(cfg) =&gt; void&quot;}}">
+class Component extends DCLogic {
+  state = (() => { try { return JSON.parse(localStorage.getItem('bookcook-theme')) || {}; } catch (e) { return {}; } })();
+  componentDidMount() { this._h = e => this.setState(e.detail || {}); window.addEventListener('bookcook-set', this._h); this.apply(); }
+  componentWillUnmount() { window.removeEventListener('bookcook-set', this._h); }
+  componentDidUpdate() { this.apply(); }
+  cur() {
+    const s = this.state, skin = s.skin || 'quiet';
+    return { skin, mode: s.mode || 'light', accent: s.accent || 'tomato', size: s.size || 'normal', spice: s.spice || (skin === 'colour-coded' ? 'on' : 'off'), photo: s.photo || 'on' };
+  }
+  apply() {
+    const c = this.cur(), r = document.documentElement;
+    r.dataset.skin = c.skin; r.dataset.theme = c.mode; r.dataset.accent = c.accent; r.dataset.textSize = c.size; r.dataset.spice = c.spice;
+    const k = JSON.stringify(c);
+    if (k !== this._last) { this._last = k; try { localStorage.setItem('bookcook-theme', k); } catch (e) {} this.props.onChange && this.props.onChange(c); }
+  }
+  renderVals() {
+    const c = this.cur(), field = c.skin === 'colour-field';
+    const set = (k, v) => () => this.setState(k === 'skin' ? { skin: v, spice: v === 'colour-coded' ? 'on' : 'off' } : { [k]: v });
+    const mk = (label, key, opts, dis) => ({ label, opts: opts.map(([v, name]) => { const on = c[key] === v; return { name, on, off: !on, pick: dis ? undefined : set(key, v), disabled: !!dis }; }) });
+    const groups = [
+      mk('Skin', 'skin', [['quiet', '1 Quiet'], ['heirloom', '2 Heirloom'], ['spice-tin', '3a Tin'], ['colour-coded', '3b Coded'], ['colour-field', '3c Field']]),
+      mk('Mode', 'mode', [['light', 'Light'], ['dark', 'Dark']]),
+      mk(field ? 'Accent (fixed)' : 'Accent', 'accent', [['tomato', 'Tomato'], ['saffron', 'Saffron']], field),
+      mk('Text', 'size', [['normal', 'Normal'], ['large', 'Large'], ['huge', 'Huge']]),
+      mk('Ingredient colours', 'spice', [['off', 'Off'], ['on', 'On']]),
+      mk('Step photo', 'photo', [['off', 'Off'], ['on', 'On']])
+    ];
+    const cur = this.props.page;
+    const pages = [['capture', 'Capture', 'Bookcook Capture.dc.html'], ['editor', 'Type · Paste · Review', 'Bookcook Editor.dc.html'], ['cook', 'Recipe · Cook', 'Bookcook Cook.dc.html'], ['home', 'Cookbook · Lists · Settings', 'Bookcook Home.dc.html'], ['print', 'Print', 'Bookcook Print.dc.html'], ['ds', 'Design system', 'Bookcook Design System.dc.html']]
+      .map(([id, name, href]) => ({ name, href: encodeURI(href), on: id === cur, off: id !== cur }));
+    return { groups, pages };
+  }
+}
+</script>
+</body>
+</html>

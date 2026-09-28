@@ -45,6 +45,39 @@ export interface TextFieldProps extends Omit<AriaTextFieldProps, 'children' | 'c
   /** Show the Speak button inside the field (when speech is available and the field is controlled). */
   dictate?: boolean;
   inputRef?: Ref<HTMLInputElement & HTMLTextAreaElement>;
+  /** Words either side of a short value, as in "From Mom’s kitchen": the value is bold and sized to fit. */
+  prefix?: ReactNode;
+  suffix?: ReactNode;
+}
+
+/**
+ * An input as wide as what's typed in it (an invisible copy of the text sets the width), for a value
+ * that sits inside a sentence. Must be inside a React Aria TextField.
+ */
+export function AutoSizeInput({
+  value,
+  placeholder,
+  className,
+  inputRef,
+}: {
+  value: string;
+  placeholder?: string;
+  className?: string;
+  inputRef?: Ref<HTMLInputElement>;
+}) {
+  return (
+    <span className={cx('inline-grid max-w-full min-w-[1ch]', className)}>
+      <span aria-hidden className="invisible col-start-1 row-start-1 overflow-hidden whitespace-pre">
+        {value || placeholder || ' '}
+      </span>
+      <Input
+        ref={inputRef}
+        placeholder={placeholder}
+        size={1}
+        className="col-start-1 row-start-1 w-full min-w-0 bg-transparent font-[inherit] text-inherit outline-none placeholder:font-normal placeholder:text-ink-muted"
+      />
+    </span>
+  );
 }
 
 /** The Speak button and its listening state. Final words are appended to the field's value. */
@@ -118,6 +151,8 @@ export function TextField({
   labelHidden,
   dictate = true,
   inputRef,
+  prefix,
+  suffix,
   ...rest
 }: TextFieldProps) {
   const speak = useSpeak(rest.value, rest.onChange);
@@ -141,6 +176,17 @@ export function TextField({
             placeholder={placeholder}
             className={cx(inputBase, 'resize-y self-stretch py-3', inputClassName)}
           />
+        ) : prefix || suffix ? (
+          <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-1.5 self-center px-[0.7778rem] py-2.5">
+            {prefix && <span className="text-ink-muted">{prefix}</span>}
+            <AutoSizeInput
+              value={rest.value ?? ''}
+              placeholder={placeholder}
+              inputRef={inputRef}
+              className={cx('font-bold', inputClassName)}
+            />
+            {suffix && <span className="text-ink-muted">{suffix}</span>}
+          </span>
         ) : (
           <Input ref={inputRef} placeholder={placeholder} className={cx(inputBase, 'self-stretch', inputClassName)} />
         )}

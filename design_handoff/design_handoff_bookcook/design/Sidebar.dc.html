@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<nav aria-label="Sidebar" style="width:252px;height:100%;flex:none;box-sizing:border-box;align-self:stretch;display:flex;flex-direction:column;gap:4px;padding:20px 14px;background:var(--sunk);border-right:1px solid var(--line)">
+<span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:var(--text-xl);line-height:1;padding:4px 10px 18px">Bookcook</span>
+<button style="min-height:3.1111rem;margin-bottom:10px;border:none;border-radius:var(--radius-md);background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--action-font);font-variation-settings:var(--action-settings);font-weight:var(--action-weight);font-size:var(--text-base);cursor:pointer" style-hover="background:var(--accent-strong)"><span class="material-symbols-rounded" aria-hidden="true">add</span>New recipe</button>
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+<sc-if value="{{ it.on }}" hint-placeholder-val="{{ false }}"><a href="#" aria-current="page" style="min-height:3.1111rem;display:flex;align-items:center;gap:10px;padding:0 12px;border-radius:var(--radius-sm);background:var(--surface);color:var(--ink);font-weight:700;text-decoration:none;box-shadow:var(--shadow-paper)"><span class="material-symbols-rounded" aria-hidden="true" style="font-variation-settings:'FILL' 1">{{ it.icon }}</span>{{ it.label }}</a></sc-if>
+<sc-if value="{{ it.off }}" hint-placeholder-val="{{ true }}"><a href="#" style="min-height:3.1111rem;display:flex;align-items:center;gap:10px;padding:0 12px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none" style-hover="background:var(--line)"><span class="material-symbols-rounded" aria-hidden="true">{{ it.icon }}</span>{{ it.label }}</a></sc-if>
+</sc-for>
+<span style="margin-top:auto;padding:14px 12px 0;font-size:15px;line-height:1.35;color:var(--ink-muted)">Press <kbd style="font:inherit;font-weight:700;padding:0 6px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--line-strong)">?</kbd> for shortcuts</span>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:252,&quot;height&quot;:700},&quot;current&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cookbook&quot;,&quot;collections&quot;,&quot;tags&quot;,&quot;grocery&quot;,&quot;requests&quot;,&quot;settings&quot;,&quot;none&quot;],&quot;default&quot;:&quot;cookbook&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const cur = this.props.current ?? 'cookbook';
+    const items = [['cookbook', 'Cookbook', 'menu_book'], ['collections', 'Collections', 'collections_bookmark'], ['tags', 'Tags', 'sell'], ['grocery', 'Grocery', 'shopping_basket'], ['requests', 'Requests', 'volunteer_activism'], ['settings', 'Settings', 'settings']]
+      .map(([id, label, icon]) => ({ label, icon, on: id === cur, off: id !== cur }));
+    return { items };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&amp;family=EB+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1;1,9..144,100..900,0..100,0..1&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&amp;display=block">
+<link rel="stylesheet" href="src/design/tokens.css">
+<style>
+body{margin:0;background:var(--sunk);color:var(--ink);font-family:var(--font-body);-webkit-font-smoothing:antialiased}
+button{font-family:inherit;font-size:inherit}
+a{color:var(--accent-text)}a:hover{color:var(--ink)}
+.material-symbols-rounded{font-size:1.4444rem;line-height:1}
+</style>
+</helmet>
+<div style="min-height:100vh;font-family:var(--font-body);line-height:1.5;color:var(--ink)">
+<dc-import name="ThemeBar" page="print" hint-size="100%,64px"></dc-import>
+<section id="print" style="padding:48px 28px 64px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;flex-direction:column;gap:6px;max-width:920px"><h2 style="margin:0;font:400 34px/1.1 Fraunces,Georgia,serif;letter-spacing:-0.02em">Print · the family cookbook</h2><p style="margin:0;font:15px/1.45 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)"><code>/print</code> · R Recipe[], story[], Media photos, Setting cookbookTitle. Letter pages (they also fit A4), always black on white. Only the display face follows the chosen style. Mode and accent don't apply.</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start">
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Print · cover" style="width:816px;height:1056px;box-sizing:border-box;padding:96px;display:flex;flex-direction:column;align-items:center;text-align:center;background:#FFFFFF;color:#111111;box-shadow:0 1px 3px rgb(0 0 0 / .18),0 18px 40px -18px rgb(0 0 0 / .35)">
+<span style="font:500 15px/1 'Atkinson Hyperlegible Next',sans-serif;letter-spacing:.24em;text-transform:uppercase">A family cookbook</span>
+<h1 style="margin:56px 0 0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:88px;line-height:1;letter-spacing:-0.03em;text-wrap:balance">Mom's Kitchen</h1>
+<span style="margin-top:22px;font-family:var(--font-display);font-style:italic;font-variation-settings:var(--font-display-settings);font-size:26px">Recipes she never wrote down, until now</span>
+<img src="assets/biryani.jpg" alt="" style="margin-top:64px;width:460px;height:360px;object-fit:cover;filter:grayscale(1) contrast(1.05);display:block">
+<span style="margin-top:auto;font:700 18px/1 'Atkinson Hyperlegible Next',sans-serif;letter-spacing:.12em">2026</span>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Cover · title from Settings, optional photo, the year</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Print · contents" style="width:816px;height:1056px;box-sizing:border-box;padding:96px;display:flex;flex-direction:column;background:#FFFFFF;color:#111111;box-shadow:0 1px 3px rgb(0 0 0 / .18),0 18px 40px -18px rgb(0 0 0 / .35)">
+<h1 style="margin:0 0 48px;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:56px;line-height:1;letter-spacing:-0.02em">Contents</h1>
+<sc-for list="{{ contents }}" as="c" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;align-items:baseline;padding:18px 0;border-bottom:1px solid #111111">
+<span style="font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:28px;line-height:1.1">{{ c.title }}</span>
+<span style="font:700 18px/1 'Atkinson Hyperlegible Next',sans-serif;font-variant-numeric:tabular-nums">{{ c.page }}</span>
+<span style="font:17px/1.3 'Atkinson Hyperlegible Next',sans-serif">{{ c.meta }}</span>
+</div>
+</sc-for>
+<span style="margin-top:auto;align-self:center;font:15px/1 'Atkinson Hyperlegible Next',sans-serif">ii</span>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Contents</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Print · recipe" style="width:816px;height:1056px;box-sizing:border-box;padding:72px 80px;display:flex;flex-direction:column;gap:24px;background:#FFFFFF;color:#111111;font:16px/1.45 'Atkinson Hyperlegible Next',sans-serif;box-shadow:0 1px 3px rgb(0 0 0 / .18),0 18px 40px -18px rgb(0 0 0 / .35)">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:32px;align-items:end">
+<div style="display:flex;flex-direction:column;gap:10px"><span style="font-family:var(--font-display);font-style:italic;font-variation-settings:var(--font-display-settings);font-size:20px">From Mom's kitchen</span><h1 style="margin:0;font-family:var(--font-display);font-weight:var(--font-display-weight);font-variation-settings:var(--font-display-settings);font-size:52px;line-height:1;letter-spacing:-0.02em">Mom's Chicken Biryani</h1><span>Serves 6 · Prep 30 min · Cook 1 hr 15 min</span></div>
+<img src="assets/biryani.jpg" alt="" style="width:220px;height:165px;object-fit:cover;filter:grayscale(1);display:block">
+</div>
+<div style="height:2px;background:#111111"></div>
+<div style="display:grid;grid-template-columns:250px minmax(0,1fr);gap:40px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-size:22px;padding-bottom:4px">Ingredients</b>
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+<i style="padding-top:10px;font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-size:17px">{{ g.name }}</i>
+<sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3"><span><b>{{ r.qty }}</b> {{ r.name }}</span></sc-for>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-size:22px">Steps</b>
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="5"><div style="display:grid;grid-template-columns:28px minmax(0,1fr);gap:8px"><b style="font-family:var(--font-display);font-variation-settings:var(--font-display-settings);font-size:22px;line-height:1.1">{{ s.n }}</b><span style="font-size:17px;text-wrap:pretty">{{ s.t }}</span></div></sc-for>
+<div style="margin-top:8px;padding:14px 18px;border:1.5px solid #111111"><b>Tip</b> · Don't stir after layering. Just trust it.</div>
+</div>
+</div>
+<span style="margin-top:auto;align-self:center;font-size:15px">1</span>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Recipe page</figcaption>
+</figure>
+
+<figure style="margin:0;display:flex;flex-direction:column;gap:12px;flex:none">
+<div data-screen-label="Print · story" style="width:816px;height:1056px;box-sizing:border-box;padding:120px 112px 72px;display:flex;flex-direction:column;gap:28px;background:#FFFFFF;color:#111111;box-shadow:0 1px 3px rgb(0 0 0 / .18),0 18px 40px -18px rgb(0 0 0 / .35)">
+<span style="font:500 15px/1 'Atkinson Hyperlegible Next',sans-serif;letter-spacing:.24em;text-transform:uppercase">The story behind the biryani</span>
+<span style="font:700 20px/1.3 'Atkinson Hyperlegible Next',sans-serif">Who taught you this?</span>
+<blockquote style="margin:0;font-family:var(--font-display);font-style:italic;font-weight:calc(var(--font-display-weight) - 30);font-variation-settings:var(--font-display-settings);font-size:48px;line-height:1.15;letter-spacing:-0.01em;text-wrap:balance">“My mother, every Eid. I learned by watching her hands, not measuring.”</blockquote>
+<div style="width:64px;height:2px;background:#111111"></div>
+<span style="font:700 18px/1.3 'Atkinson Hyperlegible Next',sans-serif">In her words</span>
+<p style="margin:0;font-family:var(--font-handwritten);font-variation-settings:var(--font-handwritten-settings);font-weight:var(--handwritten-weight);font-size:22px;line-height:1.55;text-wrap:pretty">okay so first you take the chicken, about a kilo, and put the yogurt, maybe a cup, and then the masala, you know, the red chilli, haldi, a little salt…</p>
+<span style="margin-top:auto;align-self:center;font:15px/1 'Atkinson Hyperlegible Next',sans-serif">2</span>
+</div>
+<figcaption style="font:600 14px/1.3 'Atkinson Hyperlegible Next',sans-serif;color:var(--ink-muted)">Story page</figcaption>
+</figure>
+</div>
+</section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const contents = [
+      { title: "Mom's Chicken Biryani", meta: 'Mom · with her story', page: '1' },
+      { title: 'Aloo Paratha', meta: 'Mom', page: '3' },
+      { title: 'Sunday Lentil Soup', meta: 'Dad', page: '5' },
+      { title: "Grandma's Banana Bread", meta: 'Nani', page: '7' },
+      { title: 'Quick Tomato Pasta', meta: "Me · based on Mom's Pasta", page: '9' }
+    ];
+    const I = (qty, name) => ({ qty, name });
+    const groups = [
+      { name: 'For the marinade', rows: [I('1 kg', 'chicken, bone-in'), I('1 cup', 'yogurt'), I('1 tbsp', 'ginger garlic paste'), I('2 tsp', 'red chilli powder'), I('1 tsp', 'turmeric'), I('', 'salt to taste')] },
+      { name: 'For the rice', rows: [I('3 cups', 'basmati rice, washed and soaked'), I('4', 'green cardamom'), I('1', 'bay leaf')] },
+      { name: 'To finish', rows: [I('2', 'onions, thinly sliced and fried'), I('', 'a handful of mint leaves'), I('', 'a handful of coriander'), I('', 'a pinch of saffron in 2 tbsp warm milk')] }
+    ];
+    const steps = [
+      'Mix the chicken with the yogurt and all the spices and leave it for at least 30 minutes.',
+      "Boil the rice with the cardamom and bay leaf until it's about three-quarters done, around 7 minutes, then drain.",
+      'Cook the chicken on medium heat until the oil comes to the top, about 25 minutes.',
+      'Layer the rice over the chicken, then scatter the onions, mint, coriander and saffron milk.',
+      'Cover tightly and keep on the lowest heat for 20 minutes until the steam comes out.'
+    ].map((t, i) => ({ n: String(i + 1), t }));
+    return { contents, groups, steps };
+  }
+}
+</script>
+</body>
+</html>
