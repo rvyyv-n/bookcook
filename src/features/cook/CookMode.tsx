@@ -203,11 +203,11 @@ function MadeItSheet({ recipe, isOpen, onOpenChange }: { recipe: Recipe; isOpen:
               if (file) setPhoto(await compressImage(file));
             }}
           >
-            <Button variant="secondary" icon={photo ? 'check' : 'addPhoto'} className="min-h-16!">
+            <Button variant="secondary" icon={photo ? 'check' : 'addPhoto'} className="min-h-[4rem]!">
               {photo ? m.photoAdded : m.photo}
             </Button>
           </FileTrigger>
-          <Button variant="primary" className="min-h-16!" isDisabled={saving} onPress={save}>
+          <Button variant="primary" className="min-h-[4rem]!" isDisabled={saving} onPress={save}>
             {m.save}
           </Button>
         </div>
@@ -537,7 +537,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
           {timerGroup}
           {stepBody}
           {controls}
-          <p className="hidden text-[0.8333rem] text-ink-muted pointer-fine:block">{c.keysHint}</p>
+          <p className="hidden text-[0.875rem] text-ink-muted pointer-fine:block">{c.keysHint}</p>
         </div>
         {madeSheet}
       </main>

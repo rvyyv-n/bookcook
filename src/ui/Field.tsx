@@ -21,7 +21,7 @@ import { Icon } from './Icon';
  * radius is capped because the Tin skins make --radius-md a pill.
  */
 export const fieldBoxClass =
-  'relative flex min-h-16 rounded-[min(var(--radius-md),18px)] bg-surface text-ink shadow-[inset_0_0_0_1.5px_var(--line-control)] ' +
+  'relative flex min-h-[4rem] rounded-[min(var(--radius-md),18px)] bg-surface text-ink shadow-[inset_0_0_0_1.5px_var(--line-control)] ' +
   'transition-shadow duration-(--dur) focus-within:shadow-[inset_0_0_0_2px_var(--ink)] ' +
   'has-[[data-focus-visible]]:outline-3 has-[[data-focus-visible]]:outline-offset-3 has-[[data-focus-visible]]:outline-focus';
 
@@ -127,7 +127,7 @@ function SpeakButton({ speaking, onPress, isDisabled }: { speaking: boolean; onP
       isDisabled={isDisabled}
       aria-pressed={speaking}
       className={cx(
-        'flex min-h-16 min-w-16 shrink-0 flex-col items-center justify-center self-stretch rounded-[min(var(--radius-md),18px)] text-[0.6667rem] leading-tight font-bold',
+        'flex min-h-[4rem] min-w-[4rem] shrink-0 flex-col items-center justify-center self-stretch rounded-[min(var(--radius-md),18px)] text-[0.875rem] leading-tight font-bold',
         'data-[hovered]:bg-sunk',
         speaking ? 'text-accent-text' : 'text-ink',
       )}
@@ -234,11 +234,11 @@ export function SearchField({
 } & Omit<SearchFieldProps, 'className' | 'value' | 'onChange'>) {
   const t = useT();
   const speak = useSpeak(value, onChange);
-  const side = 'flex min-w-16 shrink-0 flex-col items-center justify-center self-stretch text-[0.6667rem] leading-tight font-bold';
+  const side = 'flex min-w-[4rem] shrink-0 flex-col items-center justify-center self-stretch text-[0.875rem] leading-tight font-bold';
   return (
     <AriaSearchField {...rest} value={value} onChange={onChange} className={cx('group', className)}>
       <Label className="sr-only">{label}</Label>
-      <div className={cx(fieldBoxClass, 'items-center', compact && 'min-h-13!', speak.speaking && fieldBoxSpeaking)}>
+      <div className={cx(fieldBoxClass, 'items-center', compact && 'min-h-[3.5rem]!', speak.speaking && fieldBoxSpeaking)}>
         <Icon name="search" className="pointer-events-none ml-[0.7778rem] shrink-0 text-ink-muted group-focus-within:text-ink" />
         <Input
           placeholder={placeholder}
@@ -252,7 +252,7 @@ export function SearchField({
         ) : speak.available ? (
           <SpeakButton speaking={speak.speaking} onPress={speak.toggle} />
         ) : shortcut ? (
-          <kbd aria-hidden className="mr-3 font-[inherit] text-sm font-bold text-ink-muted">
+          <kbd aria-hidden className="mr-3 font-[inherit] text-[0.875rem] font-bold text-ink-muted">
             {shortcut}
           </kbd>
         ) : null}

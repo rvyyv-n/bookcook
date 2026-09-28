@@ -27,7 +27,7 @@ export function Sidebar({
     >
       <Link
         href="/"
-        className="type-display flex items-center gap-2.5 self-start rounded-sm px-2 pt-0.5 pb-4 text-xl leading-none text-ink no-underline"
+        className="type-display flex min-h-[3.5rem] items-center gap-2.5 self-start rounded-sm px-2 pt-0.5 pb-4 text-xl leading-none text-ink no-underline"
       >
         <Logo variant="rice" className="size-9 shrink-0 dark:hidden" />
         <Logo variant="dark" className="hidden size-9 shrink-0 dark:block" />
@@ -42,7 +42,7 @@ export function Sidebar({
           href={it.href}
           aria-current={it.current ? 'page' : undefined}
           className={cx(
-            'flex min-h-14 items-center gap-2.5 rounded-sm px-3 text-ink no-underline data-[focus-visible]:outline-offset-[-3px]',
+            'flex min-h-[3.5rem] items-center gap-2.5 rounded-sm px-3 text-ink no-underline data-[focus-visible]:outline-offset-[-3px]',
             it.current ? 'bg-surface font-bold shadow-paper' : 'data-[hovered]:bg-line',
           )}
         >

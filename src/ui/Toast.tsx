@@ -94,7 +94,7 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
       // It fades out, then goes; under reduced motion that takes no time.
       onAnimationEnd={() => leaving && onDismiss()}
       className={cx(
-        'pointer-events-auto flex min-h-16 w-full max-w-[23.3333rem] items-center gap-3 rounded-md bg-ink py-1.5 pr-1.5 pl-4 text-paper shadow-lift',
+        'pointer-events-auto flex min-h-[4rem] w-full max-w-[23.3333rem] items-center gap-3 rounded-md bg-ink py-1.5 pr-1.5 pl-4 text-paper shadow-lift',
         leaving ? 'animate-fade-out' : 'animate-rise',
       )}
     >
@@ -106,7 +106,7 @@ function ToastView({ item, onDismiss }: { item: ToastItem; onDismiss: () => void
             setLeaving(true);
             await item.action!.onAction();
           }}
-          className="flex min-h-14 shrink-0 items-center gap-1.5 rounded-md pr-[1.1rem] pl-[0.8rem] font-bold text-paper shadow-[inset_0_0_0_1.5px_var(--paper)] data-[focus-visible]:outline-paper data-[hovered]:bg-[rgb(255_255_255/.12)]"
+          className="flex min-h-[3.5rem] shrink-0 items-center gap-1.5 rounded-md pr-[1.1rem] pl-[0.8rem] font-bold text-paper shadow-[inset_0_0_0_1.5px_var(--paper)] data-[focus-visible]:outline-paper data-[hovered]:bg-[rgb(255_255_255/.12)]"
         >
           <Icon name="undo" className="shrink-0" />
           {item.action.label}

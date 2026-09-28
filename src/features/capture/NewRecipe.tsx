@@ -4,6 +4,7 @@ import { createDraft } from '../../db/drafts';
 import { useSettings } from '../../db/hooks';
 import type { DraftMode } from '../../db/types';
 import { useT } from '../../i18n';
+import { isNative } from '../../lib/platform/isNative';
 import { speech } from '../../lib/speech';
 import { ChoiceCard, QuietLink } from '../../ui/Capture';
 import type { IconName } from '../../ui/Icon';
@@ -51,7 +52,14 @@ export function NewRecipePage() {
           <div className={desktop ? 'grid grid-cols-2 gap-3.5' : 'flex flex-col gap-3.5'}>
             {CHOICES.map(({ mode, icon }) =>
               mode === 'tell' && !speech.supported ? (
-                <ChoiceCard key={mode} icon={icon} title={n.choices.tell.title} line={n.noSpeech} layout={layout} unavailable />
+                <ChoiceCard
+                  key={mode}
+                  icon={icon}
+                  title={n.choices.tell.title}
+                  line={isNative() ? n.noSpeechNative : n.noSpeech}
+                  layout={layout}
+                  unavailable
+                />
               ) : (
                 <ChoiceCard
                   key={mode}

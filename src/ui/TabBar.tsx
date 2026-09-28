@@ -10,7 +10,7 @@ export interface NavItem {
 }
 
 const item =
-  'flex min-h-16 min-w-0 flex-col items-center gap-[3px] rounded-sm text-center text-[min(var(--text-sm),15px)] leading-[1.1] no-underline';
+  'flex min-h-[4rem] min-w-0 flex-col items-center gap-[3px] rounded-sm text-center text-[min(0.875rem,15px)] leading-[1.1] no-underline';
 
 /**
  * Phone navigation: five equal columns, every item labelled. The New disc stays inside its own

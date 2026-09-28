@@ -33,7 +33,7 @@ function Who({ name, icon, children, when }: { name?: string; icon: IconName; ch
       </span>
       <p className="flex min-w-0 flex-col leading-[1.25]">
         <span>{children}</span>
-        <span className="text-[0.8333rem] text-ink-muted">{when}</span>
+        <span className="text-[0.875rem] text-ink-muted">{when}</span>
       </p>
     </div>
   );

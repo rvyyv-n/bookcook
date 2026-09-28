@@ -24,7 +24,7 @@ export function ChoiceMenu<K extends string>({
     <MenuTrigger>
       <AriaButton
         aria-label={`${label}: ${typeof current?.label === 'string' ? current.label : value}`}
-        className="inline-flex min-h-14 items-center gap-1.5 rounded-md px-[.6rem] font-bold text-ink transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:bg-line"
+        className="inline-flex min-h-[3.5rem] items-center gap-1.5 rounded-md px-[.6rem] font-bold text-ink transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:bg-line"
       >
         {icon && <Icon name={icon} className="shrink-0" />}
         {current?.label}
@@ -45,8 +45,8 @@ export function ChoiceMenu<K extends string>({
               key={o.id}
               id={o.id}
               className={cx(
-                'flex min-h-14 cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none',
-                'data-[focused]:bg-sunk data-[selected]:font-bold',
+                'flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none',
+                'data-[focused]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-focus data-[focus-visible]:-outline-offset-3 data-[selected]:font-bold',
               )}
             >
               {({ isSelected }) => (
@@ -81,7 +81,7 @@ export function IconMenu({
     <MenuTrigger>
       <AriaButton
         aria-label={`${label}: ${names[value]}`}
-        className="grid size-14 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text transition-colors duration-(--dur) data-[hovered]:bg-line"
+        className="grid size-[3.5rem] shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text transition-colors duration-(--dur) data-[hovered]:bg-line"
       >
         <TopicIcon name={value} />
       </AriaButton>
@@ -101,7 +101,7 @@ export function IconMenu({
               key={id}
               id={id}
               textValue={names[id]}
-              className="flex min-h-12 cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none data-[focused]:bg-sunk data-[selected]:font-bold"
+              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none data-[focused]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-focus data-[focus-visible]:-outline-offset-3 data-[selected]:font-bold"
             >
               <TopicIcon name={id} className="shrink-0" />
               {names[id]}

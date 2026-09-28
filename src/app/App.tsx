@@ -48,7 +48,7 @@ function RouteError() {
     <main className="mx-auto flex max-w-xl flex-col gap-4 p-8">
       <h1 className="text-3xl">Something went wrong</h1>
       <p className="text-ink-muted">Your recipes are safe. Reload the page to try again.</p>
-      <pre className="overflow-auto rounded-md bg-sunk p-3 text-sm">{error instanceof Error ? error.message : String(error)}</pre>
+      <pre className="overflow-auto rounded-md bg-sunk p-3 text-[0.875rem]">{error instanceof Error ? error.message : String(error)}</pre>
       <a href={import.meta.env.BASE_URL} className="font-bold underline">
         Go to your cookbook
       </a>

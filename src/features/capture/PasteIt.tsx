@@ -141,7 +141,7 @@ export function PasteItPage() {
         {tidying ? working : field}
         <div className="flex items-center justify-end gap-3">
           <span className="mr-auto">{pasteButton}</span>
-          <span className="text-[0.8333rem] text-ink-muted">{p.ctrlEnter}</span>
+          <span className="text-[0.875rem] text-ink-muted">{p.ctrlEnter}</span>
           {tidyButton}
         </div>
       </div>

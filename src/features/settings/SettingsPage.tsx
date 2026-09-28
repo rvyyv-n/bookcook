@@ -59,7 +59,7 @@ function LookSection() {
           options={SKINS.map((id) => ({ id, label: SKIN_LABELS[id] }))}
         />
         {skinConfig[s.skin].accentLocked ? (
-          <div className="flex min-h-14 items-center gap-3 border-b border-line px-0.5 py-1.5">
+          <div className="flex min-h-[3.5rem] items-center gap-3 border-b border-line px-0.5 py-1.5">
             <span className="flex-1 font-bold">{ts.accent}</span>
             <span className="text-ink-muted">{ts.accentFixed}</span>
           </div>

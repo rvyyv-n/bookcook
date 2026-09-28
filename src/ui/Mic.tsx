@@ -147,7 +147,7 @@ const controlClass = cx(
   'data-[hovered]:bg-(--control-fill-hover) data-[pressed]:scale-[.97] data-[disabled]:text-ink-muted data-[disabled]:shadow-[inset_0_0_0_1px_var(--line)]',
 );
 const stackedClass = 'min-h-[4.2rem] flex-col gap-1 px-1 py-1.5';
-const inlineClass = 'min-h-14 gap-2 pr-4 pl-3';
+const inlineClass = 'min-h-[3.5rem] gap-2 pr-4 pl-3';
 
 /** A small switch drawn inside the Hands-free control (the mock's toggle glyph). */
 function Toggle({ on }: { on: boolean }) {
@@ -274,7 +274,7 @@ export function HeardRow({
   return (
     <li
       className={cx(
-        'grid min-h-14 items-center gap-3 py-1.5',
+        'grid min-h-[3.5rem] items-center gap-3 py-1.5',
         wide ? 'grid-cols-[6rem_minmax(0,1fr)]' : 'grid-cols-[minmax(0,5rem)_minmax(0,1fr)]',
         isNew ? '-mx-2.5 mt-1 rounded-sm bg-accent-soft px-2.5' : 'border-b border-line last:border-b-0',
       )}
@@ -284,7 +284,7 @@ export function HeardRow({
       <span className="flex min-w-0 flex-wrap items-center justify-between gap-x-3 gap-y-1">
         <span className="min-w-0 [overflow-wrap:anywhere]">{name}</span>
         {check && (
-          <span className="flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-[0.8333rem] font-bold whitespace-nowrap text-accent-text">
+          <span className="flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-1 text-[0.875rem] font-bold whitespace-nowrap text-accent-text">
             <Icon name="checkThis" size="1.1rem" />
             {check}
           </span>

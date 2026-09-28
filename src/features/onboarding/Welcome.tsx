@@ -94,7 +94,7 @@ export function WelcomePage() {
       : asking
         ? large(o.allowMic, () => void mic.allow(), { icon: 'mic', disabled: mic.busy })
         : large(o.finish, () => void leave(), { disabled: mic.state === null });
-  const hint = desktop && index < STEPS.length - 1 && <span className="text-[0.8333rem] text-ink-muted">{o.skipHint}</span>;
+  const hint = desktop && index < STEPS.length - 1 && <span className="text-[0.875rem] text-ink-muted">{o.skipHint}</span>;
 
   let body: ReactNode = null;
   if (step === 'welcome')

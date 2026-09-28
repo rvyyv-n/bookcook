@@ -44,7 +44,7 @@ export function Segmented<K extends string>({
       <div
         className={cx(
           'grid auto-cols-fr grid-flow-col p-1 bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
-          size === 'L' ? 'min-h-14' : 'min-h-16',
+          size === 'L' ? 'min-h-[3.5rem]' : 'min-h-[4rem]',
           'rounded-full',
         )}
       >
@@ -93,14 +93,14 @@ export function Stepper({
   className?: string;
 }) {
   const btn =
-    'grid size-14 shrink-0 place-items-center rounded-full text-ink transition-colors duration-(--dur) ' +
+    'grid size-[3.5rem] shrink-0 place-items-center rounded-full text-ink transition-colors duration-(--dur) ' +
     'data-[hovered]:bg-(--control-fill-hover) data-[pressed]:bg-line data-[disabled]:text-ink-muted data-[disabled]:opacity-50';
   return (
     <div
       role="group"
       aria-label={label}
       className={cx(
-        'inline-flex min-h-14 items-center self-start rounded-full bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
+        'inline-flex min-h-[3.5rem] items-center self-start rounded-full bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
         className,
       )}
     >
@@ -127,11 +127,11 @@ export function Switch({
   return (
     <AriaSwitch
       {...rest}
-      className={cx('group flex min-h-16 cursor-pointer items-center gap-3 border-b border-line px-0.5 py-1.5 text-ink', className)}
+      className={cx('group flex min-h-[4rem] cursor-pointer items-center gap-3 border-b border-line px-0.5 py-1.5 text-ink', className)}
     >
       <span className="flex flex-1 flex-col">
         <span className="font-bold">{children}</span>
-        {description && <span className="text-[0.8889rem] text-ink-muted">{description}</span>}
+        {description && <span className="text-[0.9375rem] text-ink-muted">{description}</span>}
       </span>
       <span
         aria-hidden
@@ -162,7 +162,7 @@ export function CheckItem({
       {...rest}
       className={cx(
         'group flex cursor-pointer items-center border-b border-line px-0.5 text-ink outline-none data-[selected]:text-ink-muted',
-        dense ? 'min-h-14 gap-3 py-1' : 'min-h-16 gap-3.5 py-1.5',
+        dense ? 'min-h-[3.5rem] gap-3 py-1' : 'min-h-[4rem] gap-3.5 py-1.5',
         className,
       )}
     >
@@ -225,7 +225,7 @@ export function StarRating({
           value={String(n)}
           aria-label={starLabel(n)}
           className={cx(
-            'grid size-14 cursor-pointer place-items-center rounded-full transition-transform duration-(--dur) data-[pressed]:scale-90',
+            'grid size-[3.5rem] cursor-pointer place-items-center rounded-full transition-transform duration-(--dur) data-[pressed]:scale-90',
             n <= value ? 'text-accent-mark' : 'text-line-control',
           )}
         >
@@ -253,8 +253,8 @@ export function Chip({
       onPress={onPress}
       aria-pressed={isSelected}
       className={cx(
-        'inline-flex shrink-0 items-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors duration-(--dur)',
-        small ? 'min-h-11 px-3.5 text-[0.8333rem]' : 'min-h-12 px-4 text-[0.8889rem]',
+        'inline-flex min-w-[3.5rem] shrink-0 items-center justify-center gap-2 rounded-full font-bold whitespace-nowrap transition-colors duration-(--dur)',
+        small ? 'min-h-[3.5rem] px-3.5 text-[0.875rem]' : 'min-h-[3.5rem] px-4 text-[0.9375rem]',
         isSelected
           ? 'bg-ink text-paper'
           : 'bg-(--control-fill) text-ink shadow-[inset_0_0_0_1.5px_var(--line-strong)] data-[hovered]:bg-(--control-fill-hover)',

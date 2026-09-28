@@ -66,7 +66,7 @@ export function RecipeRow({
         <Photo id={recipe.photoIds[0]} alt="" className="size-14 rounded-sm" />
         <span className="flex min-w-0 flex-col gap-1">
           <span className="type-display text-lg leading-[1.15]">{recipe.title}</span>
-          <span className="text-[0.8333rem] text-ink-muted">{[meta, extra].filter(Boolean).join(' · ')}</span>
+          <span className="text-[0.875rem] text-ink-muted">{[meta, extra].filter(Boolean).join(' · ')}</span>
         </span>
       </Link>
     </li>
