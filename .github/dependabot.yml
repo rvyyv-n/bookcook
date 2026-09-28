@@ -8,6 +8,10 @@ updates:
     groups:
       dependencies:
         patterns: ['*']
+    # typescript-eslint doesn't support TypeScript 7 yet, so `npm ci` can't resolve it. Lift once it does.
+    ignore:
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule:
