@@ -23,7 +23,13 @@ export function StepBar({ current, total, className }: { current: number; total:
   return (
     <div aria-hidden className={cx('grid gap-1.25', className)} style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
       {Array.from({ length: total }, (_, i) => (
-        <span key={i} className={cx('h-1.25 rounded-full', i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line')} />
+        <span
+          key={i}
+          className={cx(
+            'h-1.25 rounded-full transition-colors duration-(--dur) ease-(--ease-out)',
+            i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line',
+          )}
+        />
       ))}
     </div>
   );
@@ -49,7 +55,8 @@ export function StepNumeral({
       <span className="sr-only">{label}</span>
       <span
         aria-hidden
-        className="font-(family-name:--font-display) text-[5.7778rem] leading-[.78] font-extrabold text-accent-text [font-variation-settings:var(--font-display-settings)]"
+        key={current}
+        className="animate-numeral-in font-(family-name:--font-display) text-[5.7778rem] leading-[.78] font-extrabold text-accent-text [font-variation-settings:var(--font-display-settings)]"
       >
         {current + 1}
       </span>
@@ -57,7 +64,13 @@ export function StepNumeral({
         <b className="leading-none">{of}</b>
         <span className="flex gap-1.25">
           {Array.from({ length: total }, (_, i) => (
-            <span key={i} className={cx('size-2.5 rounded-full', i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line')} />
+            <span
+              key={i}
+              className={cx(
+                'size-2.5 rounded-full transition-colors duration-(--dur) ease-(--ease-out)',
+                i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line',
+              )}
+            />
           ))}
         </span>
       </span>

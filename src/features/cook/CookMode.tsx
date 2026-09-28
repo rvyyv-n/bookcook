@@ -469,6 +469,12 @@ function Cook({ recipe }: { recipe: Recipe }) {
     });
   const madeSheet = <MadeItSheet recipe={recipe} isOpen={made} onOpenChange={setMade} />;
   const title = c.stepOf(index + 1, total);
+  // Said by a screen reader on every step change, whether the step was reached by touch, key or voice.
+  const announce = (
+    <p aria-live="polite" className="sr-only">
+      {title} {step?.text}
+    </p>
+  );
 
   if (wide)
     return (
@@ -494,6 +500,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
             {listening}
             <div className="ml-auto">{closeButton}</div>
           </div>
+          {announce}
           {alertCard}
           {timerGroup}
           {stepBody}
@@ -530,6 +537,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
           <StepBar current={index} total={total} />
         </div>
       )}
+      {announce}
       {alertCard}
       {timerGroup}
       {stepBody}

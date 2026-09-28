@@ -47,6 +47,14 @@
       opacity: 0;
     }
   }
+  /* Spice Tin's step numeral: the new one rises 8px into place. */
+  --animate-numeral-in: bc-numeral-in var(--dur) var(--ease-out) both;
+  @keyframes bc-numeral-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
   /* The scrim behind a sheet. */
   --animate-scrim-in: fade-in var(--dur) var(--ease-out) both;
 }
