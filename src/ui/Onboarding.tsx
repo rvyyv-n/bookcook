@@ -1,5 +1,6 @@
 import type { ReactNode, Ref } from 'react';
 import { cx } from './cx';
+import { Icon, type IconName } from './Icon';
 import { Logo } from './Logo';
 import { SaveBar } from './Editor';
 
@@ -102,4 +103,40 @@ export function OnboardingHeading({
       {children}
     </h1>
   );
+}
+
+/** One thing voice does: an icon disc, a bold title and one muted line. It explains; it isn't a button. */
+export function FeatureRow({
+  icon,
+  title,
+  body,
+  spiceGroup,
+}: {
+  icon: IconName;
+  title: string;
+  body: string;
+  /** With ingredient colours on, the disc takes that spice colour instead of the accent. */
+  spiceGroup?: number;
+}) {
+  return (
+    <li className="flex items-start gap-4 text-left" data-spice-group={spiceGroup}>
+      <span
+        className={cx(
+          'grid size-[3.3333rem] shrink-0 place-items-center rounded-full',
+          spiceGroup ? 'bg-sp-soft text-sp' : 'bg-accent-soft text-accent-text',
+        )}
+      >
+        <Icon name={icon} size="1.6rem" />
+      </span>
+      <span className="flex min-w-0 flex-col gap-1">
+        <b className="text-lg leading-[1.15]">{title}</b>
+        <span className="text-ink-muted [text-wrap:pretty]">{body}</span>
+      </span>
+    </li>
+  );
+}
+
+/** The rows sit three across on a wide screen and stack when there's no room, or at large text. */
+export function FeatureList({ children }: { children: ReactNode }) {
+  return <ul className="grid w-full gap-6 [grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))]">{children}</ul>;
 }

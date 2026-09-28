@@ -10,6 +10,7 @@ import { StepBar, StepNumeral } from '../../ui/Cook';
 import { Logo } from '../../ui/Logo';
 import { OnboardingFrame, OnboardingHeading, OnboardingProgress, Wordmark } from '../../ui/Onboarding';
 import { RestoreButton, useRestore } from '../settings/Backup';
+import { VoiceStep } from './VoiceStep';
 import { TextSizeSegmented } from '../settings/TextSizeSegmented';
 
 const STEPS = ['welcome', 'voice', 'mic'] as const;
@@ -62,7 +63,7 @@ export function WelcomePage() {
   const label = o.stepOf(index + 1, STEPS.length);
   const numeral = config.stepHeader === 'numeral';
   const primary =
-    step === 'welcome' ? (
+    step !== 'mic' ? (
       <Button variant="primary" size="XL" iconEnd="next" onPress={next} className={desktop ? undefined : 'w-full'}>
         {o.next}
       </Button>
@@ -91,9 +92,12 @@ export function WelcomePage() {
       </>
     );
 
+  if (step === 'voice') body = <VoiceStep heading={heading} />;
+
   return (
     <OnboardingFrame
       desktop={desktop}
+      wide={step === 'voice'}
       field={config.cookSurface === 'field'}
       centre={config.detailAlign === 'center'}
       left={
