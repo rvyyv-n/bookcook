@@ -314,3 +314,21 @@ Each item is one commit on `wip/phase-12`. Each commit passes the checks in `AGE
 13. **Acceptance pass:**
     - Check onboarding and every motion item across the matrix: 5 skins, light and dark, Normal / Large / Huge, 390px and 1280px, keyboard, screen reader, and reduced motion on.
     - Fix what fails, then tick the onboarding and motion parts of the Phase 12 roadmap item.
+
+---
+
+## As built
+
+Where the build differs from the text above:
+
+- **Back on desktop** sits beside the primary button, not in the top bar (the top bar there holds the logo, the progress and Skip). On a phone it's in the top bar, as specified.
+- **The first-run check** is a route loader on `/` (`src/features/onboarding/firstRun.ts`), so it runs before anything is drawn. Finishing stores `onboarded` before navigating, or the loader would send the user back.
+- **Numeral (#1b):** the new numeral rises in; the old one is not kept on screen to fade out.
+- **Strike-through (#5a):** the line is a background that grows from 0 to 100%, not a `scaleX` pseudo-element, so it follows the text over wrapped lines.
+- **Grocery collapse (#5b):** the rows are kept until the fade and collapse have played (350ms), then removed. Undo puts them back with a row-in animation.
+- **In her words (#8):** the height follows React Aria's `--disclosure-panel-height` rather than `grid-template-rows`.
+- **Timers done or stopped (#6d):** a faded copy stays in the tile's place for the fade, then the others close up.
+- **Toasts (#3):** a toast fades out before it is removed, after its timeout or when Undo is pressed.
+- **Draft saved (#9):** the new state fades in over the old one.
+- **Tick targets:** at Normal size the shared 3.5rem controls measure 50px, as on every other screen; Large and Huge are above 56px.
+
