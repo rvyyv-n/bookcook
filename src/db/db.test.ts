@@ -238,6 +238,18 @@ describe('collections', () => {
 });
 
 describe('settings', () => {
+  it('falls back to the default for a value the app does not know', async () => {
+    await setSetting('skin', 'paper-bag' as never);
+    await setSetting('textSize', 42 as never);
+    await setSetting('readAloud', 'yes' as never);
+    await setSetting('lastBackupAt', 5);
+    const settings = await getSettings();
+    expect(settings.skin).toBe(DEFAULT_SETTINGS.skin);
+    expect(settings.textSize).toBe(DEFAULT_SETTINGS.textSize);
+    expect(settings.readAloud).toBe(DEFAULT_SETTINGS.readAloud);
+    expect(settings.lastBackupAt).toBe(5);
+  });
+
   it('returns defaults and stores changes', async () => {
     expect(await getSettings()).toEqual(DEFAULT_SETTINGS);
     await setSetting('textSize', 'huge');

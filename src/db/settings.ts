@@ -1,4 +1,4 @@
-import { skinConfig, type Accent, type Skin, type TextSize, type ThemeMode } from '../design/skin';
+import { SKINS, skinConfig, type Accent, type Skin, type TextSize, type ThemeMode } from '../design/skin';
 import { db } from './db';
 
 export type { Accent, Skin, TextSize };
@@ -58,16 +58,39 @@ export const DEFAULT_SETTINGS: Settings = {
   onboarded: false,
 };
 
+/** The values a setting can take, where it's one of a few. */
+const CHOICES: Partial<Record<keyof Settings, readonly unknown[]>> = {
+  textSize: ['normal', 'large', 'huge'],
+  theme: ['light', 'dark', 'system'],
+  skin: SKINS,
+  accent: ['tomato', 'saffron'],
+  lang: ['en'],
+  measureSystem: ['metric', 'imperial', 'auto'],
+};
+/** Settings whose default is null but that hold a value once set. */
+const NULLABLE = { voiceURI: 'string', lastBackupAt: 'number' } as const;
+
+/**
+ * Whether a stored value fits the setting. A value from an older or newer app, or a hand-edited
+ * backup (a skin that doesn't exist), falls back to the default instead of breaking the app.
+ */
+function isValid(key: keyof Settings, value: unknown): boolean {
+  const choices = CHOICES[key];
+  if (choices) return choices.includes(value);
+  if (key in NULLABLE) return value === null || typeof value === NULLABLE[key as keyof typeof NULLABLE];
+  return typeof value === typeof DEFAULT_SETTINGS[key];
+}
+
 export async function getSettings(): Promise<Settings> {
   const rows = await db.settings.toArray();
   const out = { ...DEFAULT_SETTINGS } as Record<string, unknown>;
-  for (const r of rows) if (r.key in DEFAULT_SETTINGS) out[r.key] = r.value;
+  for (const r of rows) if (r.key in DEFAULT_SETTINGS && isValid(r.key as keyof Settings, r.value)) out[r.key] = r.value;
   return out as unknown as Settings;
 }
 
 export async function getSetting<K extends keyof Settings>(key: K): Promise<Settings[K]> {
   const row = await db.settings.get(key);
-  return row ? (row.value as Settings[K]) : DEFAULT_SETTINGS[key];
+  return row && isValid(key, row.value) ? (row.value as Settings[K]) : DEFAULT_SETTINGS[key];
 }
 
 export async function setSetting<K extends keyof Settings>(key: K, value: Settings[K]): Promise<void> {
