@@ -8,9 +8,9 @@ import { formatDay, relativeTime } from '../../lib/format';
 import { isNative } from '../../lib/platform/isNative';
 import { saveFile } from '../../lib/platform/saveFile';
 import { requestPersistentStorage } from '../../lib/platform/storagePersist';
-import { Button } from '../../ui/Button';
+import { Button, type ButtonVariant } from '../../ui/Button';
 import { cx } from '../../ui/cx';
-import { Icon } from '../../ui/Icon';
+import { Icon, type IconName } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 
@@ -26,8 +26,9 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
   const ts = t.ui.settings;
   const toast = useToast();
   const { lastBackupAt } = useSettings();
-  const [busy, setBusy] = useState(false);
-  const [picked, setPicked] = useState<BackupFile | null>(null);
+  const [saving, setSaving] = useState(false);
+  const restoring = useRestore();
+  const busy = saving || restoring.busy;
   // Read once per visit; the page doesn't need to tick over while it's open.
   const [now] = useState(() => Date.now());
   const overdue = lastBackupAt === null || now - lastBackupAt > OVERDUE_DAYS * 86_400_000;
@@ -35,7 +36,7 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
   const body = overdue ? (layout === 'desk' ? ts.backupNudgeShort : ts.backupNudge) : ts.backupOk;
 
   async function backUp() {
-    setBusy(true);
+    setSaving(true);
     try {
       const { blob, filename, counts } = await exportBackup();
       if (!(await saveFile(blob, filename))) {
@@ -46,34 +47,7 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
       void requestPersistentStorage({ again: true });
       toast.show({ message: ts.backedUp(counts.recipes), tone: 'success' });
     } finally {
-      setBusy(false);
-    }
-  }
-
-  async function pick(files: FileList | null) {
-    const file = files?.[0];
-    if (!file) return;
-    setBusy(true);
-    try {
-      setPicked(await readBackup(file));
-    } catch (e) {
-      toast.show({ message: e instanceof BackupError && e.message === 'newer version' ? ts.newerBackup : ts.notABackup });
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function restore(mode: RestoreMode) {
-    if (!picked) return;
-    setBusy(true);
-    try {
-      const counts = await applyBackup(picked, mode);
-      setPicked(null);
-      toast.show({ message: (mode === 'replace' ? ts.replaced : ts.restored)(counts.recipes), tone: 'success' });
-    } catch {
-      toast.show({ message: ts.restoreFailed });
-    } finally {
-      setBusy(false);
+      setSaving(false);
     }
   }
 
@@ -103,33 +77,99 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
         >
           {ts.backUpNow}
         </Button>
-        {/* Android has no type for .bookcook, so its picker would grey the file out: the app takes any file and checks it. */}
-        <FileTrigger acceptedFileTypes={isNative() ? undefined : ['.bookcook', 'application/zip']} onSelect={pick}>
-          <Button variant="quiet" icon="download" isDisabled={busy}>
-            {ts.restore}
-          </Button>
-        </FileTrigger>
+        <RestoreButton restore={restoring} variant="quiet" icon="download">
+          {ts.restore}
+        </RestoreButton>
       </div>
-      <Sheet
-        isOpen={picked !== null}
-        onOpenChange={(open) => !open && !busy && setPicked(null)}
-        title={ts.restoreTitle}
-        description={picked && ts.restoreFrom(formatDay(picked.exportedAt), picked.counts.recipes)}
-      >
-        <div className="flex flex-col gap-4">
-          <RestoreChoice hint={ts.restoreMergeHint}>
-            <Button variant="primary" icon="download" isDisabled={busy} onPress={() => restore('merge')}>
-              {ts.restoreMerge}
-            </Button>
-          </RestoreChoice>
-          <RestoreChoice hint={ts.restoreReplaceHint}>
-            <Button variant="destructive" isDisabled={busy} onPress={() => restore('replace')}>
-              {ts.restoreReplace}
-            </Button>
-          </RestoreChoice>
-        </div>
-      </Sheet>
+      {restoring.sheet}
     </section>
+  );
+}
+
+/**
+ * Choosing a backup file and restoring it: the file picker, then the "Restore this backup?" sheet
+ * (add to the cookbook, or replace it). Shared by Settings and the welcome screen.
+ */
+export function useRestore(onRestored?: () => void) {
+  const t = useT();
+  const ts = t.ui.settings;
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  const [picked, setPicked] = useState<BackupFile | null>(null);
+
+  async function pick(files: FileList | null) {
+    const file = files?.[0];
+    if (!file) return;
+    setBusy(true);
+    try {
+      setPicked(await readBackup(file));
+    } catch (e) {
+      toast.show({ message: e instanceof BackupError && e.message === 'newer version' ? ts.newerBackup : ts.notABackup });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function restore(mode: RestoreMode) {
+    if (!picked) return;
+    setBusy(true);
+    try {
+      const counts = await applyBackup(picked, mode);
+      setPicked(null);
+      toast.show({ message: (mode === 'replace' ? ts.replaced : ts.restored)(counts.recipes), tone: 'success' });
+      onRestored?.();
+    } catch {
+      toast.show({ message: ts.restoreFailed });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const sheet = (
+    <Sheet
+      isOpen={picked !== null}
+      onOpenChange={(open) => !open && !busy && setPicked(null)}
+      title={ts.restoreTitle}
+      description={picked && ts.restoreFrom(formatDay(picked.exportedAt), picked.counts.recipes)}
+    >
+      <div className="flex flex-col gap-4">
+        <RestoreChoice hint={ts.restoreMergeHint}>
+          <Button variant="primary" icon="download" isDisabled={busy} onPress={() => restore('merge')}>
+            {ts.restoreMerge}
+          </Button>
+        </RestoreChoice>
+        <RestoreChoice hint={ts.restoreReplaceHint}>
+          <Button variant="destructive" isDisabled={busy} onPress={() => restore('replace')}>
+            {ts.restoreReplace}
+          </Button>
+        </RestoreChoice>
+      </div>
+    </Sheet>
+  );
+  return { busy, pick, sheet };
+}
+
+/** The Restore button: it opens the file picker. Render `restore.sheet` once beside it. */
+export function RestoreButton({
+  restore,
+  variant,
+  icon,
+  className,
+  children,
+}: {
+  restore: ReturnType<typeof useRestore>;
+  variant: ButtonVariant;
+  icon?: IconName;
+  className?: string;
+  children: ReactNode;
+}) {
+  return (
+    // Android has no type for .bookcook, so its picker would grey the file out: the app takes any file and checks it.
+    <FileTrigger acceptedFileTypes={isNative() ? undefined : ['.bookcook', 'application/zip']} onSelect={restore.pick}>
+      <Button variant={variant} icon={icon} isDisabled={restore.busy} className={className}>
+        {children}
+      </Button>
+    </FileTrigger>
   );
 }
 

@@ -5,6 +5,7 @@ import { JustTalkPage } from '../features/capture/JustTalk';
 import { PasteItPage } from '../features/capture/PasteIt';
 import { TellItPage } from '../features/capture/TellIt';
 import { CookModePage } from '../features/cook/CookMode';
+import { WelcomePage } from '../features/onboarding/Welcome';
 import { PrintPage } from '../features/print/PrintPage';
 import { GroceryPage } from '../features/grocery/GroceryPage';
 import { EditRecipePage, TypeItPage } from '../features/editor/RecipeEditor';
@@ -60,12 +61,13 @@ const router = createBrowserRouter(
       element: <Root />,
       errorElement: <RouteError />,
       children: [
-        // Full-screen, no app shell: cook mode, Tell it, Just talk and Check your recipe.
+        // Full-screen, no app shell: cook mode, Tell it, Just talk, Check your recipe and the welcome.
         { path: '/r/:id/cook', element: <CookModePage /> },
         { path: '/new/tell/:draftId', element: <TellItPage /> },
         { path: '/new/talk/:draftId', element: <JustTalkPage /> },
         { path: '/new/review/:draftId', element: <ReviewPage /> },
         { path: '/print', element: <PrintPage /> },
+        { path: '/welcome', element: <WelcomePage /> },
         {
           element: <AppShell />,
           children: [

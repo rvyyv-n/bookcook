@@ -30,9 +30,22 @@ export function StepBar({ current, total, className }: { current: number; total:
 }
 
 /** Spice Tin's header: a big numeral in the accent, with "of 5" and a dot per step beside it. */
-export function StepNumeral({ current, total, of, label }: { current: number; total: number; of: string; label: string }) {
+export function StepNumeral({
+  current,
+  total,
+  of,
+  label,
+  as: Tag = 'h1',
+}: {
+  current: number;
+  total: number;
+  of: string;
+  label: string;
+  /** The heading it is in cook mode; a div where the screen has its own heading. */
+  as?: 'h1' | 'div';
+}) {
   return (
-    <h1 className="flex items-end gap-3">
+    <Tag className="flex items-end gap-3">
       <span className="sr-only">{label}</span>
       <span
         aria-hidden
@@ -48,7 +61,7 @@ export function StepNumeral({ current, total, of, label }: { current: number; to
           ))}
         </span>
       </span>
-    </h1>
+    </Tag>
   );
 }
 
