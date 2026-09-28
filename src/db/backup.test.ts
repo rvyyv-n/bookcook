@@ -1,7 +1,7 @@
 // @vitest-environment node
 // Node's Blob survives fake-indexeddb's structured clone with its bytes; jsdom's does not.
 import { beforeEach, describe, expect, it } from 'vitest';
-import { BackupError, exportBackup, restoreBackup } from './backup';
+import { BackupError, exportBackup, readBackup, restoreBackup } from './backup';
 import { resetDatabase } from './db';
 import { addManualItem, listGrocery } from './grocery';
 import { getMedia, putMedia } from './media';
@@ -48,6 +48,34 @@ describe('backup', () => {
     await saveRecipe({ title: 'New', author: 'Me', ingredients: [], steps: [] });
     await restoreBackup(blob);
     expect((await listRecipes()).map((r) => r.title).sort()).toEqual(['New', 'Old']);
+  });
+
+  it('replaces: the cookbook becomes the backup, and this device keeps its own settings', async () => {
+    await saveRecipe({ title: 'Old', author: 'Me', ingredients: [], steps: [] });
+    await setSetting('cookbookTitle', 'Before');
+    const { blob } = await exportBackup(Date.UTC(2026, 8, 1));
+    await saveRecipe({ title: 'New', author: 'Me', ingredients: [], steps: [] });
+    await addManualItem('eggs');
+    await setSetting('cookbookTitle', 'After');
+    await setSetting('persistRequested', true);
+
+    expect(await restoreBackup(blob, 'replace')).toEqual({ recipes: 1, media: 0 });
+    expect((await listRecipes()).map((r) => r.title)).toEqual(['Old']);
+    expect(await listGrocery()).toEqual([]);
+    const settings = await getSettings();
+    expect(settings.cookbookTitle).toBe('Before');
+    expect(settings.persistRequested).toBe(true);
+    expect(settings.lastBackupAt).toBe(Date.UTC(2026, 8, 1));
+  });
+
+  it('reads a backup without changing anything', async () => {
+    await saveRecipe({ title: 'Old', author: 'Me', ingredients: [], steps: [] });
+    const { blob } = await exportBackup(Date.UTC(2026, 8, 1));
+    await resetDatabase();
+    const backup = await readBackup(blob);
+    expect(backup.exportedAt).toBe(Date.UTC(2026, 8, 1));
+    expect(backup.counts).toEqual({ recipes: 1, media: 0 });
+    expect(await listRecipes()).toEqual([]);
   });
 
   it('refuses a file that is not a backup', async () => {

@@ -1,6 +1,10 @@
+import { deflateSync, inflateSync, strFromU8, strToU8 } from 'fflate';
+import type { Ingredient, Recipe, Step, StoryAnswer } from '../db/types';
+import type { Quantity } from './parse/types';
+
 /**
- * Request links: a recipe request packed into the URL fragment of /import, so it never reaches a
- * server. (Recipe links, which are bigger, come with the backup work in phase 10.)
+ * Share links: a recipe request or a whole recipe packed into the URL fragment of /import, so it
+ * never reaches a server. Recipes are compressed and carry text only (no photos or voice notes).
  */
 
 export interface SharedRequest {
@@ -14,16 +18,19 @@ export interface SharedRequest {
 
 const KEY = 'request';
 
-function toBase64Url(text: string): string {
+function bytesToBase64Url(bytes: Uint8Array): string {
   let bin = '';
-  for (const b of new TextEncoder().encode(text)) bin += String.fromCharCode(b);
+  for (const b of bytes) bin += String.fromCharCode(b);
   return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function fromBase64Url(data: string): string {
+function base64UrlToBytes(data: string): Uint8Array {
   const bin = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
-  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+  return Uint8Array.from(bin, (c) => c.charCodeAt(0));
 }
+
+const toBase64Url = (text: string) => bytesToBase64Url(new TextEncoder().encode(text));
+const fromBase64Url = (data: string) => new TextDecoder().decode(base64UrlToBytes(data));
 
 /** The link to send: `<origin><base>import#request=…`. */
 export function requestLink(request: SharedRequest, origin: string, base: string): string {
@@ -45,6 +52,96 @@ export function readRequestLink(hash: string): SharedRequest | undefined {
     const title = text(raw.t, 200);
     if (!id || !title) return undefined;
     return { id, title, from: text(raw.f, 100), note: text(raw.n, 1000) };
+  } catch {
+    return undefined;
+  }
+}
+
+// Recipe links
+
+export interface SharedRecipe {
+  /** The sender's recipe id, so opening the link twice adds it once. */
+  id: string;
+  /** The text of the recipe; photos, voice notes, collections and the cook log stay behind. */
+  recipe: Partial<Recipe> & { title: string };
+  /** The request this recipe answers (the asker's id for it), so their request can be marked told. */
+  requestId?: string;
+}
+
+const RECIPE_KEY = 'recipe';
+/** Longer than any real recipe; a guard against a link that would inflate to something huge. */
+const MAX_LINK = 100_000;
+
+/** The link to send: `<origin><base>import#recipe=…`. */
+export function recipeLink(shared: SharedRecipe, origin: string, base: string): string {
+  const r = shared.recipe;
+  const payload = {
+    i: shared.id,
+    q: shared.requestId,
+    t: r.title,
+    a: r.author || undefined,
+    d: r.description,
+    s: r.servings,
+    p: r.prepMinutes,
+    c: r.cookMinutes,
+    g: r.tags?.length ? r.tags : undefined,
+    n: r.ingredients?.map((i) => [i.name, i.quantity ?? 0, i.unit ?? '', i.note ?? '', i.section ?? '']),
+    x: r.steps?.filter((st) => st.text).map((st) => (st.timerSeconds ? [st.text, st.timerSeconds] : [st.text])),
+    k: r.tips,
+    w: r.transcript,
+    y: r.story?.filter((st) => st.answer).map((st) => [st.prompt, st.answer]),
+  };
+  const packed = deflateSync(strToU8(JSON.stringify(payload)), { level: 9 });
+  return `${origin}${base}import#${RECIPE_KEY}=${bytesToBase64Url(packed)}`;
+}
+
+const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : undefined);
+const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
+
+function quantity(v: unknown): Quantity | undefined {
+  if (Array.isArray(v) && v.length === 2 && num(v[0]) !== undefined && num(v[1]) !== undefined) return [v[0], v[1]];
+  return num(v);
+}
+
+/** The recipe in a link's fragment ("#recipe=…"), or undefined if there isn't a readable one. */
+export function readRecipeLink(hash: string): SharedRecipe | undefined {
+  const data = new URLSearchParams(hash.replace(/^#/, '')).get(RECIPE_KEY);
+  if (!data || data.length > MAX_LINK) return undefined;
+  try {
+    const raw = JSON.parse(strFromU8(inflateSync(base64UrlToBytes(data)))) as Record<string, unknown>;
+    const id = text(raw.i, 64);
+    const title = text(raw.t, 200);
+    if (!id || !title) return undefined;
+    const ingredients: Partial<Ingredient>[] = arr(raw.n).flatMap((row) => {
+      const [name, q, unit, note, section] = arr(row);
+      const n = text(name, 200);
+      return n ? [{ name: n, quantity: quantity(q), unit: text(unit, 40), note: text(note, 500), section: text(section, 100) }] : [];
+    });
+    const steps: Partial<Step>[] = arr(raw.x).flatMap((row) => {
+      const [body, seconds] = arr(row);
+      const t = text(body, 5000);
+      return t ? [{ text: t, timerSeconds: num(seconds) }] : [];
+    });
+    const story: StoryAnswer[] = arr(raw.y).flatMap((row) => {
+      const [prompt, answer] = arr(row);
+      const a = text(answer, 5000);
+      return a ? [{ prompt: text(prompt, 300) ?? '', answer: a }] : [];
+    });
+    const recipe: SharedRecipe['recipe'] = {
+      title,
+      author: text(raw.a, 100) ?? '',
+      description: text(raw.d, 2000),
+      servings: num(raw.s),
+      prepMinutes: num(raw.p),
+      cookMinutes: num(raw.c),
+      tags: arr(raw.g).flatMap((g) => text(g, 60) ?? []),
+      ingredients: ingredients as Ingredient[],
+      steps: steps as Step[],
+      tips: text(raw.k, 5000),
+      transcript: text(raw.w, 50_000),
+      story,
+    };
+    return { id, recipe, requestId: text(raw.q, 64) };
   } catch {
     return undefined;
   }

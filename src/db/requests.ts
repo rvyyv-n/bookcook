@@ -31,6 +31,12 @@ export async function restoreRequest(r: RecipeRequest): Promise<void> {
   await db.requests.put(r);
 }
 
+/** The request someone sent you that this recipe answers, if any (its id is the asker's). */
+export async function requestAnsweredBy(recipeId: string): Promise<RecipeRequest | undefined> {
+  const told = await db.requests.where('fulfilledRecipeId').equals(recipeId).toArray();
+  return told.find((r) => r.direction === 'incoming');
+}
+
 export async function fulfilRequest(id: string, recipeId: string): Promise<void> {
   await db.requests.update(id, { fulfilledRecipeId: recipeId });
 }

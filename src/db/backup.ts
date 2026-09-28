@@ -4,8 +4,8 @@ import type { Collection, CookLog, Draft, GroceryItem, Media, Recipe, RecipeRequ
 
 /**
  * Backups: a `.bookcook` file, which is a zip of `bookcook.json` (every table) plus each photo and
- * voice note under `media/`. Restoring merges: everything in the file is put back by id, and
- * anything added since stays.
+ * voice note under `media/`. Restoring either merges (everything in the file is put back by id,
+ * and anything added since stays) or replaces (the cookbook becomes exactly what the file holds).
  */
 
 const FORMAT = 'bookcook-backup';
@@ -17,7 +17,7 @@ interface MediaEntry extends Omit<Media, 'blob'> {
   file: string;
 }
 
-interface Manifest {
+export interface Manifest {
   format: typeof FORMAT;
   version: number;
   exportedAt: number;
@@ -86,8 +86,20 @@ export async function exportBackup(now = Date.now()): Promise<{ blob: Blob; file
 
 export class BackupError extends Error {}
 
-/** Read a `.bookcook` file and merge it into the cookbook. Throws BackupError if it isn't one. */
-export async function restoreBackup(file: Blob): Promise<BackupCounts> {
+const list = <T>(v: T[] | undefined) => (Array.isArray(v) ? v : []);
+
+export type RestoreMode = 'merge' | 'replace';
+
+/** A backup file that has been read and checked, ready to restore. */
+export interface BackupFile {
+  exportedAt: number;
+  counts: BackupCounts;
+  manifest: Manifest;
+  media: Media[];
+}
+
+/** Read and check a `.bookcook` file without changing anything. Throws BackupError if it isn't one. */
+export async function readBackup(file: Blob): Promise<BackupFile> {
   let files: Record<string, Uint8Array>;
   let manifest: Manifest;
   try {
@@ -100,32 +112,37 @@ export async function restoreBackup(file: Blob): Promise<BackupCounts> {
   if (manifest.version > VERSION) throw new BackupError('newer version');
 
   const media: Media[] = [];
-  for (const { file: path, ...rest } of manifest.media ?? []) {
+  for (const { file: path, ...rest } of list(manifest.media)) {
     const data = files[path];
     if (data) media.push({ ...rest, blob: new Blob([data as Uint8Array<ArrayBuffer>], { type: rest.mime }) });
   }
-  const list = <T>(v: T[] | undefined) => (Array.isArray(v) ? v : []);
-  await db.transaction(
-    'rw',
-    [db.recipes, db.drafts, db.cookLogs, db.grocery, db.requests, db.collections, db.settings, db.media],
-    async () => {
-      await db.recipes.bulkPut(list(manifest.recipes));
-      await db.drafts.bulkPut(list(manifest.drafts));
-      await db.cookLogs.bulkPut(list(manifest.cookLogs));
-      await db.grocery.bulkPut(list(manifest.grocery));
-      await db.requests.bulkPut(list(manifest.requests));
-      await db.collections.bulkPut(list(manifest.collections));
-      await db.settings.bulkPut(list(manifest.settings).filter((s) => !LOCAL_SETTINGS.has(s.key)));
-      await db.media.bulkPut(media);
-    },
-  );
-  return { recipes: list(manifest.recipes).length, media: media.length };
+  return { exportedAt: manifest.exportedAt, counts: { recipes: list(manifest.recipes).length, media: media.length }, manifest, media };
 }
 
-/** Ask the browser not to clear our storage under pressure (these recipes can't be replaced). */
-export async function requestPersistence(): Promise<boolean> {
-  if (!navigator.storage?.persist) return false;
-  const granted = (await navigator.storage.persisted?.()) || (await navigator.storage.persist());
-  await db.settings.put({ key: 'persistRequested', value: true });
-  return granted;
+/** Put a backup back: merged into the cookbook, or replacing it (this device's own settings stay). */
+export async function applyBackup({ manifest, media, counts }: BackupFile, mode: RestoreMode): Promise<BackupCounts> {
+  const tables = [db.recipes, db.drafts, db.cookLogs, db.grocery, db.requests, db.collections, db.settings, db.media];
+  await db.transaction('rw', tables, async () => {
+    if (mode === 'replace') {
+      await Promise.all(tables.filter((table) => table !== db.settings).map((table) => table.clear()));
+      await db.settings
+        .where('key')
+        .noneOf([...LOCAL_SETTINGS])
+        .delete();
+    }
+    await db.recipes.bulkPut(list(manifest.recipes));
+    await db.drafts.bulkPut(list(manifest.drafts));
+    await db.cookLogs.bulkPut(list(manifest.cookLogs));
+    await db.grocery.bulkPut(list(manifest.grocery));
+    await db.requests.bulkPut(list(manifest.requests));
+    await db.collections.bulkPut(list(manifest.collections));
+    await db.settings.bulkPut(list(manifest.settings).filter((s) => !LOCAL_SETTINGS.has(s.key)));
+    await db.media.bulkPut(media);
+  });
+  return counts;
+}
+
+/** Read a `.bookcook` file and restore it in one go. */
+export async function restoreBackup(file: Blob, mode: RestoreMode = 'merge'): Promise<BackupCounts> {
+  return applyBackup(await readBackup(file), mode);
 }

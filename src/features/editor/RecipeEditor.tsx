@@ -5,6 +5,7 @@ import { commitDraft, openEditDraft } from '../../db/drafts';
 import { getRecipe } from '../../db/recipes';
 import { setSetting } from '../../db/settings';
 import { useT } from '../../i18n';
+import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { Button } from '../../ui/Button';
 import { KeyHints, SaveBar, SavedIndicator, SectionTabs, TabPanel, Tabs } from '../../ui/Editor';
 import { useToast } from '../../ui/Toast';
@@ -82,6 +83,7 @@ function RecipeEditor({ draftId, fresh = false }: { draftId: string; fresh?: boo
     await editor.finish();
     const recipe = await commitDraft(draft.id);
     if (recipe.author) void setSetting('lastAuthor', recipe.author);
+    void requestPersistentStorage();
     toast.show({ message: e.saved, tone: 'success' });
     if (isEdit && (window.history.state?.idx ?? 0) > 0) navigate(-1);
     else navigate(`/r/${recipe.id}`, { replace: true });

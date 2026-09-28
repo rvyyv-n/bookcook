@@ -7,6 +7,7 @@ import { setSetting } from '../../db/settings';
 import type { Step } from '../../db/types';
 import { spiceGroups } from '../../design/skin';
 import { useT } from '../../i18n';
+import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { ingredientParts, parseIngredient, sectionHeading } from '../../lib/parse/ingredient';
 import { stepTimer } from '../../lib/parse/timers';
 import { getUnit } from '../../lib/parse/units';
@@ -67,6 +68,7 @@ function Review({ draftId }: { draftId: string }) {
     await editor.finish();
     const recipe = await commitDraft(draft.id);
     if (recipe.author) void setSetting('lastAuthor', recipe.author);
+    void requestPersistentStorage();
     toast.show({ message: t.ui.editor.saved, tone: 'success' });
     navigate(`/r/${recipe.id}`, { replace: true });
   }

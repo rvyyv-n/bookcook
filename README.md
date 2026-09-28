@@ -31,11 +31,13 @@ It's local-first. Recipes live on the device in IndexedDB, with no account and n
 - **A cookbook to browse.** Search, collections, tags, sorting, "Make Mine" copies of family recipes, grocery lists, sharing and printing.
 - **Speak into any field.** Every text field has a Speak button.
 - **I made it.** Rate it, note what to change next time, and add a photo to the cook log.
+- **Grocery and requests.** One grocery list grouped by aisle, and requests for the recipes that only live in someone's head, sent as a link.
+- **Safe and shareable.** Back up to a `.bookcook` file and restore it (add to the cookbook, or replace it). Share a recipe as a link that adds it to someone else's cookbook. Print the family cookbook.
 - **Five looks.** Five skins, light and dark, two accents and three text sizes, up to Huge.
 
 ![Cook mode on a tablet, with the ingredients pinned beside the step](docs/images/tablet.jpg)
 
-Still to come: the grocery and requests screens, settings in full, the printed family cookbook, backups and share links, and an Android app. See the [roadmap](docs/roadmap.md).
+Still to come: an Android app, onboarding and a final polish, and the Cloudflare deploy that From a link needs. See the [roadmap](docs/roadmap.md).
 
 ## How it's built
 

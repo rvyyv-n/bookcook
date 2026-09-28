@@ -1,5 +1,6 @@
 import { db, newId } from './db';
 import { claimMedia } from './media';
+import { fulfilRequest, getRequest } from './requests';
 import type { CookLog, Ingredient, Media, Recipe, Step } from './types';
 
 export type NewRecipe = Partial<Recipe> & { title: string };
@@ -176,6 +177,18 @@ export async function forkRecipe(id: string, author: string): Promise<Recipe> {
     await db.recipes.add(copy);
   });
   return copy;
+}
+
+/**
+ * Add a recipe someone shared by link, under the sender's id so a second open adds nothing. If it
+ * answers a request you sent, that request is marked told. Returns the recipe and whether it's new.
+ */
+export async function addSharedRecipe(id: string, shared: NewRecipe, requestId?: string): Promise<{ recipe: Recipe; added: boolean }> {
+  const existing = await db.recipes.get(id);
+  const recipe = existing ?? (await saveRecipe({ ...shared, id, source: 'imported', collectionIds: [], cookedCount: 0 }));
+  const request = requestId ? await getRequest(requestId) : undefined;
+  if (request?.direction === 'outgoing' && !request.fulfilledRecipeId) await fulfilRequest(request.id, recipe.id);
+  return { recipe, added: !existing };
 }
 
 export function listForks(id: string): Promise<Recipe[]> {

@@ -32,7 +32,7 @@ The other files in this folder are copied verbatim from the design handoff. The 
 - **Desktop actions include Print** (the mock shows four). Older readers may not know Ctrl+P.
 - **The draft card has no Discard** ("each card has one action"). Discarding a draft belongs in the editor.
 - **No results without a matching request** still offers Tell it and Ask for it, with a hint to try a shorter word.
-- **Share sends the recipe as text** (the system share sheet, or the clipboard where there isn't one) until share links arrive in phase 10.
+- **Share sends a link to the recipe** (the system share sheet, or the clipboard where there isn't one). Until phase 10 it sent the recipe as text.
 - **Tags aren't cookbook chips any more**; they have their own pages (`/t`, `/t/:tag`), reached from the sidebar and the recipe's tag links.
 
 ## Review changes after Phase 5
@@ -87,3 +87,13 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 - **The import function is `/api/import?url=…`** (`functions/api/import.ts`, a Cloudflare Pages Function), or `VITE_IMPORT_URL` when it's deployed elsewhere. It only fetches public http(s) pages, reads at most 3 MB, and stores nothing. Where it isn't deployed, the app tries reading the page directly (a few sites allow it), then shows the failure state.
 - **A bad web address is a field error** ("That doesn't look like a web address"), not the page failure, which is kept for pages that can't be read.
 - **The recipe's picture isn't imported yet**: `imageUrl` would need fetching through the function to be kept offline.
+
+## Safety and sharing (phase 10)
+
+The handoff has no screens for these, so they're built from the request link page and the Sheet.
+
+- **A recipe link opens "A recipe for you"** (`/import#recipe=…`): the request page's accent card with "From ___'s kitchen", the title, description and counts, then **Add to my cookbook**. The link carries the sender's recipe id, so opening it again shows "It's already in your cookbook" and **Open it** instead of adding a copy.
+- **Recipe links are compressed with `fflate`**, which the backup already uses, instead of the plan's `lz-string`. They carry text only: no photos, voice notes, collections or cook log.
+- **A recipe told for a request carries that request's id.** The asker's copy of the request shares the id, so adding the recipe marks their outgoing request told.
+- **Restore asks how** after the file is picked, in a Sheet: **Add to my cookbook** (merge, the primary) or **Replace everything** (destructive). Replace keeps this device's own settings (last backup, the storage request).
+- **`storage.persist()` is asked for once**, on the first saved recipe, added link or backup, as Firefox shows a prompt each time.

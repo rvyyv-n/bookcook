@@ -1,4 +1,5 @@
 // Dev helper: screenshot the running app with Playwright.
+// "file": ["input[type=file]", "path/to/backup.bookcook"] picks a file for a file input.
 // "fakeSpeech": true swaps in a scripted recogniser (scripts/fake-speech.js): {"eval":"__say('two onions')"}.
 // node scripts/shot.mjs '{"path":"/","width":390,"height":844,"theme":"dark","textSize":"huge","settings":{"skin":"heirloom"},"actions":[{"click":"text=Try an example"}],"out":"shots/x.png"}'
 import { chromium } from '@playwright/test';
@@ -62,6 +63,7 @@ await page.waitForTimeout(400);
 for (const a of plan.actions ?? []) {
   if (a.click) await page.locator(a.click).first().click();
   if (a.type) await page.locator(a.type[0]).first().fill(a.type[1]);
+  if (a.file) await page.locator(a.file[0]).first().setInputFiles(a.file[1]);
   if (a.keys) await page.keyboard.type(a.keys, { delay: 20 });
   if (a.press) await page.keyboard.press(a.press);
   if (a.goto) await page.goto(base + a.goto);

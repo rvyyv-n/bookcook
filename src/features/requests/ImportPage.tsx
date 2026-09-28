@@ -1,8 +1,12 @@
+import { useLiveQuery } from 'dexie-react-hooks';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
+import { useRecipe } from '../../db/hooks';
+import { addSharedRecipe } from '../../db/recipes';
 import { addRequest, getRequest } from '../../db/requests';
 import { useT } from '../../i18n';
-import { readRequestLink, type SharedRequest } from '../../lib/shareLink';
+import { requestPersistentStorage } from '../../lib/platform/storagePersist';
+import { readRecipeLink, readRequestLink, type SharedRecipe, type SharedRequest } from '../../lib/shareLink';
 import { Button, ButtonLink } from '../../ui/Button';
 import { useToast } from '../../ui/Toast';
 import { useTellIt } from '../library/SpecialCards';
@@ -19,27 +23,89 @@ async function keep(shared: SharedRequest): Promise<void> {
   });
 }
 
-/** `/import#request=…`: someone would love to learn a recipe from you. */
+/** `/import#recipe=…` or `/import#request=…`: a recipe someone shared, or a request for one. */
 export function ImportPage() {
   const t = useT();
-  const tr = t.ui.requests;
   const { hash } = useLocation();
+  const recipe = readRecipeLink(hash);
+  if (recipe) return <SharedRecipePage shared={recipe} />;
+  const request = readRequestLink(hash);
+  if (request) return <SharedRequestPage shared={request} />;
+  return (
+    <div className="flex max-w-xl flex-col items-start gap-4 py-10">
+      <h1 className="text-3xl leading-none">{t.ui.requests.badTitle}</h1>
+      <p className="text-lg">{t.ui.requests.badLink}</p>
+      <ButtonLink href="/" variant="primary" icon="cookbook">
+        {t.ui.common.goHome}
+      </ButtonLink>
+    </div>
+  );
+}
+
+/** Someone shared a recipe: Add to my cookbook, or Open it if it's already there. */
+function SharedRecipePage({ shared }: { shared: SharedRecipe }) {
+  const t = useT();
+  const tr = t.ui.requests;
+  const navigate = useNavigate();
+  const toast = useToast();
+  const [busy, setBusy] = useState(false);
+  const have = useRecipe(shared.id);
+  const request = useLiveQuery(async () => (shared.requestId ? ((await getRequest(shared.requestId)) ?? null) : null), [shared.requestId]);
+  const { recipe } = shared;
+  const answers = request?.direction === 'outgoing' && request.fulfilledRecipeId !== shared.id;
+
+  return (
+    <div className="flex max-w-xl flex-col gap-5 py-6 desk:py-10">
+      <h1 className="text-3xl leading-none tracking-[-0.02em]">{tr.recipeTitle}</h1>
+      <article className="flex flex-col gap-2.5 rounded-lg bg-accent-soft p-4.5">
+        {recipe.author && <p className="type-display italic">{t.ui.common.fromKitchen(recipe.author)}</p>}
+        <h2 className="type-display text-2xl leading-[1.05]">{recipe.title}</h2>
+        {recipe.description && <p>{recipe.description}</p>}
+        <p className="text-ink-muted">{tr.recipeCounts(recipe.ingredients?.length ?? 0, recipe.steps?.length ?? 0)}</p>
+      </article>
+      {answers && <p className="font-bold">{tr.answersRequest}</p>}
+      {have === undefined ? null : have ? (
+        <>
+          <p className="text-ink-muted">{tr.alreadyHave}</p>
+          <div>
+            <ButtonLink href={`/r/${have.id}`} variant="primary" icon="cookbook">
+              {tr.openIt}
+            </ButtonLink>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="text-ink-muted">{tr.recipeBody}</p>
+          <div>
+            <Button
+              variant="primary"
+              icon="add"
+              isDisabled={busy}
+              onPress={async () => {
+                setBusy(true);
+                const { recipe: saved } = await addSharedRecipe(shared.id, recipe, shared.requestId);
+                void requestPersistentStorage();
+                toast.show({ message: tr.addedRecipe, tone: 'success' });
+                navigate(`/r/${saved.id}`, { replace: true });
+              }}
+            >
+              {tr.addToCookbook}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/** Someone would love to learn a recipe from you. */
+function SharedRequestPage({ shared }: { shared: SharedRequest }) {
+  const t = useT();
+  const tr = t.ui.requests;
   const navigate = useNavigate();
   const toast = useToast();
   const tellIt = useTellIt();
   const [busy, setBusy] = useState(false);
-  const shared = readRequestLink(hash);
-
-  if (!shared)
-    return (
-      <div className="flex max-w-xl flex-col items-start gap-4 py-10">
-        <h1 className="text-3xl leading-none">{tr.incomingTitle}</h1>
-        <p className="text-lg">{tr.badLink}</p>
-        <ButtonLink href="/" variant="primary" icon="cookbook">
-          {t.ui.common.goHome}
-        </ButtonLink>
-      </div>
-    );
 
   return (
     <div className="flex max-w-xl flex-col gap-5 py-6 desk:py-10">

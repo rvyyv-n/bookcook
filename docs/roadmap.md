@@ -6,7 +6,7 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 ## Where the app is now
 
-A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by telling them (a guided interview, or free talk), typing them, pasting them in or importing them from a link, and edit any recipe; drafts save as you go. There's a grocery list grouped by aisle, recipe requests you can send as a link, the full Settings page with backup and restore, and a printable family cookbook.
+A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by telling them (a guided interview, or free talk), typing them, pasting them in or importing them from a link, and edit any recipe; drafts save as you go. There's a grocery list grouped by aisle, recipe requests you can send as a link, the full Settings page with backup and restore (add to the cookbook, or replace it), and a printable family cookbook. Recipes are shared as links that add them to someone else's cookbook, and the browser is asked to keep the cookbook's storage.
 
 It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions.
 
@@ -83,8 +83,8 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 - [x] PWA manifest, icons and offline caching (`vite-plugin-pwa`; the icons are drawn from the logo by `scripts/icons.mjs`). Brought forward so the app can be installed and tested from GitHub Pages.
 - [x] Backup export and restore (brought forward for the Settings nudge): a `.bookcook` zip of every table plus photos and voice notes (`src/db/backup.ts`, `fflate`). Restore merges by id. `storage.persist()` is asked for on the first backup.
-- [ ] `storage.persist()` on the first saved recipe; restore that replaces instead of merging.
-- [ ] Share links for a recipe (request links landed in phase 9). An outgoing request is marked told when the recipe comes back by link.
+- [x] `storage.persist()` on the first saved recipe (asked once, `src/lib/platform/storagePersist.ts`); restore asks whether to add to the cookbook or replace everything.
+- [x] Share links for a recipe (`/import#recipe=…`, compressed, text only; request links landed in phase 9). Opening one offers Add to my cookbook, once. An outgoing request is marked told when the recipe comes back by link.
 
 ### Phase 11: Android APK
 

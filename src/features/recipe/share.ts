@@ -1,32 +1,25 @@
+import { requestAnsweredBy } from '../../db/requests';
 import type { Recipe } from '../../db/types';
-import { formatIngredient } from '../../lib/parse/ingredient';
+import type { Locale } from '../../i18n';
+import { recipeLink } from '../../lib/shareLink';
 
-/** The recipe as plain text, for sharing in a message: title, ingredients, numbered steps, tips. */
-export function recipeAsText(recipe: Recipe): string {
-  const lines = [recipe.title, ''];
-  let section: string | undefined;
-  for (const i of recipe.ingredients) {
-    if (i.section && i.section !== section) lines.push('', i.section);
-    section = i.section;
-    lines.push(`• ${formatIngredient(i)}`);
-  }
-  if (recipe.steps.length) lines.push('');
-  recipe.steps.forEach((s, n) => lines.push(`${n + 1}. ${s.text}`));
-  if (recipe.tips) lines.push('', recipe.tips);
-  return lines.join('\n').trim();
-}
-
-/** Opens the system share sheet with the recipe text; copies it instead where there isn't one. Returns 'copied' then. */
-export async function shareRecipe(recipe: Recipe): Promise<'shared' | 'copied' | 'cancelled'> {
-  const text = recipeAsText(recipe);
+/**
+ * Opens the system share sheet with a link to the recipe; copies it instead where there isn't one
+ * (returns 'copied' then). A recipe told for someone's request carries that request, so it's marked
+ * told on their side when they add it.
+ */
+export async function shareRecipe(recipe: Recipe, t: Locale): Promise<'shared' | 'copied' | 'cancelled'> {
+  const request = await requestAnsweredBy(recipe.id);
+  const url = recipeLink({ id: recipe.id, recipe, requestId: request?.id }, location.origin, import.meta.env.BASE_URL);
+  const text = t.ui.recipe.shareText(recipe.title);
   if (navigator.share) {
     try {
-      await navigator.share({ title: recipe.title, text });
+      await navigator.share({ title: recipe.title, text, url });
       return 'shared';
     } catch (e) {
       if (e instanceof DOMException && e.name === 'AbortError') return 'cancelled';
     }
   }
-  await navigator.clipboard.writeText(text);
+  await navigator.clipboard.writeText(`${text} ${url}`);
   return 'copied';
 }

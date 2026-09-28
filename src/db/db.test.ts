@@ -5,6 +5,7 @@ import { commitDraft, createDraft, deleteDraft, editDraftFor, getDraft, listDraf
 import { addManualItem, addToGrocery, clearChecked, listGrocery, restoreGroceryItems, setChecked } from './grocery';
 import { getMedia, putMedia } from './media';
 import {
+  addSharedRecipe,
   allTags,
   deleteCookLog,
   deleteRecipe,
@@ -18,7 +19,7 @@ import {
   restoreRecipe,
   saveRecipe,
 } from './recipes';
-import { addRequest, findOpenRequestsFor, listRequests } from './requests';
+import { addRequest, findOpenRequestsFor, getRequest, listRequests, requestAnsweredBy } from './requests';
 import { DEFAULT_SETTINGS, getSettings, setSetting } from './settings';
 
 beforeEach(async () => {
@@ -202,6 +203,25 @@ describe('requests', () => {
     await addRequest({ title: "Nani's biryani", direction: 'outgoing', askedOf: 'Nani' });
     expect((await findOpenRequestsFor('Chicken Biryani')).map((r) => r.title)).toEqual(["Mom's biryani"]);
     expect(await findOpenRequestsFor('Pancakes')).toEqual([]);
+  });
+
+  it('marks the request you sent as told when its recipe comes back by link, once', async () => {
+    const asked = await addRequest({ title: 'Nihari', direction: 'outgoing', askedOf: 'Nani' });
+    const first = await addSharedRecipe('nani-1', { title: 'Nihari', author: 'Nani', ingredients: [], steps: [] }, asked.id);
+    expect(first.added).toBe(true);
+    expect(first.recipe).toMatchObject({ id: 'nani-1', source: 'imported', cookedCount: 0 });
+    expect((await getRequest(asked.id))?.fulfilledRecipeId).toBe('nani-1');
+
+    const again = await addSharedRecipe('nani-1', { title: 'Nihari (again)', ingredients: [], steps: [] }, asked.id);
+    expect(again.added).toBe(false);
+    expect((await listRecipes()).map((r) => r.title)).toEqual(['Nihari']);
+  });
+
+  it('finds the request a recipe was told for, and leaves requests asked of you alone', async () => {
+    const incoming = await addRequest({ title: 'Karahi', direction: 'incoming', fulfilledRecipeId: 'k1' });
+    expect((await requestAnsweredBy('k1'))?.id).toBe(incoming.id);
+    await addSharedRecipe('k2', { title: 'Karahi', ingredients: [], steps: [] }, incoming.id);
+    expect((await getRequest(incoming.id))?.fulfilledRecipeId).toBe('k1');
   });
 });
 

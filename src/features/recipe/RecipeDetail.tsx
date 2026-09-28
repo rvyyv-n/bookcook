@@ -74,7 +74,7 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
       label: t.ui.recipe.share,
       short: s.share,
       onPress: async () => {
-        if ((await shareRecipe(recipe)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
+        if ((await shareRecipe(recipe, t)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
       },
     },
     { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => window.print() },

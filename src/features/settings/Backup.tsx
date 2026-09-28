@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { FileTrigger } from 'react-aria-components';
-import { BackupError, exportBackup, requestPersistence, restoreBackup } from '../../db/backup';
+import { applyBackup, BackupError, exportBackup, readBackup, type BackupFile, type RestoreMode } from '../../db/backup';
 import { useSettings } from '../../db/hooks';
 import { useT } from '../../i18n';
-import { relativeTime } from '../../lib/format';
+import { formatDay, relativeTime } from '../../lib/format';
+import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { Button } from '../../ui/Button';
 import { cx } from '../../ui/cx';
 import { Icon } from '../../ui/Icon';
+import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 
 /** A backup older than this (or none at all) gets the accent nudge. */
@@ -33,6 +35,7 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
   const toast = useToast();
   const { lastBackupAt } = useSettings();
   const [busy, setBusy] = useState(false);
+  const [picked, setPicked] = useState<BackupFile | null>(null);
   // Read once per visit; the page doesn't need to tick over while it's open.
   const [now] = useState(() => Date.now());
   const overdue = lastBackupAt === null || now - lastBackupAt > OVERDUE_DAYS * 86_400_000;
@@ -44,22 +47,33 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
     try {
       const { blob, filename, counts } = await exportBackup();
       download(blob, filename);
-      void requestPersistence();
+      void requestPersistentStorage();
       toast.show({ message: ts.backedUp(counts.recipes), tone: 'success' });
     } finally {
       setBusy(false);
     }
   }
 
-  async function restore(files: FileList | null) {
+  async function pick(files: FileList | null) {
     const file = files?.[0];
     if (!file) return;
     setBusy(true);
     try {
-      const counts = await restoreBackup(file);
-      toast.show({ message: ts.restored(counts.recipes), tone: 'success' });
+      setPicked(await readBackup(file));
     } catch (e) {
       toast.show({ message: e instanceof BackupError && e.message === 'newer version' ? ts.newerBackup : ts.notABackup });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function restore(mode: RestoreMode) {
+    if (!picked) return;
+    setBusy(true);
+    try {
+      const counts = await applyBackup(picked, mode);
+      setPicked(null);
+      toast.show({ message: (mode === 'replace' ? ts.replaced : ts.restored)(counts.recipes), tone: 'success' });
     } finally {
       setBusy(false);
     }
@@ -91,12 +105,40 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
         >
           {ts.backUpNow}
         </Button>
-        <FileTrigger acceptedFileTypes={['.bookcook', 'application/zip']} onSelect={restore}>
+        <FileTrigger acceptedFileTypes={['.bookcook', 'application/zip']} onSelect={pick}>
           <Button variant="quiet" icon="download" isDisabled={busy}>
             {ts.restore}
           </Button>
         </FileTrigger>
       </div>
+      <Sheet
+        isOpen={picked !== null}
+        onOpenChange={(open) => !open && !busy && setPicked(null)}
+        title={ts.restoreTitle}
+        description={picked && ts.restoreFrom(formatDay(picked.exportedAt), picked.counts.recipes)}
+      >
+        <div className="flex flex-col gap-4">
+          <RestoreChoice hint={ts.restoreMergeHint}>
+            <Button variant="primary" icon="download" isDisabled={busy} onPress={() => restore('merge')}>
+              {ts.restoreMerge}
+            </Button>
+          </RestoreChoice>
+          <RestoreChoice hint={ts.restoreReplaceHint}>
+            <Button variant="destructive" isDisabled={busy} onPress={() => restore('replace')}>
+              {ts.restoreReplace}
+            </Button>
+          </RestoreChoice>
+        </div>
+      </Sheet>
     </section>
+  );
+}
+
+function RestoreChoice({ hint, children }: { hint: string; children: ReactNode }) {
+  return (
+    <div className="flex flex-col items-start gap-1.5">
+      {children}
+      <p className="text-ink-muted">{hint}</p>
+    </div>
   );
 }
