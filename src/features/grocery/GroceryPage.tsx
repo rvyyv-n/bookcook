@@ -6,11 +6,26 @@ import type { GroceryItem } from '../../db/types';
 import { useT } from '../../i18n';
 import { formatIngredient } from '../../lib/parse/ingredient';
 import { Button } from '../../ui/Button';
+import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
+import type { Aisle } from '../../lib/parse/aisles';
 import { CheckItem, Struck } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { TextField } from '../../ui/Field';
 import { useToast } from '../../ui/Toast';
 import { groupByAisle } from './aisles';
+
+/** A small icon for each aisle, from the same set as collections and tags. */
+const AISLE_ICONS: Record<Aisle, TopicIconName> = {
+  Produce: 'carrot',
+  'Meat & fish': 'beef',
+  'Dairy & eggs': 'egg',
+  Bakery: 'croissant',
+  'Spices & seasonings': 'flame',
+  Pantry: 'wheat',
+  Frozen: 'iceCream',
+  Drinks: 'coffee',
+  Other: 'utensils',
+};
 
 /** Fade 150ms then collapse 200ms (motion.css: --dur-exit, --dur). */
 const LEAVE_MS = 350;
@@ -138,7 +153,8 @@ export function GroceryPage() {
         <div className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1">
           {groups.map((g, gi) => (
             <section key={g.aisle} aria-labelledby={`aisle-${gi}`} className="flex flex-col desk:pb-4.5">
-              <h2 id={`aisle-${gi}`} className="type-heading mb-1 text-lg">
+              <h2 id={`aisle-${gi}`} className="type-heading mb-1 flex items-center gap-2 text-lg">
+                <TopicIcon name={AISLE_ICONS[g.aisle]} size="1.25rem" className="shrink-0 text-ink-muted" />
                 {t.ui.grocery.aisles[g.aisle]}
               </h2>
               <ul className="flex flex-col">
