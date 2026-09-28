@@ -60,7 +60,7 @@ export function SectionTabs({ label, items }: { label: string; items: { id: stri
             'group flex min-h-[3.5rem] flex-none cursor-pointer items-center gap-1.5 rounded-full px-[1rem] font-bold text-ink outline-none transition-colors duration-(--dur)',
             'shadow-[inset_0_0_0_1.5px_var(--line-strong)] data-[hovered]:bg-sunk',
             'data-[selected]:bg-ink data-[selected]:text-paper data-[selected]:shadow-none',
-            'data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus',
+            'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus',
           )}
         >
           <span className="text-ink-muted tabular-nums group-data-[selected]:text-paper group-data-[selected]:opacity-80">{i + 1}</span>
@@ -562,7 +562,7 @@ export function MoveHandle({
             <MenuItem
               key={id}
               id={id}
-              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 font-bold text-ink outline-none data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted data-[focused]:bg-sunk"
+              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 font-bold text-ink outline-none data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted data-[focused]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-focus data-[focus-visible]:-outline-offset-3"
             >
               <Icon name={icon} className="shrink-0" />
               {text}

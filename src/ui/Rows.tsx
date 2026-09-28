@@ -16,7 +16,7 @@ import { Icon, type IconName } from './Icon';
 /** A ruled settings row: bold label, the current value in muted text, a chevron. The whole row is the target. */
 const rowClass =
   'flex min-h-[3.5rem] w-full items-center gap-3 border-b border-line px-0.5 py-1.5 text-left text-base text-ink no-underline outline-none ' +
-  'data-[hovered]:bg-sunk data-[pressed]:bg-line data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus';
+  'data-[hovered]:bg-sunk data-[pressed]:bg-line data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus';
 
 function RowContent({ icon, label, value }: { icon?: IconName; label: ReactNode; value?: ReactNode }) {
   return (
@@ -84,7 +84,7 @@ export function SelectRow<K extends string>({
               key={o.id}
               id={o.id}
               textValue={o.label}
-              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-md px-3 outline-none data-[focused]:bg-sunk data-[selected]:font-bold"
+              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-md px-3 outline-none data-[focused]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-focus data-[focus-visible]:-outline-offset-3 data-[selected]:font-bold"
             >
               {({ isSelected }) => (
                 <>

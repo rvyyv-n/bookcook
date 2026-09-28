@@ -46,7 +46,7 @@ export function ChoiceMenu<K extends string>({
               id={o.id}
               className={cx(
                 'flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none',
-                'data-[focused]:bg-sunk data-[selected]:font-bold',
+                'data-[focused]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-focus data-[focus-visible]:-outline-offset-3 data-[selected]:font-bold',
               )}
             >
               {({ isSelected }) => (
@@ -101,7 +101,7 @@ export function IconMenu({
               key={id}
               id={id}
               textValue={names[id]}
-              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none data-[focused]:bg-sunk data-[selected]:font-bold"
+              className="flex min-h-[3.5rem] cursor-pointer items-center gap-3 rounded-sm px-3 text-ink outline-none data-[focused]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-focus data-[focus-visible]:-outline-offset-3 data-[selected]:font-bold"
             >
               <TopicIcon name={id} className="shrink-0" />
               {names[id]}
