@@ -77,6 +77,7 @@ export function Stepper({
   decrementLabel,
   incrementLabel,
   format = (n) => String(n),
+  compact = false,
   className,
 }: {
   label: string;
@@ -87,6 +88,8 @@ export function Stepper({
   decrementLabel: string;
   incrementLabel: string;
   format?: (n: number) => ReactNode;
+  /** Just the number ("− 6 +"), as in cook mode. */
+  compact?: boolean;
   className?: string;
 }) {
   const btn =
@@ -104,7 +107,7 @@ export function Stepper({
       <AriaButton aria-label={decrementLabel} className={btn} isDisabled={value <= min} onPress={() => onChange(Math.max(min, value - 1))}>
         <Icon name="remove" />
       </AriaButton>
-      <output aria-live="polite" className="min-w-[5.4rem] text-center font-bold tabular-nums">
+      <output aria-live="polite" className={cx('text-center font-bold tabular-nums', compact ? 'min-w-[2.2rem]' : 'min-w-[5.4rem]')}>
         {format(value)}
       </output>
       <AriaButton aria-label={incrementLabel} className={btn} isDisabled={value >= max} onPress={() => onChange(Math.min(max, value + 1))}>
@@ -144,27 +147,74 @@ export function Switch({
   );
 }
 
-/** Checklist item with a satisfying check. */
+/**
+ * A checklist row: the whole ruled row is the target. Checking pops the box; checked rows are struck
+ * through and muted. `dense` is the pinned cook-mode aside.
+ */
 export function CheckItem({
   children,
   className,
+  dense = false,
   ...rest
-}: { children: ReactNode; className?: string } & Omit<CheckboxProps, 'children' | 'className'>) {
+}: { children: ReactNode; className?: string; dense?: boolean } & Omit<CheckboxProps, 'children' | 'className'>) {
   return (
-    <AriaCheckbox {...rest} className={cx('group flex min-h-14 cursor-pointer items-center gap-4 py-2 outline-none', className)}>
+    <AriaCheckbox
+      {...rest}
+      className={cx(
+        'group flex cursor-pointer items-center border-b border-line px-0.5 text-ink outline-none data-[selected]:text-ink-muted',
+        dense ? 'min-h-14 gap-3 py-1' : 'min-h-16 gap-3.5 py-1.5',
+        className,
+      )}
+    >
       <span
         className={cx(
-          'grid size-8 shrink-0 place-items-center rounded-md border-2 border-line-strong bg-surface transition-colors',
-          'group-data-[selected]:animate-pop group-data-[selected]:border-success group-data-[selected]:bg-success group-data-[selected]:text-paper',
-          'group-data-[focus-visible]:outline-3 group-data-[focus-visible]:outline-offset-2 group-data-[focus-visible]:outline-(--focus)',
+          'grid shrink-0 place-items-center rounded-[8px] shadow-[inset_0_0_0_2px_var(--line-control)]',
+          'group-data-[selected]:animate-pop group-data-[selected]:bg-success group-data-[selected]:text-paper group-data-[selected]:shadow-none',
+          'group-data-[focus-visible]:outline-3 group-data-[focus-visible]:outline-offset-3 group-data-[focus-visible]:outline-(--focus)',
+          dense ? 'size-7' : 'size-7.5',
         )}
       >
-        <Icon name="check" size={20} current className="opacity-0 group-data-[selected]:opacity-100" />
+        <Icon name="check" size={dense ? 20 : 22} current className="opacity-0 group-data-[selected]:opacity-100" />
       </span>
-      <span className="flex-1 transition-colors group-data-[selected]:text-ink-muted group-data-[selected]:line-through group-data-[selected]:decoration-2">
-        {children}
-      </span>
+      <span className="min-w-0 flex-1 group-data-[selected]:line-through">{children}</span>
     </AriaCheckbox>
+  );
+}
+
+/** "How did it turn out?": five 56px stars, a radio group. */
+export function StarRating({
+  label,
+  value,
+  onChange,
+  starLabel,
+}: {
+  label: string;
+  value: number;
+  onChange: (n: number) => void;
+  starLabel: (n: number) => string;
+}) {
+  return (
+    <RadioGroup
+      aria-label={label}
+      value={value ? String(value) : null}
+      onChange={(v) => onChange(Number(v))}
+      orientation="horizontal"
+      className="flex gap-0.5"
+    >
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Radio
+          key={n}
+          value={String(n)}
+          aria-label={starLabel(n)}
+          className={cx(
+            'grid size-14 cursor-pointer place-items-center rounded-full transition-transform duration-(--dur) data-[pressed]:scale-90',
+            n <= value ? 'text-accent-mark' : 'text-line-control',
+          )}
+        >
+          <Icon name="star" size="2.1rem" filled={n <= value} />
+        </Radio>
+      ))}
+    </RadioGroup>
   );
 }
 

@@ -118,6 +118,16 @@ describe('scale', () => {
     expect(scaleIngredient(parseIngredient('250 g flour'), 1.5).quantity).toBe(380);
   });
 
+  it('says small amounts in the smaller unit', () => {
+    const chicken = scaleIngredient(parseIngredient('1 kg chicken'), 4 / 6);
+    expect([chicken.quantity, chicken.unit]).toEqual([670, 'g']);
+    const paste = scaleIngredient(parseIngredient('1 tbsp ginger garlic paste'), 4 / 6);
+    expect([paste.quantity, paste.unit]).toEqual([2, 'tsp']);
+    const yogurt = scaleIngredient(parseIngredient('1 cup yogurt'), 4 / 6);
+    expect(yogurt.unit).toBe('cup');
+    expect(scaleIngredient(parseIngredient('2 kg lamb'), 1.5).unit).toBe('kg');
+  });
+
   it('leaves vague amounts alone', () => {
     expect(scaleIngredient(parseIngredient('a pinch of salt'), 3).quantity).toBe(1);
     expect(scaleIngredient(parseIngredient('salt to taste'), 3).quantity).toBeUndefined();

@@ -45,3 +45,17 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 - **Collections and Tags are tiles** with thumbnails, followed by the recipes not yet in a collection or not tagged.
 - **Cookbook list rows don't show "Made N times".**
 - **The logo is a pixel-art pot** (`src/ui/logoMarks.ts`), matching the recipe pictures: `rice` beside the wordmark in light mode, `dark` in dark mode, `lid` as `public/favicon.svg`.
+
+## Cook mode
+
+- **Speech is the handoff's `Speech` interface** (`src/lib/speech/`), with `canSpeak`, `voices()` and `onVoicesChanged()` added, and an `onEnd` on `listen`. One listener hears at a time: a field's Speak button pauses cook-mode commands, which resume when it finishes.
+- **Phone timers stack one per row**, as in the cook screenshots.
+- **A timer is named after the first ingredient its step mentions** ("Rice"), and the alert's second line is the rest of that sentence ("Then drain."). With nothing after the duration, the alert has just the title.
+- **Durations in the step are timer chips**, as the design system describes ("the inline chip in step text starts a timer"), though the cook screenshots draw them as plain text. Every step needs a way to start a timer by touch. The chip is sized with the step text: idle shows the words ("25 minutes"), running shows the time left (tap to pause), and a finished one shows Done (tap to stop the alarm).
+- **Tapping a pinned timer pauses or resumes it** (the paused tile is in the design system).
+- **The listening indicator is a button**: tapping it shows the voice commands in a small popover, so they're reachable by touch and still never on screen. It also shows `Heard "next"` for a second after a command.
+- **On phones the controls stay pinned to the bottom**, so at Large and Huge the step scrolls under them. At Normal they sit where the mock has them.
+- **The step is in the URL** (`?step=3`), so a reload keeps your place as well as your timers.
+- **Scaled amounts move to a smaller unit below 1**: 1 kg for 4 of 6 is 670 g, 1 tbsp is 2 tsp, as in the ingredients-sheet mock.
+- **The keyboard hint shows only with a mouse or trackpad** (`pointer: fine`), so touch tablets don't see it.
+

@@ -1,32 +1,47 @@
+import type { ReactNode } from 'react';
 import { Button as AriaButton } from 'react-aria-components';
-import { formatDuration } from '../lib/parse/timers';
 import { cx } from './cx';
-import { Icon } from './Icon';
+import { Icon, type IconName } from './Icon';
 
-const chip =
-  'inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 align-baseline font-bold text-ink whitespace-nowrap ' +
-  'text-[0.9em] leading-snug';
+export type TimerChipState = 'idle' | 'running' | 'paused' | 'done';
 
-/** "⏱ 20 min" inline in a step. Pressable when it can start a timer or be edited. */
-export function TimerChip({ seconds, text, onPress, label }: { seconds: number; text?: string; onPress?: () => void; label?: string }) {
-  const content = (
-    <>
-      <Icon name="timer" size="1em" strokeWidth={2.2} />
-      {text ?? formatDuration(seconds)}
-    </>
-  );
-  if (!onPress) return <span className={chip}>{content}</span>;
+/**
+ * The timer chip: a duration in step text ("25 minutes"), sized with the text around it.
+ * idle: tap to start a timer · running: the time left, tap to pause · done: a check.
+ */
+export function TimerChip({
+  state,
+  children,
+  ariaLabel,
+  onPress,
+}: {
+  state: TimerChipState;
+  children: ReactNode;
+  ariaLabel: string;
+  onPress: () => void;
+}) {
+  const icon: IconName = state === 'done' ? 'check' : state === 'paused' ? 'pause' : 'timer';
   return (
     <AriaButton
+      aria-label={ariaLabel}
       onPress={onPress}
-      aria-label={label}
       className={cx(
-        chip,
-        'cursor-pointer border-2 border-transparent outline-none data-[hovered]:border-accent-strong data-[pressed]:scale-95',
-        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-focus',
+        // The hit area reaches above and below the line so it's a comfortable target at every size.
+        'relative inline-flex items-center gap-[.18em] rounded-[min(var(--radius-md),.4em)] px-[.22em] align-baseline leading-[1.05] whitespace-nowrap',
+        "transition-[background-color,transform] duration-(--dur) data-[pressed]:scale-[.97] after:absolute after:-inset-y-2 after:inset-x-0 after:content-['']",
+        state === 'idle' &&
+          'bg-(--control-fill) shadow-[inset_0_0_0_var(--control-border)_var(--line-strong)] data-[hovered]:bg-(--control-fill-hover)',
+        (state === 'running' || state === 'paused') && 'bg-accent-soft tabular-nums',
+        state === 'done' && 'bg-success-soft text-success',
       )}
     >
-      {content}
+      <Icon
+        name={icon}
+        size=".72em"
+        strokeWidth={2.4}
+        className={cx('shrink-0', state === 'running' && 'text-accent-text', state === 'paused' && 'text-ink-muted')}
+      />
+      {children}
     </AriaButton>
   );
 }

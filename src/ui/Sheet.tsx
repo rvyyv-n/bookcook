@@ -15,6 +15,7 @@ export function Sheet({
   isOpen,
   onOpenChange,
   title,
+  description,
   children,
   footer,
   size = 'md',
@@ -24,6 +25,8 @@ export function Sheet({
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   title: ReactNode;
+  /** A line under the title ("That's 13 times now."). */
+  description?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
   size?: keyof typeof widths;
@@ -53,13 +56,16 @@ export function Sheet({
             <>
               <div className="flex flex-col gap-2 px-4 pt-2.5 desk:px-5 desk:pt-5">
                 <span aria-hidden className="h-1.25 w-11 self-center rounded-full bg-line-strong desk:hidden" />
-                <div className="flex items-center justify-between gap-2 pl-1.5">
-                  <Heading
-                    slot="title"
-                    className={cx('leading-[1.05] tracking-[-0.015em]', placement === 'corner' ? 'text-xl' : 'text-2xl')}
-                  >
-                    {title}
-                  </Heading>
+                <div className={cx('flex justify-between gap-2 pl-1.5', description ? 'items-start' : 'items-center')}>
+                  <div className="flex flex-col gap-1">
+                    <Heading
+                      slot="title"
+                      className={cx('leading-[1.05] tracking-[-0.015em]', placement === 'corner' ? 'text-xl' : 'text-2xl')}
+                    >
+                      {title}
+                    </Heading>
+                    {description && <p className="text-ink-muted">{description}</p>}
+                  </div>
                   <Button variant="quiet" icon="close" onPress={close} className="px-3">
                     {t.ui.common.close}
                   </Button>

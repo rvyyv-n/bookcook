@@ -61,14 +61,19 @@ export function pixels(variant: LogoVariant) {
   });
 }
 
-/** The mark as a standalone SVG file (used for the favicon). */
-export function logoSvg(variant: LogoVariant): string {
+/**
+ * The mark as a standalone SVG file: the favicon and the app icons (scripts/icons.mjs). `pad` is the
+ * margin around the 20×20 drawing, in pixels; app icons for launchers that crop their own shape
+ * (maskable, Apple) are square with more margin.
+ */
+export function logoSvg(variant: LogoVariant, { pad = PAD, rounded = true }: { pad?: number; rounded?: boolean } = {}): string {
+  const box = SIZE + 2 * pad;
   const rects = pixels(variant)
     .map((p) => `<rect x="${p.x}" y="${p.y}" width="1.03" height="1.03" fill="${p.fill}"/>`)
     .join('');
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-PAD} ${-PAD} ${BOX} ${BOX}" shape-rendering="crispEdges">` +
-    `<rect x="${-PAD}" y="${-PAD}" width="${BOX}" height="${BOX}" rx="${BOX * 0.24}" fill="${MARKS[variant].tile}" shape-rendering="geometricPrecision"/>` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${box} ${box}" shape-rendering="crispEdges">` +
+    `<rect x="${-pad}" y="${-pad}" width="${box}" height="${box}" rx="${rounded ? box * 0.24 : 0}" fill="${MARKS[variant].tile}" shape-rendering="geometricPrecision"/>` +
     `${rects}</svg>`
   );
 }

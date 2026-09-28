@@ -4,6 +4,7 @@ import { useHref, useNavigate, type NavigateOptions } from 'react-router';
 import { useSettings } from '../db/hooks';
 import { applyAppearance } from '../design/skin';
 import { ToastProvider } from '../ui/Toast';
+import { SpeechProvider } from './speech';
 import { usePrefersDark } from './useMediaQuery';
 
 declare module 'react-aria-components' {
@@ -34,10 +35,12 @@ export function Providers({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   return (
     <AriaRouterProvider navigate={navigate} useHref={useHref}>
-      <ToastProvider>
-        <Appearance />
-        {children}
-      </ToastProvider>
+      <SpeechProvider>
+        <ToastProvider>
+          <Appearance />
+          {children}
+        </ToastProvider>
+      </SpeechProvider>
     </AriaRouterProvider>
   );
 }

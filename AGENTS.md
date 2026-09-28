@@ -28,3 +28,7 @@ npm test && npm run typecheck && npm run lint && npx prettier --check . && npm r
 ## Looking at the app
 
 Start `npm run dev -- --port 5288`, then screenshot with `node scripts/shot.mjs '<json>'`. The JSON sets the path, viewport, theme, text size, any setting (`"settings":{"skin":"heirloom"}`) and click actions; the example is at the top of the script.
+
+## Deployment
+
+GitHub Actions (`.github/workflows/deploy.yml`) runs the checks on every push and publishes `main` to GitHub Pages under `/bookcook/`. Anything that builds a URL by hand must go through `import.meta.env.BASE_URL` (the router already uses it as its basename). After changing the logo, run `npm run icons` to redraw the favicon and app icons.

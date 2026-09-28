@@ -6,7 +6,9 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 ## Where the app is now
 
-A cookbook you can browse in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, and collection and tag pages. You can search, filter, sort, scale, share, print, fork and add to the grocery list. You can't add your own recipe or cook from one yet, and nothing listens or speaks.
+A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can't add your own recipe yet.
+
+It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions.
 
 ## Done
 
@@ -41,14 +43,15 @@ From the marked-up review of the Phase 5 build. Phase 5 is complete once these l
 
 The hero screen. Needs the speech layer, so it's built here rather than with voice capture.
 
-- [ ] Speech layer, web implementation: listen and speak behind one interface. Wiring it in also turns on every field's Speak button.
-- [ ] Cook mode (`/r/:id/cook`): step header by skin (bar or big numeral), step text at step size, ingredient mentions with a popover showing the scaled amount, the optional step photo.
-- [ ] Controls: Back · Read (becomes Stop) · Next (becomes **I made it** on the last step).
-- [ ] Timers: several at once, "hot" under a minute, the TimerAlert with chime and speech, kept in `localStorage` so a reload doesn't lose them.
-- [ ] Voice commands (next, back, repeat, timer, stop) with the listening indicator; wake lock.
-- [ ] The ingredients sheet (checklist, stepper, units) and the I made it sheet (stars, note, photo), which writes the cook log.
-- [ ] Tablet and desktop layouts with the pinned ingredients aside.
-- [ ] Tested at Huge and in dark mode, and in Colour field (the whole screen on the accent field).
+- [x] Speech layer, web implementation: listen and speak behind one interface (`src/lib/speech/`). Wiring it in also turns on every field's Speak button.
+- [x] Cook mode (`/r/:id/cook`): step header by skin (bar or big numeral), step text at step size, ingredient mentions with a popover showing the scaled amount, the optional step photo.
+- [x] Controls: Back · Read (becomes Stop) · Next (becomes **I made it** on the last step).
+- [x] Timers: several at once, "hot" under a minute, paused by tapping, the TimerAlert with chime and speech, kept in `localStorage` so a reload doesn't lose them. Started by voice ("timer", "set a timer for 5 minutes") or T.
+- [x] Starting a timer by touch: each duration in the step is a timer chip (tap to start; then its time left, tap to pause; then Done).
+- [x] Voice commands (next, back, repeat, timer, stop) with the listening indicator; wake lock.
+- [x] The ingredients sheet (checklist, stepper, units) and the I made it sheet (stars, note, photo), which writes the cook log.
+- [x] Tablet and desktop layouts with the pinned ingredients aside.
+- [x] Tested at Huge and in dark mode, and in Colour field (the whole screen on the accent field).
 
 ### Phase 7: New recipe and Type it (handoff step 4)
 
@@ -78,7 +81,7 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 **Milestone: safe for daily use.** Recipes can't be lost with the phone.
 
-- [ ] PWA manifest, icons and offline caching.
+- [x] PWA manifest, icons and offline caching (`vite-plugin-pwa`; the icons are drawn from the logo by `scripts/icons.mjs`). Brought forward so the app can be installed and tested from GitHub Pages.
 - [ ] `storage.persist()`, backup export and restore.
 - [ ] Share links for a recipe and for a request.
 
@@ -89,7 +92,8 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 ### Phase 12: Polish and launch
 
 - [ ] Onboarding, motion details, a full accessibility pass.
-- [ ] Deploy to Cloudflare Pages.
+- [x] A test deployment on GitHub Pages (`.github/workflows/deploy.yml`).
+- [ ] Deploy to Cloudflare Pages, which the From a link import function needs.
 - [ ] README with screenshots and GIFs, the parser accuracy figure and Lighthouse scores; the case-study outline.
 
 ## Later, not in this build

@@ -320,11 +320,60 @@ export const en = {
       collections: 'Collections',
       tags: 'Tags',
       step: (n: number) => `Step ${n}`,
-      amountOf: (name: string) => `Amount of ${name}`,
       noIngredients: 'No ingredients yet.',
       noSteps: 'No steps yet.',
-      timerChip: (label: string) => `${label} timer`,
       rating: (n: number) => `${n} of 5`,
+    },
+    cook: {
+      title: (recipe: string) => `Cooking ${recipe}`,
+      stepOf: (n: number, total: number) => `Step ${n} of ${total}`,
+      of: (total: number) => `of ${total}`,
+      back: 'Back',
+      read: 'Read',
+      stop: 'Stop',
+      next: 'Next',
+      madeIt: 'I made it',
+      listening: 'Listening',
+      reading: 'Reading',
+      micOff: 'Mic off',
+      heard: (word: string) => `Heard “${word}”`,
+      commands: 'Say next, back, repeat, timer or stop.',
+      micOffHint: 'The microphone is off, so voice commands won’t work. Every button still does.',
+      timers: 'Timers',
+      /** A timer without an ingredient name ("set a timer for 5 minutes"). */
+      plainTimer: (duration: string) => `${duration} timer`,
+      timerPaused: (label: string) => `${label} · paused`,
+      timerAria: (label: string, left: string, state: 'running' | 'hot' | 'paused' | 'finished') =>
+        state === 'paused'
+          ? `${label} timer paused, ${left} left`
+          : state === 'hot'
+            ? `${label} timer, ${left} left, almost done`
+            : state === 'finished'
+              ? `${label} timer, done`
+              : `${label} timer, ${left} left`,
+      hours: (n: number) => (n === 1 ? '1 hour' : `${n} hours`),
+      minutes: (n: number) => (n === 1 ? '1 minute' : `${n} minutes`),
+      seconds: (n: number) => (n === 1 ? '1 second' : `${n} seconds`),
+      timerDone: (label: string) => `${label} is done`,
+      startTimer: (length: string) => `Start a timer for ${length}`,
+      timeLeft: (clock: string) => `${clock} left`,
+      chipDone: 'Done',
+      addMinute: '+1 min',
+      stepPhoto: 'It should look like this',
+      keysHint: '← and → to move · Space to read · T for timers',
+      forServings: (n: number) => `for ${n}`,
+      noSteps: 'This recipe has no steps yet. Add them in Edit.',
+      made: {
+        count: (n: number) => (n === 1 ? 'That’s the first time.' : `That’s ${n} times now.`),
+        question: 'How did it turn out?',
+        rating: 'Rating',
+        star: (n: number) => (n === 1 ? '1 star' : `${n} stars`),
+        note: 'Note for next time',
+        photo: 'Photo',
+        photoAdded: 'Photo added',
+        save: 'Save',
+        saved: 'Saved. Well done.',
+      },
     },
     shortcuts: {
       items: [
