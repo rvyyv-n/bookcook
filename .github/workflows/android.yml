@@ -1,0 +1,39 @@
+# Builds the debug APK on every push to main and on demand, and keeps it as a downloadable artifact.
+name: Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v5
+      - run: npm ci
+      - run: npm run android:sync
+      - name: Assemble the debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug
+      - uses: actions/upload-artifact@v5
+        with:
+          name: bookcook-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error

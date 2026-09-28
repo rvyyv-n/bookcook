@@ -88,7 +88,9 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 ### Phase 11: Android APK
 
-- [ ] Capacitor, native speech recognition and text-to-speech, the microphone permission, a debug APK.
+- [x] Capacitor Android project, native speech recognition (`@capgo/capacitor-speech-recognition`) and text-to-speech, the microphone permission, and the WebView workarounds; the native wrappers in `src/lib/platform/` are unit tested with the plugins mocked.
+- [x] The `Android APK` workflow (`.github/workflows/android.yml`) builds the debug APK on every push to `main` and on demand, and uploads it as the `bookcook-debug-apk` artifact.
+- [ ] Test the APK on a phone: the back button closing sheets, voice notes recording right after dictation stops, cook mode not hearing its own voice, and whether the restart beep is muted.
 
 ### Phase 12: Polish and launch
 
