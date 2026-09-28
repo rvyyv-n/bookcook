@@ -95,7 +95,7 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 ### Phase 12: Polish and launch
 
 - [x] Onboarding and motion details, from [`design/onboarding-and-motion.md`](design/onboarding-and-motion.md): a three-step welcome on the first visit (text size, what voice does, the microphone), re-openable from Settings, and the motion set (sheets, toasts and popovers leave, cook steps announce, check-offs strike, timers rise and warm, grocery rows collapse).
-- [ ] A full accessibility pass.
+- [x] A full accessibility pass: an automated audit of every screen in all five skins, light and dark, at Normal and Huge on a phone and at desktop width; every target is 56px and every label at least 14px at Normal; focus rings on settings rows, editor steps and menu options; the print page has its landmarks; the blocked-microphone help uses phone wording in the app. A screen reader was not tried by ear.
 - [x] A test deployment on GitHub Pages (`.github/workflows/deploy.yml`).
 - [ ] Deploy to Cloudflare Pages, which the From a link import function needs. The config and the `cloudflare` workflow job are in (`wrangler.toml`, `.github/workflows/deploy.yml`); it deploys once the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets exist and a Pages project named `bookcook` has been created.
 - [ ] README with screenshots and GIFs, the parser accuracy figure and Lighthouse scores; the case-study outline.
