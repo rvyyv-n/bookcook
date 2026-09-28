@@ -22,6 +22,9 @@ It's local-first. Recipes live on the device in IndexedDB, with no account and n
 
 ## What it does
 
+- **Tell it.** A gentle interview, one question at a time: the name, whose recipe it is, how many it feeds, the ingredients, the steps, tips and the story behind it. Ingredients appear as you say them, durations become timers, and the story is kept in the teller's own voice. Hands-free if you like.
+- **Or just talk.** Talk while you cook; Bookcook sorts it into ingredients and steps for you to check, and keeps every word as "In her words".
+- **Type it, paste it or bring a link.** Type recipes the way you'd say them (`2 cups basmati rice, washed`) with a live preview, paste messy text from WhatsApp or notes and have it tidied up, or import a recipe website's page. Whichever way, you check it on one screen before saving, and drafts save as you go.
 - **Cook mode.** One step at a time in type you can read from across the kitchen. Steps are read aloud, and voice commands (next, back, repeat, timer, stop) move you along without touching the screen. The screen stays awake.
 - **Timers.** Tap a duration in a step to start one. Several can run at once; under a minute they turn "hot", and a finished one chimes and speaks until you stop it. They survive a reload.
 - **Ingredients that follow you.** Scale servings and switch metric or imperial, and every amount updates, including the one that pops up when you tap an ingredient in a step. Tick things off as you go.
@@ -32,7 +35,7 @@ It's local-first. Recipes live on the device in IndexedDB, with no account and n
 
 ![Cook mode on a tablet, with the ingredients pinned beside the step](docs/images/tablet.jpg)
 
-Still to come: telling a new recipe by voice (a guided interview or free talk), typing and pasting recipes, importing from a link, the grocery and requests screens, backups and share links, and an Android app. See the [roadmap](docs/roadmap.md).
+Still to come: the grocery and requests screens, settings in full, the printed family cookbook, backups and share links, and an Android app. See the [roadmap](docs/roadmap.md).
 
 ## How it's built
 
@@ -41,16 +44,18 @@ React 19, TypeScript (strict), Vite, Tailwind CSS v4, React Aria Components and 
 ```
 src/
   app/        routes, the app shell, providers, speech wiring, keyboard shortcuts
-  features/   screens: library (cookbook, collections, tags), recipe, cook, editor, settings
+  features/   screens: library (cookbook, collections, tags), recipe, cook, capture (new recipe,
+              Tell it, Just talk, Paste it, From a link), editor (Type it, Check your recipe), settings
   ui/         shared components, built on React Aria
   design/     the design handoff's tokens, theme, skins and icons
   db/         Dexie schema and repositories (the only database access)
   lib/
     parse/    the rule-based recipe parser (pure TypeScript, fixture-tested)
     speech/   listening and speaking behind one interface
-    platform/ photos, wake lock, the timer chime
+    platform/ photos, voice recording, wake lock, the timer chime
   i18n/       every UI string and voice phrase
   styles/     Tailwind entry and print styles
+functions/    the From a link import function (a Cloudflare Pages Function)
 docs/         plan, roadmap, design brief; design/ holds the design handoff's docs
 scripts/      parser scoring, app icons, screenshot helper
 ```
@@ -82,8 +87,14 @@ npm run dev
 | `npm run parse:score` | Parser accuracy on the fixture corpus (`--verbose` lists failures)     |
 | `npm run icons`       | Redraw the favicon and app icons from the logo (`src/ui/logoMarks.ts`) |
 
-`node scripts/shot.mjs '<plan json>'` takes Playwright screenshots of the running dev server; the comment at the top of the file shows the options.
+Open http://localhost:5173. The microphone works on `localhost` in Chrome and Edge, and the dev server also runs the From a link function at `/api/import`.
+
+`node scripts/shot.mjs '<plan json>'` takes Playwright screenshots of the running dev server; the comment at the top of the file shows the options. `"fakeSpeech": true` swaps in a scripted recogniser, so voice screens can be driven with `__say('two onions')`, and `CHROMIUM=/path/to/chrome` points it at a browser when Playwright's own isn't installed.
+
+On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev server still has the file open: stop it (Ctrl+C) and try again.
 
 ## Deployment
 
 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the tests, typecheck, lint and format check on every push and pull request. Pushes to `main` are then built with the `/bookcook/` base path and published to GitHub Pages. The service worker precaches the app so it works offline once installed.
+
+From a link needs its function (`functions/api/import.ts`) deployed beside the app, which GitHub Pages can't do: there, every link ends in "We couldn't read that page" and Paste it still works. On Cloudflare Pages the `functions/` folder is picked up as is. To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address.
