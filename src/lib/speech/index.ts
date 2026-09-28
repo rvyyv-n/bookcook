@@ -1,3 +1,5 @@
+import { isNative } from '../platform/isNative';
+import { createNativeTts } from './nativeTts';
 import type { Speech } from './Speech';
 import { createWebSpeech } from './web';
 
@@ -19,5 +21,11 @@ const unavailable: Speech = {
   onVoicesChanged: () => () => {},
 };
 
-/** The app's speech layer: Web Speech in the browser. The Android build will choose its native one here. */
-export const speech: Speech = typeof window === 'undefined' ? unavailable : createWebSpeech();
+/** Web Speech in the browser. In the Android app the voice is native; listening stays unavailable until the native recogniser lands. */
+function create(): Speech {
+  if (typeof window === 'undefined') return unavailable;
+  return isNative() ? { ...unavailable, ...createNativeTts() } : createWebSpeech();
+}
+
+/** The app's speech layer. */
+export const speech: Speech = create();

@@ -20,3 +20,10 @@ design_handoff
 .idea/
 .env
 .env.*
+
+# Capacitor copies the web build into the Android project on every sync
+android/app/src/main/assets/public
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/capacitor-cordova-android-plugins
+android/local.properties

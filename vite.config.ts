@@ -18,7 +18,7 @@ const importFunction: Plugin = {
   },
 };
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   // The GitHub Pages build sets BASE_PATH=/bookcook/; everywhere else the app is served from the root.
   base: process.env.BASE_PATH ?? '/',
   plugins: [
@@ -26,6 +26,8 @@ export default defineConfig({
     importFunction,
     tailwindcss(),
     VitePWA({
+      // The Android app ships its files inside the APK, so it has no use for a service worker.
+      disable: mode === 'native',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],
       manifest: {
@@ -58,4 +60,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+}));
