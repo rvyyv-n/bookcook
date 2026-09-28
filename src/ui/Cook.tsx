@@ -126,6 +126,7 @@ export function PinnedTimer({
   spiceGroup,
   onPress,
   wide = false,
+  leaving = false,
 }: {
   label: string;
   time: string;
@@ -136,6 +137,8 @@ export function PinnedTimer({
   spiceGroup?: number;
   onPress: () => void;
   wide?: boolean;
+  /** Done or stopped: fades out where it was. */
+  leaving?: boolean;
 }) {
   const hot = state === 'hot';
   const paused = state === 'paused';
@@ -147,7 +150,10 @@ export function PinnedTimer({
       onPress={onPress}
       style={{ '--disc': hot ? 'var(--timer-hot-bg)' : 'var(--timer-bg)' } as CSSProperties}
       className={cx(
-        'flex min-h-19 min-w-0 items-center gap-2.5 rounded-md py-2 pl-2 text-left transition-transform duration-(--dur) data-[pressed]:scale-[.98]',
+        // Rises in when started; turning hot warms the colours more slowly than anything else moves.
+        'flex min-h-19 min-w-0 items-center gap-2.5 rounded-md py-2 pl-2 text-left data-[pressed]:scale-[.98]',
+        '[transition:transform_var(--dur)_var(--ease-out),background-color_400ms_var(--ease-out),color_400ms_var(--ease-out)]',
+        leaving ? 'pointer-events-none animate-fade-out' : 'animate-rise',
         wide ? 'min-w-[12rem] pr-4' : 'pr-3',
         hot
           ? 'bg-(--timer-hot-bg) text-(color:--timer-hot-fg)'
@@ -160,7 +166,10 @@ export function PinnedTimer({
         style={{ background: `conic-gradient(${fill} 0 ${Math.round(progress * 100)}%, var(--timer-ring-track) 0)` }}
       >
         <span className="grid size-[76%] place-items-center rounded-full bg-(--timer-disc)">
-          <Icon name={paused ? 'pause' : hot ? 'alarm' : 'timer'} size="1.4444rem" />
+          {/* Keyed so the alarm arrives with a single pop. */}
+          <span key={hot ? 'hot' : 'cool'} className={cx('grid place-items-center', hot && 'animate-pop')}>
+            <Icon name={paused ? 'pause' : hot ? 'alarm' : 'timer'} size="1.4444rem" />
+          </span>
         </span>
       </span>
       <span className="flex min-w-0 flex-col gap-0.75">
@@ -191,7 +200,7 @@ export function TimerAlert({
   return (
     <div
       role="alert"
-      className="flex flex-wrap items-center gap-x-3.5 gap-y-3 rounded-lg bg-accent pt-4 pr-3.5 pb-3.5 pl-4.5 text-accent-ink shadow-lift"
+      className="flex animate-rise flex-wrap items-center gap-x-3.5 gap-y-3 rounded-lg bg-accent pt-4 pr-3.5 pb-3.5 pl-4.5 text-accent-ink shadow-lift"
     >
       <Icon name="alarm" size="2.2rem" className="shrink-0" />
       <span className="flex flex-[1_1_150px] flex-col gap-0.5">

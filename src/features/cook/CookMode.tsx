@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { cloneElement, Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import { FileTrigger } from 'react-aria-components';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { useSpeaker } from '../../app/speech';
@@ -216,6 +216,35 @@ function MadeItSheet({ recipe, isOpen, onOpenChange }: { recipe: Recipe; isOpen:
   );
 }
 
+/**
+ * The pinned timer tiles, plus a fading copy of any that has just finished or been stopped, left where
+ * it was so the others close up once it has gone. Under reduced motion it's just removed.
+ */
+type Tile = ReactElement<{ leaving?: boolean }>;
+
+function useLeavingTiles(tiles: Tile[]): Tile[] {
+  const [ghosts, setGhosts] = useState<{ el: Tile; index: number }[]>([]);
+  const last = useRef(tiles);
+  const keys = tiles.map((t) => t.key).join('|');
+  // Declared before the effect that keeps `last` up to date, so it still sees the previous tiles.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const current = new Set(keys.split('|'));
+    const gone = last.current.flatMap((el, index) =>
+      current.has(String(el.key)) ? [] : [{ el: cloneElement(el, { leaving: true }), index }],
+    );
+    if (!gone.length) return;
+    setGhosts((all) => [...all, ...gone]);
+    setTimeout(() => setGhosts((all) => all.filter((g) => !gone.includes(g))), 200);
+  }, [keys]);
+  useEffect(() => {
+    last.current = tiles;
+  });
+  const out = [...tiles];
+  for (const g of ghosts) out.splice(Math.min(g.index, out.length), 0, g.el);
+  return out;
+}
+
 function Cook({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const c = t.ui.cook;
@@ -408,7 +437,8 @@ function Cook({ recipe }: { recipe: Recipe }) {
       />
     );
   });
-  const timerGroup = pinned.length > 0 && (
+  const tiles = useLeavingTiles(pinned);
+  const timerGroup = tiles.length > 0 && (
     <div
       role="group"
       aria-label={c.timers}
@@ -417,7 +447,7 @@ function Cook({ recipe }: { recipe: Recipe }) {
         wide ? 'flex flex-wrap gap-2.5' : 'grid gap-2.5',
       )}
     >
-      {pinned}
+      {tiles}
     </div>
   );
 
