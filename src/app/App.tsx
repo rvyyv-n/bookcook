@@ -1,5 +1,6 @@
 import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
 import { CaptureSoonPage, NewRecipePage } from '../features/capture/NewRecipe';
+import { JustTalkPage } from '../features/capture/JustTalk';
 import { PasteItPage } from '../features/capture/PasteIt';
 import { TellItPage } from '../features/capture/TellIt';
 import { CookModePage } from '../features/cook/CookMode';
@@ -58,9 +59,10 @@ const router = createBrowserRouter(
       element: <Root />,
       errorElement: <RouteError />,
       children: [
-        // Full-screen, no app shell: cook mode, Tell it and Check your recipe.
+        // Full-screen, no app shell: cook mode, Tell it, Just talk and Check your recipe.
         { path: '/r/:id/cook', element: <CookModePage /> },
         { path: '/new/tell/:draftId', element: <TellItPage /> },
+        { path: '/new/talk/:draftId', element: <JustTalkPage /> },
         { path: '/new/review/:draftId', element: <ReviewPage /> },
         { path: '/print', element: <Placeholder title="Print the family cookbook" /> },
         {
@@ -72,7 +74,7 @@ const router = createBrowserRouter(
             { path: '/new', element: <NewRecipePage /> },
             { path: '/new/type/:draftId', element: <TypeItPage /> },
             { path: '/new/paste/:draftId', element: <PasteItPage /> },
-            // Just talk and From a link (phase 8).
+            // From a link (phase 8).
             { path: '/new/:mode/:draftId', element: <CaptureSoonPage /> },
             { path: '/c', element: <CollectionsPage /> },
             { path: '/c/:id', element: <CollectionPage /> },

@@ -20,6 +20,7 @@ export function BigMicButton({
   ariaLabel,
   onToggle,
   side = false,
+  hideLabel = false,
   children,
 }: {
   state: MicState;
@@ -29,6 +30,8 @@ export function BigMicButton({
   onToggle: () => void;
   /** Caption beside the mic instead of under it (desktop). */
   side?: boolean;
+  /** No caption on screen (the mic's accessible name still says it): Just talk on desktop. */
+  hideLabel?: boolean;
   /** Extra lines under the caption (the live transcript on desktop). */
   children?: ReactNode;
 }) {
@@ -64,10 +67,12 @@ export function BigMicButton({
       >
         {face}
       </ToggleButton>
-      <span className={cx('flex flex-col gap-1.5', !side && 'items-center')}>
-        <b className={side ? 'text-lg' : undefined}>{label}</b>
-        {children}
-      </span>
+      {!hideLabel && (
+        <span className={cx('flex flex-col gap-1.5', !side && 'items-center')}>
+          <b className={side ? 'text-lg' : undefined}>{label}</b>
+          {children}
+        </span>
+      )}
     </div>
   );
 }

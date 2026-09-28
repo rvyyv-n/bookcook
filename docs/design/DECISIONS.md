@@ -81,3 +81,5 @@ Asked for in the review of the build, so they depart from the mocks on purpose.
 - **The story is recorded while the mic listens**, so it's "Kept in your voice". The tips voice note is `tipsAudioId`, recorded with Record a voice note (which pauses the mic).
 - **Everything heard is kept as "In her words"**, one phrase per line, leaving out the commands.
 - **Spoken amounts count as a second amount** for "Check this" ("haldi in two tablespoons milk"), not only written ones.
+- **Just talk starts listening on arrival** (choosing it is the tap) and keeps listening through pauses. The clock counts only the time spent listening, and survives leaving and coming back.
+- **Just talk on desktop has no caption by the mic**, as in the mock; the clock says talking or paused, and the mic's name says what a tap does.
