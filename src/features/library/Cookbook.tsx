@@ -161,7 +161,7 @@ function NoResults({ query, request }: { query: string; request?: RecipeRequest 
         <Button variant="primary" icon="mic" onPress={() => tellIt(request?.title ?? trimmed, request?.id)}>
           {t.ui.library.tellIt}
         </Button>
-        <ButtonLink href="/requests" variant="secondary" icon="send">
+        <ButtonLink href={`/requests?ask=${encodeURIComponent(request?.title ?? trimmed)}`} variant="secondary" icon="send">
           {t.ui.library.askForIt}
         </ButtonLink>
       </div>

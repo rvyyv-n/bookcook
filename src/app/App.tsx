@@ -5,11 +5,14 @@ import { JustTalkPage } from '../features/capture/JustTalk';
 import { PasteItPage } from '../features/capture/PasteIt';
 import { TellItPage } from '../features/capture/TellIt';
 import { CookModePage } from '../features/cook/CookMode';
+import { GroceryPage } from '../features/grocery/GroceryPage';
 import { EditRecipePage, TypeItPage } from '../features/editor/RecipeEditor';
 import { ReviewPage } from '../features/editor/Review';
 import { CollectionPage, CollectionsPage, TagPage, TagsPage } from '../features/library/Browse';
 import { CookbookPage } from '../features/library/Cookbook';
 import { RecipeDetailPage } from '../features/recipe/RecipeDetail';
+import { ImportPage } from '../features/requests/ImportPage';
+import { RequestsPage } from '../features/requests/RequestsPage';
 import { SettingsPage } from '../features/settings/SettingsPage';
 import { useT } from '../i18n';
 import { ButtonLink } from '../ui/Button';
@@ -80,10 +83,10 @@ const router = createBrowserRouter(
             { path: '/c/:id', element: <CollectionPage /> },
             { path: '/t', element: <TagsPage /> },
             { path: '/t/:tag', element: <TagPage /> },
-            { path: '/grocery', element: <Placeholder title="Grocery" /> },
-            { path: '/requests', element: <Placeholder title="Requests" /> },
+            { path: '/grocery', element: <GroceryPage /> },
+            { path: '/requests', element: <RequestsPage /> },
             { path: '/settings', element: <SettingsPage /> },
-            { path: '/import', element: <Placeholder title="Add to my cookbook" /> },
+            { path: '/import', element: <ImportPage /> },
             { path: '*', element: <NotFound /> },
           ],
         },

@@ -72,8 +72,8 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 ### Phase 9: Grocery, requests, settings, print (handoff step 6)
 
-- [ ] Grocery: grouped by aisle, check-offs, Clear checked with Undo, manual items, merged quantities with "From Biryani, Karahi".
-- [ ] Requests: incoming ("Tell it now") and outgoing, the told state, Send request with a share link.
+- [x] Grocery: grouped by aisle, check-offs, Clear checked with Undo, manual items, merged quantities with "From Biryani, Karahi".
+- [x] Requests: incoming ("Tell it now", or Continue when a draft exists) and outgoing ("Send again"), the told state, Send request with a share link. The link carries the request in its fragment (`/import#request=…`, `src/lib/shareLink.ts`); opening it offers Tell it now or Add to my requests.
 - [ ] Settings: the full design, including the backup nudge, the text-size preview, Look, About you, Voice, and Voice commands.
 - [ ] Print: the family cookbook (cover, contents, recipe pages, story pages), always black on white, Letter and A4.
 
@@ -83,7 +83,7 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 
 - [x] PWA manifest, icons and offline caching (`vite-plugin-pwa`; the icons are drawn from the logo by `scripts/icons.mjs`). Brought forward so the app can be installed and tested from GitHub Pages.
 - [ ] `storage.persist()`, backup export and restore.
-- [ ] Share links for a recipe and for a request.
+- [ ] Share links for a recipe (request links landed in phase 9). An outgoing request is marked told when the recipe comes back by link.
 
 ### Phase 11: Android APK
 
