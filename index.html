@@ -9,9 +9,33 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <title>Bookcook</title>
+    <style>
+      /* Shown until the app's script has loaded: the paper colour and the app icon, so a slow phone never shows a blank page. */
+      html {
+        background: #fbf7f0;
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          background: #171411;
+        }
+      }
+      .boot {
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+      }
+      .boot img {
+        width: 96px;
+        height: 96px;
+        border-radius: 22px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot" aria-hidden="true"><img src="/icons/icon-192.png" alt="" /></div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
