@@ -538,7 +538,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
         <>
           {photo ? (
             <div className="relative">
-              <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-80')} />
+              <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)]')} />
               {!pane && <BackButton floating />}
             </div>
           ) : (
