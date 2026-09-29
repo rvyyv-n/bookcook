@@ -279,7 +279,7 @@ export const en = {
         pizza: 'Pizza',
         sandwich: 'Sandwich',
       },
-      noCollections: 'No collections yet. Group recipes the way your family thinks of them: Eid, quick weeknights, Mom’s classics.',
+      noCollections: 'No collections yet. Group recipes the way your family thinks of them: Eid, weeknights, Mom’s classics.',
       noTags: 'No tags yet. Add tags to a recipe when you edit it.',
       collectionMissing: 'This collection isn’t in your cookbook any more.',
       selectRecipe: 'Choose a recipe to read it here.',

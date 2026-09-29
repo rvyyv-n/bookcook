@@ -62,7 +62,7 @@ const EXAMPLES: Example[] = [
     prepMinutes: 10,
     cookMinutes: 30,
     tags: ['Soup', 'Quick'],
-    collections: ['Quick weeknights'],
+    collections: ['Weeknights'],
     source: 'typed',
     cookedCount: 8,
     ingredients: [
