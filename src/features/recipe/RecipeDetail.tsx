@@ -175,7 +175,7 @@ function BackButton({ floating }: { floating?: boolean }) {
   );
 }
 
-function TagLinks({ tags, onField, className }: { tags: string[]; onField?: boolean; className?: string }) {
+function TagLinks({ tags, className }: { tags: string[]; className?: string }) {
   const t = useT();
   if (!tags.length) return null;
   return (
@@ -184,7 +184,7 @@ function TagLinks({ tags, onField, className }: { tags: string[]; onField?: bool
         <li key={tag}>
           <AriaLink
             href={`/t/${encodeURIComponent(tag)}`}
-            className={cx('underline underline-offset-2', onField ? 'text-ink' : 'text-accent-text data-[hovered]:text-ink')}
+            className="text-accent-text underline underline-offset-2 data-[hovered]:text-ink"
           >
             {tag}
           </AriaLink>
@@ -194,15 +194,13 @@ function TagLinks({ tags, onField, className }: { tags: string[]; onField?: bool
   );
 }
 
-function Eyebrow({ recipe, onField }: { recipe: Recipe; onField?: boolean }) {
+function Eyebrow({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const { myName } = useSettings();
   if (!recipe.author) return null;
   const mine = recipe.author === myName || recipe.author.toLowerCase() === 'me';
   return (
-    <p className={cx('type-eyebrow text-lg', !onField && 'text-accent-text')}>
-      {mine ? t.ui.common.fromMyKitchen : t.ui.common.fromKitchen(recipe.author)}
-    </p>
+    <p className="type-eyebrow text-lg text-accent-text">{mine ? t.ui.common.fromMyKitchen : t.ui.common.fromKitchen(recipe.author)}</p>
   );
 }
 
@@ -507,58 +505,38 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
   const actions = useActions(recipe, adj);
   const cfg = skinConfig[settings.skin];
   const photo = recipe.photoIds[0];
-  const field = !pane && cfg.hero === 'fieldBand';
   const center = !pane && cfg.detailAlign === 'center';
   const meta = metaLine(recipe, t);
 
-  const titleBlock = (onField: boolean) => (
-    <div className={cx('flex flex-col gap-2', center && 'items-center text-center')}>
-      {onField && <Eyebrow recipe={recipe} onField />}
-      <h1 className="text-3xl leading-[1.02] tracking-[-0.02em]">{recipe.title}</h1>
-      {!onField && <Eyebrow recipe={recipe} />}
-      {meta.length > 0 && <p className={onField ? undefined : 'text-ink-muted'}>{meta.join(' · ')}</p>}
-      <TagLinks tags={recipe.tags} onField={onField} className={center ? 'justify-center' : undefined} />
-      <StoryQuote recipe={recipe} center={center} />
-    </div>
-  );
-
   return (
     <article data-recipe-id={recipe.id} className="flex flex-col pb-10">
-      {field ? (
-        <>
-          <div data-surface="field" className="flex flex-col gap-2 bg-paper px-5 pt-3.5 pb-6 text-ink">
-            <div className="self-start">
-              <BackButton />
-            </div>
-            {titleBlock(true)}
-          </div>
-          {photo && <Photo id={photo} alt={recipe.title} className="mx-5 -mt-0.5 h-55 rounded-b-lg" />}
-        </>
+      {photo ? (
+        <div className="relative">
+          <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)]')} />
+          {!pane && <BackButton floating />}
+        </div>
       ) : (
-        <>
-          {photo ? (
-            <div className="relative">
-              <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)]')} />
-              {!pane && <BackButton floating />}
-            </div>
-          ) : (
-            !pane && (
-              <div className="px-2 pt-4">
-                <BackButton />
-              </div>
-            )
-          )}
-          {/* On a phone the title sits on a sheet of paper drawn up over the photo, rounded to the skin. */}
-          <div
-            className={cx(
-              pane ? 'px-8 pt-5.5' : 'px-5',
-              !pane && (photo ? 'relative -mt-8 rounded-t-xl bg-paper bg-(image:--grain) pt-6.5' : 'pt-5.5'),
-            )}
-          >
-            {titleBlock(false)}
+        !pane && (
+          <div className="px-2 pt-4">
+            <BackButton />
           </div>
-        </>
+        )
       )}
+      {/* On a phone the title sits on a sheet of paper drawn up over the photo, rounded to the skin. */}
+      <div
+        className={cx(
+          pane ? 'px-8 pt-5.5' : 'px-5',
+          !pane && (photo ? 'relative -mt-8 rounded-t-xl bg-paper bg-(image:--grain) pt-6.5' : 'pt-5.5'),
+        )}
+      >
+        <div className={cx('flex flex-col gap-2', center && 'items-center text-center')}>
+          <h1 className="text-3xl leading-[1.02] tracking-[-0.02em]">{recipe.title}</h1>
+          <Eyebrow recipe={recipe} />
+          {meta.length > 0 && <p className="text-ink-muted">{meta.join(' · ')}</p>}
+          <TagLinks tags={recipe.tags} className={center ? 'justify-center' : undefined} />
+          <StoryQuote recipe={recipe} center={center} />
+        </div>
+      </div>
 
       <div className={cx('no-print flex flex-col gap-3.5 pt-5.5', pane ? 'px-8' : 'px-5')}>
         <BasedOn recipe={recipe} />
