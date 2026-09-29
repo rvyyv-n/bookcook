@@ -518,7 +518,11 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
     <article data-recipe-id={recipe.id} className="flex flex-col pb-10">
       {photo ? (
         <div className="relative">
-          <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)]')} />
+          <Photo
+            id={photo}
+            alt={recipe.title}
+            className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)] [view-transition-name:recipe-photo]')}
+          />
           {!pane && <BackButton floating />}
         </div>
       ) : (

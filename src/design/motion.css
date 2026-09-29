@@ -66,3 +66,68 @@
   /* The scrim behind a sheet. */
   --animate-scrim-in: fade-in var(--dur) var(--ease-out) both;
 }
+
+/*
+ * Moving between screens (view transitions, started in app/transitions.ts). On a phone, a screen opened
+ * from another slides in over it from the right while the one below drifts left and dims; going back
+ * reverses it. Tabs, and every change on desktop, cross-fade. The tab bar and sidebar stay put, and a
+ * recipe card's photo grows into the recipe's photo.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 340ms;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  html[data-nav='fade']::view-transition-old(root),
+  html[data-nav='fade']::view-transition-new(root) {
+    animation-duration: 180ms;
+  }
+  @media (width < 56.25rem) {
+    html[data-nav='forward']::view-transition-old(root) {
+      animation-name: bc-under-out;
+    }
+    html[data-nav='forward']::view-transition-new(root) {
+      animation-name: bc-slide-in;
+      box-shadow: -10px 0 28px rgb(0 0 0 / 0.14);
+    }
+    html[data-nav='back']::view-transition-old(root) {
+      z-index: 1;
+      animation-name: bc-slide-out;
+      box-shadow: -10px 0 28px rgb(0 0 0 / 0.14);
+    }
+    html[data-nav='back']::view-transition-new(root) {
+      animation-name: bc-under-in;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+@keyframes bc-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes bc-slide-out {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes bc-under-out {
+  to {
+    transform: translateX(-25%);
+    opacity: 0.7;
+  }
+}
+@keyframes bc-under-in {
+  from {
+    transform: translateX(-25%);
+    opacity: 0.7;
+  }
+}

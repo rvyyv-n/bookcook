@@ -10,7 +10,7 @@ export interface NavItem {
 }
 
 const item =
-  'flex min-h-[4rem] min-w-0 flex-col items-center gap-[3px] rounded-sm text-center text-[min(0.875rem,15px)] leading-[1.1] no-underline';
+  'flex min-h-[4rem] min-w-0 flex-col items-center gap-[3px] rounded-sm text-center text-[min(0.875rem,15px)] leading-[1.1] no-underline transition-transform duration-(--dur) data-[pressed]:scale-[.94]';
 
 /**
  * Phone navigation: five equal columns, every item labelled. The New disc stays inside its own
@@ -41,7 +41,7 @@ export function TabBar({
     <nav
       aria-label={label}
       data-tab-bar
-      className="no-print fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t border-line bg-paper bg-(image:--grain) px-1 pt-2 pb-[max(14px,env(safe-area-inset-bottom))]"
+      className="no-print [view-transition-name:tab-bar] fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t border-line bg-paper bg-(image:--grain) px-1 pt-2 pb-[max(14px,env(safe-area-inset-bottom))]"
     >
       {tab(a)}
       {tab(b)}
