@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { ShortcutList } from '../../app/shortcuts';
+import { useAppUpdate } from '../../app/update';
 import { useIsDesktop } from '../../app/useMediaQuery';
 import { useSettings } from '../../db/hooks';
 import { setSetting, setSkin, type Accent, type Skin, type Theme } from '../../db/settings';
@@ -82,6 +83,28 @@ function LookSection() {
   );
 }
 
+/** Check for updates: web versions swap in place; the Android app downloads the new APK. */
+function UpdateRow() {
+  const t = useT();
+  const ts = t.ui.settings;
+  const update = useAppUpdate();
+  const ready = update.status === 'ready';
+  const status = ts.updateStatus[update.status] || ts.version(__APP_VERSION__);
+  return (
+    <>
+      <RowButton
+        icon={ready ? 'download' : 'retry'}
+        label={ready ? (update.kind === 'apk' ? t.ui.update.download : t.ui.update.apply) : ts.checkUpdates}
+        value={status}
+        onPress={() => (ready ? update.apply() : void update.check())}
+      />
+      <p aria-live="polite" className="sr-only">
+        {ts.updateStatus[update.status]}
+      </p>
+    </>
+  );
+}
+
 function AboutSection() {
   const t = useT();
   const ts = t.ui.settings;
@@ -156,6 +179,7 @@ export function SettingsPage() {
       {desktop && <RowButton icon="keyboard" label={ts.shortcuts} onPress={() => setSheet('shortcuts')} />}
       <RowButton icon="print" label={ts.printCookbook} href="/print" />
       <RowButton icon="cookbook" label={ts.showWelcome} href="/welcome?from=settings" />
+      <UpdateRow />
     </div>
   );
 

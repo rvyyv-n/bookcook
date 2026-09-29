@@ -1,0 +1,54 @@
+# Publishes a release when a version tag is pushed (git tag v1.2.0 && git push origin v1.2.0).
+# The tag must match package.json. The APK is signed with the Bookcook key (scripts/make-signing-key.mjs)
+# and attached to the GitHub release, where the Android app's update check finds it.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v5
+      - name: Check the tag matches package.json
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG" != "v$VERSION" ]; then echo "Tag $TAG doesn't match package.json version $VERSION"; exit 1; fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+      - run: npm ci
+      - run: npm test && npm run typecheck && npm run lint
+      - run: npm run android:sync
+      - name: Build the signed APK
+        working-directory: android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.BOOKCOOK_KEYSTORE_BASE64 }}
+          BOOKCOOK_KEYSTORE_PASSWORD: ${{ secrets.BOOKCOOK_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then echo "The signing key secret is missing: run scripts/make-signing-key.mjs"; exit 1; fi
+          export BOOKCOOK_KEYSTORE="$RUNNER_TEMP/bookcook-release.p12"
+          echo "$KEYSTORE_BASE64" | base64 -d > "$BOOKCOOK_KEYSTORE"
+          ./gradlew assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/bookcook-$VERSION.apk"
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NOTES="docs/releases/$TAG.md"
+          if [ -f "$NOTES" ]; then set -- --notes-file "$NOTES"; else set -- --generate-notes; fi
+          gh release create "$TAG" "bookcook-$VERSION.apk" --title "Bookcook $VERSION" "$@"

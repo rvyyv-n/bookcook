@@ -778,6 +778,21 @@ export const en = {
       shortcuts: 'Keyboard shortcuts',
       about: 'About',
       saved: 'Saved.',
+      checkUpdates: 'Check for updates',
+      version: (v: string) => `Version ${v}`,
+      updateStatus: {
+        idle: '',
+        checking: 'Checking…',
+        current: 'Up to date',
+        ready: 'Update ready',
+        failed: 'Couldn’t check. Are you online?',
+      },
+    },
+    update: {
+      ready: 'A new version of Bookcook is ready.',
+      apply: 'Update',
+      readyApk: 'A new version of Bookcook is ready to download.',
+      download: 'Download',
     },
   },
 } as const;

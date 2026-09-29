@@ -183,11 +183,22 @@ On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev serve
 
 The app lives at **[bookcook.pages.dev](https://bookcook.pages.dev/)** on Cloudflare Pages, which also runs the From a link function (`functions/api/import.ts`; the `functions/` folder is picked up as is).
 
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then deployed to Cloudflare Pages with `wrangler pages deploy`, using the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and also built with the `/bookcook/` base path for a copy on [GitHub Pages](https://rvyyv-n.github.io/bookcook/). GitHub Pages can't run the function, so there every link ends in "We couldn't read that page" (Paste it still works). To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address. The service worker precaches the app so it works offline once installed.
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then deployed to Cloudflare Pages with `wrangler pages deploy`, using the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and also built with the `/bookcook/` base path for a copy on [GitHub Pages](https://rvyyv-n.github.io/bookcook/). GitHub Pages can't run the function, so there every link ends in "We couldn't read that page" (Paste it still works). To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address. The service worker precaches the app so it works offline once installed. The app checks for a new version when it opens, every hour while it's open, and when it comes back to the front, or on demand from Settings. When one is ready it offers Update, but never mid-cook or mid-recipe; ignored, the new version takes over the next time the app is opened. The Android app checks GitHub Releases instead: see [Android app](#android-app).
 
 ## Android app
 
-The same app also builds as an Android app with Capacitor, using Android's own speech recognition and voices. The [`Android APK`](.github/workflows/android.yml) workflow builds a debug APK on every push to `main`; download it from the workflow run's `bookcook-debug-apk` artifact. To build it locally you need a JDK and the Android SDK:
+The same app also runs as an Android app built with Capacitor, using Android's own speech recognition and voices. **Download the latest APK from [Releases](https://github.com/rvyyv-n/bookcook/releases/latest)** and open it to install. The app checks for new releases itself and offers **Download** when one is out.
+
+To publish a release, set the version in `package.json`, then push a matching tag:
+
+```sh
+git tag v1.1.0
+git push origin v1.1.0
+```
+
+[`release.yml`](.github/workflows/release.yml) then builds the APK, signs it with the Bookcook key and publishes the release, with the notes from `docs/releases/v1.1.0.md` if that file exists. The key is made once with `node scripts/make-signing-key.mjs`, which keeps it in `~/.bookcook/` and gives it to GitHub as the `BOOKCOOK_KEYSTORE_BASE64` and `BOOKCOOK_KEYSTORE_PASSWORD` secrets. Every release must use the same key, so back that folder up.
+
+The [`Android APK`](.github/workflows/android.yml) workflow also builds a debug APK on every push to `main` (the `bookcook-debug-apk` artifact), for testing. To build locally you need a JDK and the Android SDK:
 
 ```sh
 npm run android:build
