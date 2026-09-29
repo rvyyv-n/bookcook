@@ -1,0 +1,476 @@
+/* The opening screen: the headline is heard, and Mom's recipe card writes itself. */
+
+.hero {
+  position: relative;
+  padding-top: 6.5rem;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 6rem);
+  min-height: calc(100svh - 6.5rem);
+  padding-bottom: 2.5rem;
+}
+
+.heard {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2rem;
+  color: var(--fg-2);
+  font-weight: 700;
+}
+
+.heard-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--mark);
+  animation: breathe 2.2s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--mark) 30%, transparent);
+  }
+  50% {
+    transform: scale(1.12);
+    box-shadow: 0 0 0 9px color-mix(in srgb, var(--mark) 0%, transparent);
+  }
+}
+
+.heard-done {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--cardamom);
+}
+
+.heard-done .icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 2.6;
+}
+
+.heard.is-written .heard-dot,
+.heard.is-written .heard-listening {
+  display: none;
+}
+
+.heard.is-written .heard-done {
+  display: inline-flex;
+  animation: rise 700ms var(--ease-out) both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.hero-title {
+  margin-top: 1rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 300;
+  font-size: clamp(3.6rem, 8.1vw, 9.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.048em;
+  text-wrap: balance;
+}
+
+/* The transcript: each word lands blurred and pale, as a guess, then settles into ink. */
+.hero-title .tw {
+  display: inline-block;
+  transition:
+    opacity 700ms var(--ease-out),
+    filter 700ms var(--ease-out),
+    transform 900ms var(--ease-out),
+    color 900ms var(--ease-out);
+}
+
+.hero-title .tw.is-waiting {
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(0.18em);
+}
+
+.hero-title .tw.is-heard {
+  opacity: 0.55;
+  color: var(--fg-2);
+  filter: blur(1.5px);
+}
+
+.hero-title .caret {
+  display: inline-block;
+  width: 0.055em;
+  height: 0.78em;
+  margin-left: 0.05em;
+  vertical-align: -0.02em;
+  border-radius: 2px;
+  background: var(--mark);
+  animation: caret 1s steps(1) infinite;
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.hero-lead {
+  margin-top: 1.75rem;
+  max-width: 33rem;
+  font-size: 1.3125rem;
+  line-height: 1.5;
+  color: var(--fg-2);
+  text-wrap: pretty;
+}
+
+.hero-get {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem 2rem;
+  margin-top: 2.5rem;
+}
+
+.downloads {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.downloads a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.downloads a span:last-child,
+.downloads a {
+  text-underline-offset: 0.22em;
+}
+
+.downloads a:hover {
+  text-decoration: underline;
+}
+
+.downloads .icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  color: var(--mark);
+}
+
+.hero-promise {
+  margin-top: 1.75rem;
+  color: var(--fg-2);
+}
+
+/* ---------- The deck of family recipes ---------- */
+
+.hero-stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  perspective: 1400px;
+}
+
+.deck {
+  position: relative;
+  width: min(100%, 32rem);
+  padding-top: 6rem;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tx, 0deg)) rotateY(var(--ty, 0deg));
+  transition: transform 900ms var(--ease-out);
+}
+
+.deck-card {
+  border-radius: var(--r-l);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--shadow-card);
+}
+
+.deck-2,
+.deck-3 {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 12rem;
+}
+
+.deck-3 {
+  translate: 2.5rem 0;
+  rotate: 5deg;
+  background: color-mix(in srgb, var(--card) 88%, var(--saffron));
+}
+
+.deck-2 {
+  top: 2.9rem;
+  translate: -1.25rem 0;
+  rotate: -3.5deg;
+  background: color-mix(in srgb, var(--card) 90%, #9fb87a);
+}
+
+.deck-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.65rem 1.3rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-size: 1.3rem;
+  font-weight: 420;
+}
+
+.deck-tab .art {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 10px;
+}
+
+.deck-1 {
+  position: relative;
+  rotate: -1.2deg;
+  padding: 1.5rem 1.75rem 1.25rem;
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--shadow-deep);
+}
+
+/* The deck deals itself in, once the headline has been heard. */
+.deck-card {
+  transition:
+    opacity 900ms var(--ease-out),
+    transform 1200ms var(--spring);
+}
+
+.deck.is-waiting .deck-card {
+  opacity: 0;
+  transform: translateY(80px) rotate(4deg) scale(0.96);
+}
+
+.deck-2 {
+  transition-delay: 90ms;
+}
+.deck-1 {
+  transition-delay: 180ms;
+}
+
+.rc-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rc-head .art {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 16px;
+  flex: none;
+}
+
+.rc-title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 400;
+  font-size: 1.85rem;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.rc-from {
+  margin-top: 0.2rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--voice);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--tomato-text);
+}
+
+.rc-voice {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 1.1rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  background: var(--paper-2);
+}
+
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 1.75rem;
+}
+
+.wave i {
+  width: 4px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--tomato);
+  transform: scaleY(0.18);
+  transition: transform 300ms var(--ease-out);
+}
+
+.wave.is-speaking i {
+  animation: bar 900ms ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -137ms);
+}
+
+@keyframes bar {
+  0% {
+    transform: scaleY(0.2);
+  }
+  50% {
+    transform: scaleY(var(--h, 0.8));
+  }
+  100% {
+    transform: scaleY(0.35);
+  }
+}
+
+.rc-status {
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.rc-transcript {
+  margin-top: 1.1rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--voice);
+  font-style: italic;
+  font-weight: 360;
+  font-size: 1.22rem;
+  line-height: 1.42;
+  color: var(--ink-2);
+}
+
+.rc-transcript .tw {
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+}
+
+.rc-transcript .tw.is-said {
+  opacity: 1;
+}
+
+/* What Bookcook picked out is swept with a saffron highlighter. */
+.rc-transcript .hl {
+  background: linear-gradient(transparent 52%, var(--saffron-soft) 52%, var(--saffron-soft) 92%, transparent 92%) no-repeat 0 0 / 0% 100%;
+  transition:
+    background-size 700ms var(--ease-out),
+    color 700ms var(--ease-out);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.rc-transcript .hl.is-lit {
+  background-size: 100% 100%;
+  color: var(--ink);
+}
+
+.rc-list {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  box-shadow: inset 0 1px 0 var(--line);
+}
+
+.rc-list-title {
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.rc-rows {
+  min-height: 12.9rem;
+  margin-top: 0.3rem;
+}
+
+.rc-rows li {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.38rem 0;
+  box-shadow: inset 0 -1px 0 var(--line);
+  animation: row-in 800ms var(--spring) both;
+}
+
+@keyframes row-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.98);
+  }
+}
+
+.rc-rows .amount {
+  font-weight: 700;
+}
+
+.rc-foot {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  margin-top: 0.9rem;
+}
+
+.rc-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: var(--tomato-soft);
+  color: var(--ink);
+  font-weight: 700;
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 700ms var(--bounce);
+}
+
+.rc-timer.is-on {
+  opacity: 1;
+  transform: none;
+}
+
+.rc-timer .icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.replay {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  margin-top: 1.75rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--fg-2);
+  transition:
+    color 250ms var(--ease-out),
+    background-color 250ms var(--ease-out);
+}
+
+.replay:hover {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+}
+
+.replay .icon {
+  width: 1.2rem;
+  height: 1.2rem;
+}

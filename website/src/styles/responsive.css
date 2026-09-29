@@ -1,0 +1,335 @@
+/* Narrower screens. The page is designed wide first; below these widths the columns stack. */
+
+@media (max-width: 70rem) {
+  .nav-links {
+    display: none;
+  }
+  .nav-end {
+    margin-left: auto;
+  }
+  .hero-grid,
+  .tell-grid,
+  .cook-grid,
+  .looks-grid,
+  .ask,
+  .everywhere-copy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-grid {
+    min-height: 0;
+    padding-top: 2rem;
+  }
+  .hero-stage {
+    margin-top: 1rem;
+  }
+  .tell-intro,
+  .cook-intro {
+    position: static;
+  }
+  .keeps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* The phone comes straight after the words, so a look shows on it while you're still choosing. */
+  .looks-grid {
+    row-gap: 0;
+  }
+  .looks-copy {
+    display: contents;
+  }
+  .phone-wrap {
+    order: 1;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 2.5rem;
+  }
+  .looks .choice {
+    order: 2;
+  }
+}
+
+@media (max-width: 40rem) {
+  .nav-size-text {
+    display: none;
+  }
+  .nav-size {
+    padding: 0 0.75rem;
+  }
+  .nav-open {
+    display: none;
+  }
+  .hero {
+    padding-top: 5rem;
+  }
+  .hero-get {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-get .btn {
+    width: 100%;
+  }
+  /* A tighter first screen, so the top of Mom's card peeks in under the buttons. */
+  .hero-grid {
+    gap: 1.5rem;
+    padding-block: 0.75rem 1.5rem;
+  }
+  .hero-stage {
+    margin-top: 0;
+  }
+  .hero-lead {
+    margin-top: 1.25rem;
+  }
+  .hero-get {
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .hero-promise {
+    margin-top: 1.25rem;
+  }
+  /* The Windows app can't go on a phone (it's still offered at the bottom), nor the Android one on an iPhone. */
+  .downloads .for-windows,
+  :root[data-os='ios'] .downloads {
+    display: none;
+  }
+  .replay {
+    margin-top: 1rem;
+  }
+  .deck-1 {
+    padding: 1.25rem 1.1rem;
+  }
+  /* What Bookcook is doing goes under the wave, so it reads on one line. */
+  .rc-voice {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    border-radius: var(--r-m);
+  }
+  /* The cards behind fan out less, so their tabs stay on screen. */
+  .deck-3 {
+    translate: 0.5rem 0;
+    rotate: 3deg;
+  }
+  .deck-2 {
+    translate: -0.5rem 0;
+    rotate: -2.5deg;
+  }
+  .deck-tab span {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .rc-rows li {
+    grid-template-columns: 3.75rem 1fr;
+  }
+  .hears-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .console {
+    padding: 1.25rem;
+    border-radius: var(--r-l);
+  }
+  /* Small enough that the example fits the line, never below body size. */
+  .console-input {
+    font-size: clamp(1.125rem, 5.6vw, 1.6rem);
+  }
+  .console-actions {
+    gap: 0.75rem;
+  }
+  .mic {
+    gap: 0.7rem;
+    min-height: 3.5rem;
+  }
+  .mic-disc {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  /* The stage is as tall as the longest step (measured in cook.ts), not most of the screen. */
+  .stage {
+    min-height: 0;
+    border-radius: var(--r-l);
+  }
+  .step {
+    flex: none;
+    min-height: var(--step-h, auto);
+    margin-top: 1.5rem;
+  }
+  .controls .btn {
+    font-size: 1.125rem;
+  }
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .phone {
+    padding: 8px;
+    border-radius: 44px;
+  }
+  .phone-screen {
+    border-radius: 36px;
+    height: auto;
+    min-height: clamp(32rem, 64svh, 700px);
+    max-height: none;
+  }
+  /* A shorter screen, so the look you pick shows on it without scrolling away from the choices.
+     The step's type follows the screen's height too, so it still fits on short phones. */
+  .ps-text {
+    font-size: clamp(1.25rem, min(8vw, 3.7svh), 2.3rem);
+  }
+  .skins {
+    grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+  }
+  .get-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .get-actions .btn {
+    width: 100%;
+    padding-inline: 1.25rem;
+    font-size: 1.125rem;
+    white-space: normal;
+  }
+
+  /* With Huge text: nothing runs off the side. */
+  .nav-inner {
+    gap: 0.75rem;
+  }
+  .quote {
+    font-size: min(2.75rem, 13vw);
+  }
+  .chat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bubble-link > div {
+    min-width: 0;
+  }
+  .bubble-link-url {
+    overflow-wrap: anywhere;
+  }
+  :root:is([data-size='large'], [data-size='huge']) .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  :root:is([data-size='large'], [data-size='huge']) .controls #next {
+    grid-column: 1 / -1;
+  }
+  /* Normal, Large and Huge wrap onto two lines when Huge makes them wider than the screen. */
+  .seg {
+    flex-wrap: wrap;
+  }
+  .seg label {
+    flex: 1 0 auto;
+  }
+  .seg span {
+    padding: 0 0.6rem;
+  }
+  :root[data-size='huge'] .seg {
+    border-radius: var(--r-l);
+  }
+  :root[data-size='huge'] .deck-1 {
+    rotate: -0.5deg;
+  }
+  :root[data-size='huge'] .deck-3 {
+    translate: 0 0;
+  }
+
+  /* The devices sit one after another, big enough to see: the computer, then the tablet and the phone side by side. */
+  .devices {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr);
+    align-items: end;
+    gap: 1.5rem 1rem;
+    aspect-ratio: auto;
+  }
+  .device {
+    position: static;
+    width: auto;
+    transform: none;
+  }
+  .laptop {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 88%;
+  }
+
+  /* Less room between sections: on a phone, the wide screen's breathing room is mostly scrolling. */
+  .tell,
+  .get {
+    padding-block: 4.5rem 3.5rem;
+  }
+  .cook,
+  .looks {
+    padding-block: 4.5rem;
+  }
+  .words {
+    padding-block: 5rem 3.5rem;
+  }
+  .everywhere {
+    padding-block: 4rem;
+  }
+  .yours {
+    padding-block: 5rem;
+  }
+  .questions {
+    margin-top: 2rem;
+  }
+  .keeps,
+  .facts {
+    margin-top: 3rem;
+  }
+  .ask {
+    margin-top: 4rem;
+  }
+  .devices {
+    margin-top: 2.5rem;
+  }
+
+  /* On phones, Open the app stays within reach at the bottom once the page's own buttons scroll away. */
+  .getbar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: var(--bg);
+    box-shadow: inset 0 1px 0 var(--rule);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform 500ms var(--ease-out),
+      visibility 0s linear 500ms;
+  }
+  .getbar.is-shown {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform 500ms var(--ease-out),
+      visibility 0s;
+  }
+  .getbar .btn {
+    flex: 1 1 9rem;
+    --btn-h: 3.25rem;
+    padding-inline: 1rem;
+  }
+  .footer {
+    padding-bottom: 5.5rem;
+  }
+}
+
+:root[data-os='ios'] :is(.downloads, .getbar) .for-android {
+  display: none;
+}
+
+/* Touch screens have no arrow keys. */
+.for-touch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .for-keys {
+    display: none;
+  }
+  .for-touch {
+    display: inline;
+  }
+}

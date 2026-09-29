@@ -8,7 +8,7 @@ The tracker for what's built and what's next. The spec is [`bookcook-plan.md`](b
 
 A cookbook you can browse and cook from, in the handoff's design: the phone cookbook and the desktop three-pane view, recipe detail in every skin, collection and tag pages, and hands-free cook mode with timers and voice commands. You can search, filter, sort, scale, share, print, fork and add to the grocery list, and every text field has a Speak button. You can add your own recipes by telling them (a guided interview, or free talk), typing them, pasting them in or importing them from a link, and edit any recipe; drafts save as you go. There's a grocery list grouped by aisle, recipe requests you can send as a link, the full Settings page with backup and restore (add to the cookbook, or replace it), and a printable family cookbook. Recipes are shared as links that add them to someone else's cookbook, and the browser is asked to keep the cookbook's storage. A first visit opens a short welcome.
 
-It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions.
+It's live at **https://rvyyv-n.github.io/bookcook/** and installs as an app (PWA). Every push to `main` is checked and redeployed by GitHub Actions. The product website, with live demos of telling a recipe, cook mode and the looks, is at **https://getbookcook.pages.dev/**.
 
 ## Done
 
@@ -99,6 +99,7 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 - [x] A test deployment on GitHub Pages (`.github/workflows/deploy.yml`).
 - [x] Deploy to Cloudflare Pages, which the From a link import function needs: live at https://bookcook.pages.dev/ (`wrangler.toml`, the `cloudflare` job in `.github/workflows/deploy.yml`). Pushes to `main` deploy there once the `CLOUDFLARE_API_TOKEN` repository secret is set; the account ID secret is in.
 - [x] README with screenshots and GIFs, the parser accuracy figure and Lighthouse scores; the case-study outline (`docs/case-study.md`). Lighthouse scores retaken on Cloudflare Pages.
+- [x] The product website (`website/`, live at https://getbookcook.pages.dev/): desktop first, then tuned for phones at every text size. Its demos use the app's own parser, timers and speech.
 
 ## Later, not in this build
 

@@ -1,0 +1,797 @@
+/* Tell it, Cook and In her words. */
+
+/* ============ Tell it ============ */
+
+.tell {
+  padding-block: clamp(6rem, 12vw, 11rem) clamp(5rem, 9vw, 8rem);
+}
+
+.tell-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(3rem, 6vw, 7rem);
+  align-items: start;
+}
+
+.tell-intro {
+  position: sticky;
+  top: 7rem;
+}
+
+.tell-intro .body-lg {
+  margin-top: 1.5rem;
+}
+
+.questions {
+  margin-top: 2.5rem;
+  counter-reset: q;
+}
+
+.questions li {
+  counter-increment: q;
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  align-items: baseline;
+  padding: 0.7rem 0;
+  box-shadow: inset 0 1px 0 var(--rule);
+  color: var(--fg-2);
+}
+
+.questions li::before {
+  content: counter(q);
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-size: 1.35rem;
+}
+
+.questions li.is-now {
+  color: var(--fg);
+  font-weight: 700;
+}
+
+.questions li.is-now::before {
+  color: var(--mark);
+  font-weight: 600;
+}
+
+.console {
+  border-radius: var(--r-xl);
+  padding: clamp(1.5rem, 3vw, 2.75rem);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    var(--shadow-deep);
+}
+
+.console-q {
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 360;
+  font-size: clamp(1.9rem, 2.6vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.console-form {
+  margin-top: 2rem;
+}
+
+.console-label {
+  display: block;
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.console-input {
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.4rem 0 0.6rem;
+  border: 0;
+  border-bottom: 2px solid var(--line-control);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-variation-settings: var(--voice);
+  font-style: italic;
+  font-weight: 380;
+  font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+  line-height: 1.25;
+  color: var(--ink);
+  transition:
+    border-color 250ms var(--ease-out),
+    color 250ms var(--ease-out);
+}
+
+.console-input::placeholder {
+  color: var(--ink-2);
+  opacity: 0.75;
+}
+
+.console-input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+  border-bottom-width: 3px;
+  padding-bottom: calc(0.6rem - 1px);
+}
+
+.console-input.is-interim {
+  color: var(--ink-2);
+}
+
+.console-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.mic {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 4.25rem;
+  padding-right: 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.mic-disc {
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: var(--tomato);
+  color: #fff;
+  box-shadow: 0 16px 30px -14px rgb(154 51 32 / 0.8);
+  transition: transform 500ms var(--bounce);
+}
+
+.mic:hover .mic-disc {
+  transform: scale(1.06);
+}
+
+.mic-disc .icon {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.mic[aria-pressed='true'] .mic-disc {
+  animation: breathe 2.2s ease-in-out infinite;
+  --mark: var(--tomato);
+}
+
+.console-note {
+  margin-top: 1rem;
+  color: var(--ink-2);
+}
+
+.hears {
+  margin-top: 2rem;
+}
+
+.hears-title,
+.tries-label,
+.sofar-title {
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.hears-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1.2fr;
+  gap: 8px;
+  margin-top: 0.6rem;
+}
+
+.hear {
+  min-width: 0;
+  padding: 0.85rem 1.1rem 1rem;
+  border-radius: var(--r-m);
+  background: var(--paper-2);
+}
+
+.hear dt {
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.hear dd {
+  margin-top: 0.15rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-size: 1.55rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.hear dd.is-empty {
+  color: var(--ink-2);
+}
+
+.hear {
+  transition: background-color 900ms var(--ease-out);
+}
+
+.hear.is-changed {
+  background: var(--saffron-soft);
+  transition-duration: 250ms;
+}
+
+.tries {
+  margin-top: 1.75rem;
+}
+
+.tries-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 0.6rem;
+}
+
+.try {
+  min-height: 3rem;
+  padding: 0.3rem 1.1rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px var(--line-2);
+  font-family: var(--font-display);
+  font-variation-settings: var(--voice);
+  font-style: italic;
+  font-size: 1.25rem;
+  text-align: left;
+  transition:
+    background-color 250ms var(--ease-out),
+    box-shadow 250ms var(--ease-out),
+    transform 450ms var(--spring);
+}
+
+.try:hover {
+  background: var(--paper-2);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.try:active {
+  transform: scale(0.97);
+}
+
+.try:disabled {
+  opacity: 0.45;
+}
+
+.sofar {
+  margin-top: 2rem;
+}
+
+.rows {
+  margin-top: 0.4rem;
+}
+
+.rows li {
+  display: grid;
+  grid-template-columns: minmax(6rem, 28%) 1fr;
+  gap: 0.75rem;
+  padding: 0.75rem 0.75rem;
+  box-shadow: inset 0 -1px 0 var(--line);
+}
+
+.rows .amount {
+  font-weight: 700;
+}
+
+.rows .note {
+  color: var(--ink-2);
+}
+
+.rows li.is-new {
+  border-radius: var(--r-s);
+  background: var(--tomato-soft);
+  box-shadow: none;
+  animation: row-in 800ms var(--spring) both;
+}
+
+/* ============ Cook ============ */
+
+.cook {
+  padding-block: clamp(6rem, 12vw, 11rem);
+}
+
+.cook-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(3rem, 6vw, 7rem);
+  align-items: start;
+}
+
+.cook-intro {
+  position: sticky;
+  top: 7rem;
+}
+
+.cook .h2-loud {
+  font-size: clamp(3rem, 6.2vw, 6.75rem);
+  line-height: 0.92;
+}
+
+.cook-intro .body-lg {
+  margin-top: 1.5rem;
+}
+
+.cmds-title {
+  margin-top: 2.5rem;
+  font-weight: 700;
+}
+
+.cmds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.cmd {
+  min-height: 3.5rem;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--fg) 45%, transparent);
+  font-family: var(--font-display);
+  font-variation-settings: var(--loud);
+  font-weight: 700;
+  font-size: 1.5rem;
+  transition:
+    background-color 250ms var(--ease-out),
+    color 250ms var(--ease-out),
+    transform 500ms var(--bounce);
+}
+
+.cmd::before {
+  content: '“';
+}
+.cmd::after {
+  content: '”';
+}
+
+.cmd:hover {
+  background: color-mix(in srgb, var(--fg) 12%, transparent);
+}
+
+.cmd.is-heard {
+  background: var(--fg);
+  color: var(--bg);
+  transform: scale(1.08);
+}
+
+.listen {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.5rem;
+  margin-top: 1.5rem;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--fg) 14%, transparent);
+  font-weight: 700;
+  transition: background-color 250ms var(--ease-out);
+}
+
+.listen:hover {
+  background: color-mix(in srgb, var(--fg) 22%, transparent);
+}
+
+.listen-dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.listen[aria-pressed='true'] .listen-dot {
+  background: currentColor;
+  --mark: var(--fg);
+  animation: breathe 2.2s ease-in-out infinite;
+}
+
+.cook-note {
+  margin-top: 1.25rem;
+  color: var(--fg-2);
+}
+
+.field-surface {
+  --fg: var(--field-ink);
+  --fg-2: #f6ddd3;
+  --rule: rgb(255 246 239 / 0.28);
+  --act: var(--field-ink);
+  --act-ink: var(--field-2);
+  --mark: var(--field-ink);
+  color: var(--fg);
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  min-height: min(48rem, 88svh);
+  padding: clamp(1.25rem, 2.6vw, 2.5rem);
+  border-radius: var(--r-xl);
+  background: var(--field-2);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 246 239 / 0.1),
+    0 70px 120px -60px rgb(40 8 2 / 0.75);
+  outline-offset: 6px;
+}
+
+.stage-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+
+.stage-step {
+  font-family: var(--font-display);
+  font-variation-settings: var(--loud);
+  font-weight: 800;
+  font-size: 1.6rem;
+}
+
+.stage-hint {
+  color: var(--fg-2);
+}
+
+.progress {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.9rem;
+}
+
+.progress span {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(255 246 239 / 0.22);
+}
+
+.progress span::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--field-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-out);
+}
+
+.progress span.is-done::after {
+  transform: none;
+}
+
+.timers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 8px;
+  margin-top: 1.1rem;
+}
+
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.45rem;
+  border-radius: 999px;
+  background: rgb(255 246 239 / 0.13);
+  animation: timer-in 800ms var(--spring) both;
+}
+
+@keyframes timer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.94);
+  }
+}
+
+.timer-ring {
+  --p: 0;
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  flex: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--field-ink) 66%, transparent 67% 78%, transparent 79%),
+    conic-gradient(var(--field-ink) calc(var(--p) * 1%), rgb(255 246 239 / 0.25) 0);
+  color: var(--field-2);
+}
+
+.timer-ring .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.timer-text {
+  flex: 1;
+  line-height: 1.15;
+}
+
+.timer-name {
+  font-weight: 700;
+}
+
+.timer-clock {
+  display: block;
+  font-family: var(--font-display);
+  font-variation-settings: var(--loud);
+  font-weight: 800;
+  font-size: 1.6rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-stop {
+  min-height: 3rem;
+  padding: 0 1.1rem;
+  border-radius: 999px;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1.5px rgb(255 246 239 / 0.6);
+}
+
+.timer-stop:hover {
+  background: rgb(255 246 239 / 0.14);
+}
+
+.timer.is-done {
+  background: var(--field-ink);
+  color: var(--field-2);
+}
+
+.timer.is-done .timer-ring {
+  background: var(--field-2);
+  color: var(--field-ink);
+  animation: pop 700ms var(--bounce);
+}
+
+.timer.is-done .timer-stop {
+  box-shadow: inset 0 0 0 1.5px var(--field-2);
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+  }
+}
+
+.step {
+  flex: 1;
+  margin-top: 2rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--loud);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 3.9vw, 4rem);
+  line-height: 1.13;
+  letter-spacing: -0.012em;
+  text-wrap: pretty;
+}
+
+.step.is-next {
+  animation: step-next 700ms var(--ease-out) both;
+}
+
+.step.is-back {
+  animation: step-back 700ms var(--ease-out) both;
+}
+
+@keyframes step-next {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateX(40px);
+  }
+}
+
+@keyframes step-back {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateX(-40px);
+  }
+}
+
+.mention {
+  padding: 0 0.2em;
+  border-radius: 14px;
+  background: var(--field-ink);
+  color: var(--field-2);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.16em;
+  padding: 0 0.24em;
+  border-radius: 14px;
+  background: rgb(255 246 239 / 0.18);
+  font: inherit;
+  line-height: 1.12;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color 250ms var(--ease-out),
+    transform 500ms var(--bounce);
+}
+
+.time:hover {
+  background: rgb(255 246 239 / 0.3);
+}
+
+.time:active {
+  transform: scale(0.96);
+}
+
+.time .icon {
+  width: 0.7em;
+  height: 0.7em;
+  stroke-width: 2.4;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 10px;
+  margin-top: 2rem;
+}
+
+.controls .btn {
+  --btn-h: 4.25rem;
+  padding-inline: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.btn-ghost {
+  background: rgb(255 246 239 / 0.13);
+}
+
+.btn-ghost:hover {
+  background: rgb(255 246 239 / 0.22);
+}
+
+/* ============ In her words ============ */
+
+.words {
+  padding-block: clamp(7rem, 14vw, 13rem) clamp(5rem, 10vw, 9rem);
+}
+
+.words-who {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--fg-2);
+}
+
+.words-who .art {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 14px;
+}
+
+.quote {
+  margin-top: 2rem;
+  font-family: var(--font-display);
+  font-variation-settings: var(--voice);
+  font-style: italic;
+  font-weight: 340;
+  font-size: clamp(2.75rem, 6.6vw, 7.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.quote .qw {
+  color: color-mix(in srgb, var(--fg) 16%, transparent);
+  transition: color 500ms var(--ease-out);
+}
+
+.quote .qw.is-lit {
+  color: var(--fg);
+}
+
+.keeps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  margin-top: clamp(4rem, 8vw, 7.5rem);
+}
+
+.keep {
+  padding-top: 1.4rem;
+  box-shadow: inset 0 2px 0 var(--fg);
+}
+
+.keep h3 {
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 420;
+  font-size: 1.75rem;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.keep p {
+  margin-top: 0.75rem;
+  color: var(--fg-2);
+}
+
+.ask {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 6rem);
+  align-items: center;
+  margin-top: clamp(5rem, 10vw, 9rem);
+}
+
+.ask-copy .body-lg {
+  margin-top: 1.25rem;
+}
+
+.chat {
+  display: grid;
+  align-content: end;
+  min-height: 22rem;
+  padding: clamp(1.5rem, 3vw, 3rem);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 1px 1px, color-mix(in srgb, var(--fg) 9%, transparent) 1px, transparent 0) 0 0 / 22px 22px,
+    var(--paper-2);
+}
+
+.bubble {
+  position: relative;
+  max-width: 25rem;
+  padding: 1rem 1.1rem 0.6rem;
+  border-radius: 22px 22px 22px 6px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  transform-origin: 0 100%;
+  transition:
+    opacity 400ms var(--ease-out),
+    transform 900ms var(--bounce);
+}
+
+.chat.is-waiting .bubble {
+  opacity: 0;
+  transform: scale(0.7) translateY(20px);
+}
+
+.bubble-link {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0.8rem;
+  padding: 0.7rem;
+  border-radius: 14px;
+  background: var(--paper-2);
+}
+
+.bubble-link .mark {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+}
+
+.bubble-link-title {
+  font-weight: 700;
+}
+
+.bubble-link-url {
+  color: var(--ink-2);
+}
+
+.bubble-time {
+  margin-top: 0.3rem;
+  text-align: right;
+  color: var(--ink-2);
+}

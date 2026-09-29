@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en" data-size="normal" data-bg="paper">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bookcook: a cookbook you can talk to</title>
+    <meta
+      name="description"
+      content="Say a family recipe out loud and Bookcook writes it down. Then cook from it one step at a time, with your hands free. No account, no ads."
+    />
+    <meta name="theme-color" content="#F8F2E9" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Bookcook: a cookbook you can talk to" />
+    <meta
+      property="og:description"
+      content="Save the recipes that only live in someone’s head by saying them out loud, then cook from them hands-free."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://getbookcook.pages.dev/" />
+    <meta property="og:image" content="https://getbookcook.pages.dev/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="A cookbook you can talk to: Mom’s Chicken Biryani being written down from what she said." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      (function () {
+        var root = document.documentElement;
+        if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+        // iPhones and iPads (which call themselves Macs) can't install the Android app, so it isn't offered there.
+        var ua = navigator.userAgent;
+        if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) root.dataset.os = 'ios';
+        try {
+          var size = localStorage.getItem('bookcook-site-size');
+          if (size === 'large' || size === 'huge') root.dataset.size = size;
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="stylesheet" href="./src/styles/main.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to the page</a>
+
+    <header class="nav" id="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="Bookcook, back to the top"><!-- logo:rice --><span>Bookcook</span></a>
+        <nav class="nav-links" aria-label="On this page">
+          <a href="#tell">Tell it</a>
+          <a href="#cook">Cook</a>
+          <a href="#words">Her words</a>
+          <a href="#looks">Looks</a>
+          <a href="#yours">Private</a>
+        </nav>
+        <div class="nav-end">
+          <button class="nav-size" id="nav-size" type="button">
+            <span class="nav-size-glyph" aria-hidden="true">Aa</span
+            ><span class="nav-size-text">Text size: <b id="nav-size-value">Normal</b></span>
+          </button>
+          <a class="btn btn-primary nav-open" href="https://bookcook.pages.dev/">Open the app</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ============ Hero: a cookbook you can talk to ============ -->
+      <section class="hero" id="top" data-bg="paper" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="heard" id="heard" aria-hidden="true">
+              <span class="heard-dot"></span>
+              <span class="heard-listening">Listening…</span>
+              <span class="heard-done"><span data-icon="check"></span>Written down</span>
+            </p>
+            <h1 id="hero-title" class="hero-title">A cookbook you can talk to.</h1>
+            <p class="hero-lead">
+              Keep the recipes that only live in someone’s head. Say them out loud, the way you’d tell a friend, and Bookcook writes them
+              down. Then cook from them with your hands free.
+            </p>
+            <div class="hero-get">
+              <a class="btn btn-primary btn-xl get-open" href="https://bookcook.pages.dev/"
+                >Open the app<span class="btn-arrow" data-icon="next"></span
+              ></a>
+              <ul class="downloads" aria-label="Or get the app">
+                <li class="for-android">
+                  <a href="https://github.com/rvyyv-n/bookcook/releases/latest"><span data-icon="download"></span>Get it for Android</a>
+                </li>
+                <li class="for-windows">
+                  <a href="https://github.com/rvyyv-n/bookcook/releases/latest"><span data-icon="download"></span>Get it for Windows</a>
+                </li>
+              </ul>
+            </div>
+            <p class="hero-promise">Free, with nothing to sign up for. Your recipes stay on your device.</p>
+          </div>
+
+          <figure class="hero-stage">
+            <figcaption class="visually-hidden">
+              Mom tells her chicken biryani out loud. As she talks, Bookcook picks out each ingredient and writes it into the recipe.
+            </figcaption>
+            <div class="deck is-waiting" aria-hidden="true">
+              <div class="deck-card deck-3">
+                <div class="deck-tab"><!-- art:banana --><span>Grandma’s Banana Bread</span></div>
+              </div>
+              <div class="deck-card deck-2">
+                <div class="deck-tab"><!-- art:lentil --><span>Sunday Lentil Soup</span></div>
+              </div>
+              <article class="deck-card deck-1 rc" id="recipe-card">
+                <header class="rc-head">
+                  <!-- art:biryani -->
+                  <div>
+                    <p class="rc-title">Mom’s Chicken Biryani</p>
+                    <p class="rc-from">From Mom’s kitchen</p>
+                  </div>
+                </header>
+                <div class="rc-voice">
+                  <span class="wave" id="wave"></span>
+                  <span class="rc-status" id="rc-status">Mom is telling it</span>
+                </div>
+                <p class="rc-transcript" id="transcript"></p>
+                <div class="rc-list">
+                  <p class="rc-list-title">Ingredients</p>
+                  <ol class="rc-rows" id="hero-rows"></ol>
+                </div>
+                <div class="rc-foot">
+                  <span class="rc-timer" id="hero-timer"><span data-icon="timer"></span>30 min</span>
+                </div>
+              </article>
+            </div>
+            <button class="replay" id="replay" type="button" hidden><span data-icon="replay"></span>Hear it again</button>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ============ Tell it ============ -->
+      <section class="tell" id="tell" data-bg="paper" aria-labelledby="tell-title">
+        <div class="container tell-grid">
+          <div class="tell-intro">
+            <h2 class="h2" id="tell-title" data-words>Tell it the way you’d tell a friend.</h2>
+            <p class="body-lg">
+              Bookcook asks one question at a time and writes down what you say. Ingredients land in the right place as you say them, and
+              times become timers. You check it all before it’s saved.
+            </p>
+            <ol class="questions" aria-label="The questions Bookcook asks">
+              <li>What’s this dish called?</li>
+              <li>Whose recipe is this?</li>
+              <li>How many people does it feed?</li>
+              <li class="is-now" aria-current="step">Tell me the ingredients, one at a time.</li>
+              <li>Now the steps. What do you do first?</li>
+              <li>Any tips for someone making this?</li>
+              <li>Who taught you this?</li>
+            </ol>
+          </div>
+
+          <div class="console surface">
+            <p class="console-q">Tell me the ingredients, one at a time.</p>
+            <form class="console-form" id="say" autocomplete="off">
+              <label class="console-label" for="say-input">Say or type an ingredient</label>
+              <div class="console-line">
+                <input id="say-input" class="console-input" type="text" enterkeyhint="done" placeholder="two cups basmati rice, washed" />
+              </div>
+              <div class="console-actions">
+                <button class="mic" id="mic" type="button" hidden aria-pressed="false">
+                  <span class="mic-disc"><span data-icon="mic"></span></span><span class="mic-label" id="mic-label">Speak</span>
+                </button>
+                <button class="btn btn-secondary" type="submit"><span data-icon="add"></span>Add it</button>
+              </div>
+              <p class="console-note" id="no-speech" hidden>Speaking works in Chrome and Edge. Typing works everywhere.</p>
+            </form>
+
+            <div class="hears" aria-live="polite">
+              <p class="hears-title">What Bookcook hears</p>
+              <dl class="hears-grid">
+                <div class="hear">
+                  <dt>Amount</dt>
+                  <dd id="hear-amount">2 cups</dd>
+                </div>
+                <div class="hear">
+                  <dt>Ingredient</dt>
+                  <dd id="hear-name">basmati rice</dd>
+                </div>
+                <div class="hear">
+                  <dt>Note</dt>
+                  <dd id="hear-note">washed</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="tries">
+              <p class="tries-label" id="tries-label">Or tap one to say it</p>
+              <ul class="tries-list" aria-labelledby="tries-label">
+                <li><button type="button" class="try">two cups basmati rice, washed</button></li>
+                <li><button type="button" class="try">half a cup of yogurt</button></li>
+                <li><button type="button" class="try">a pinch of saffron</button></li>
+                <li><button type="button" class="try">four green cardamom</button></li>
+                <li><button type="button" class="try">salt to taste</button></li>
+              </ul>
+            </div>
+
+            <div class="sofar">
+              <p class="sofar-title">Mom’s Chicken Biryani, so far</p>
+              <ol class="rows" id="rows" aria-label="Ingredients so far"></ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Cook ============ -->
+      <section class="cook" id="cook" data-bg="field" aria-labelledby="cook-title">
+        <div class="container cook-grid">
+          <div class="cook-intro">
+            <h2 class="h2 h2-loud" id="cook-title" data-words>Cook with busy hands.</h2>
+            <p class="body-lg">
+              One step at a time, in type you can read from across the kitchen. Each step is read to you, and Bookcook listens while you
+              cook, so floury fingers never touch the screen.
+            </p>
+            <p class="cmds-title" id="cmds-title">Say it, or tap it</p>
+            <ul class="cmds" aria-labelledby="cmds-title">
+              <li><button type="button" class="cmd" data-cmd="next">next</button></li>
+              <li><button type="button" class="cmd" data-cmd="back">back</button></li>
+              <li><button type="button" class="cmd" data-cmd="repeat">repeat</button></li>
+              <li><button type="button" class="cmd" data-cmd="timer">timer</button></li>
+              <li><button type="button" class="cmd" data-cmd="stop">stop</button></li>
+            </ul>
+            <button class="listen" id="listen" type="button" hidden aria-pressed="false">
+              <span class="listen-dot"></span><span id="listen-label">Turn on listening</span>
+            </button>
+            <p class="cook-note" id="cook-note" hidden>In Chrome and Edge, Bookcook can listen for these words too.</p>
+          </div>
+
+          <div class="stage field-surface" id="stage" tabindex="-1" aria-label="Cook mode: Mom’s Chicken Biryani">
+            <div class="stage-head">
+              <p class="stage-step" id="step-count" aria-live="polite">Step 1 of 5</p>
+              <p class="stage-hint">
+                <span class="for-keys">Use the arrow keys, or tap a time</span><span class="for-touch">Tap a time to start a timer</span>
+              </p>
+            </div>
+            <div class="progress" id="progress" aria-hidden="true"></div>
+            <ul class="timers" id="timers" aria-label="Timers"></ul>
+            <p class="step" id="step"></p>
+            <div class="controls">
+              <button class="btn btn-ghost" id="back" type="button"><span data-icon="back"></span>Back</button>
+              <button class="btn btn-ghost" id="read" type="button"><span data-icon="read"></span><span id="read-label">Read</span></button>
+              <button class="btn btn-primary" id="next" type="button"><span data-icon="next"></span>Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ In her words ============ -->
+      <section class="words" id="words" data-bg="paper" aria-labelledby="words-title">
+        <div class="container">
+          <h2 class="visually-hidden" id="words-title">In her words</h2>
+          <p class="words-who"><!-- art:biryani --><span>Mom, on her chicken biryani</span></p>
+          <blockquote class="quote" id="quote">
+            <p>“My mother, every Sunday. I learned by watching her hands, not measuring.”</p>
+          </blockquote>
+
+          <div class="keeps">
+            <div class="keep">
+              <h3>Her name on every recipe.</h3>
+              <p>From Mom’s kitchen, from Dad’s, from Grandma’s. The cook stays part of the dish.</p>
+            </div>
+            <div class="keep">
+              <h3>Her voice, kept.</h3>
+              <p>Voice notes stay with the recipe, so you can still hear how she says it.</p>
+            </div>
+            <div class="keep">
+              <h3>Her words, never corrected.</h3>
+              <p>The story and everything said around the recipe are saved word for word, as “In her words”.</p>
+            </div>
+          </div>
+
+          <div class="ask">
+            <div class="ask-copy">
+              <h3 class="h3" data-words>Ask for the one you’re missing.</h3>
+              <p class="body-lg">
+                Send a request link to whoever knows it. They answer by telling it, and the recipe comes back to your cookbook.
+              </p>
+            </div>
+            <div class="chat" aria-label="A request, as it arrives in a message">
+              <div class="bubble">
+                <p>Sam would love to learn your apple pie. Tell it in Bookcook:</p>
+                <div class="bubble-link">
+                  <!-- logo:rice -->
+                  <div>
+                    <p class="bubble-link-title">A recipe request: Apple pie</p>
+                    <p class="bubble-link-url">bookcook.pages.dev</p>
+                  </div>
+                </div>
+                <p class="bubble-time">9:41</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Looks and sizes ============ -->
+      <section class="looks" id="looks" data-bg="paper" aria-labelledby="looks-title">
+        <div class="container looks-grid">
+          <div class="looks-copy">
+            <h2 class="h2" id="looks-title" data-words>Big type. Five looks. Light or dark.</h2>
+            <p class="body-lg">
+              Made for the cook in reading glasses: three text sizes up to Huge, high contrast, and a word on every button. Try it. This
+              page grows too.
+            </p>
+
+            <fieldset class="choice">
+              <legend>Text size</legend>
+              <div class="seg" id="size-choice">
+                <label><input type="radio" name="size" value="normal" checked /><span>Normal</span></label>
+                <label><input type="radio" name="size" value="large" /><span>Large</span></label>
+                <label><input type="radio" name="size" value="huge" /><span>Huge</span></label>
+              </div>
+            </fieldset>
+
+            <fieldset class="choice">
+              <legend>Look</legend>
+              <div class="skins" id="skin-choice">
+                <label
+                  ><input type="radio" name="skin" value="quiet" checked /><span
+                    ><i class="swatch" style="--a: #fbf7f0; --b: #1f1b16"></i>Quiet Page</span
+                  ></label
+                >
+                <label
+                  ><input type="radio" name="skin" value="heirloom" /><span
+                    ><i class="swatch" style="--a: #f3ebdc; --b: #93321d"></i>Letterpress Heirloom</span
+                  ></label
+                >
+                <label
+                  ><input type="radio" name="skin" value="tin" /><span
+                    ><i class="swatch" style="--a: #f8eedd; --b: #221a12"></i>Spice Tin</span
+                  ></label
+                >
+                <label
+                  ><input type="radio" name="skin" value="coded" /><span
+                    ><i class="swatch" style="--a: #f4e4c0; --b: #2b5421"></i>Colour-coded</span
+                  ></label
+                >
+                <label
+                  ><input type="radio" name="skin" value="field" /><span
+                    ><i class="swatch" style="--a: #9a3320; --b: #ffffff"></i>Colour field</span
+                  ></label
+                >
+              </div>
+            </fieldset>
+
+            <fieldset class="choice">
+              <legend>Light or dark</legend>
+              <div class="seg seg-2" id="mode-choice">
+                <label><input type="radio" name="mode" value="light" checked /><span>Light</span></label>
+                <label><input type="radio" name="mode" value="dark" /><span>Dark</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="phone-wrap">
+            <div class="phone" id="phone" data-skin="quiet" data-mode="light" aria-label="Cook mode in the chosen look">
+              <div class="phone-screen" id="phone-screen">
+                <div class="ps-top">
+                  <span class="ps-close"><span data-icon="close"></span>Close</span>
+                  <span class="ps-ingr"><span data-icon="ingredients"></span>Ingredients</span>
+                </div>
+                <div class="ps-status">
+                  <span class="ps-step"><b class="ps-numeral">2</b><span class="ps-step-text">Step 2 of 5</span></span>
+                  <span class="ps-listen"><i></i>Listening</span>
+                </div>
+                <div class="ps-bars"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+                <div class="ps-timer">
+                  <span class="ps-ring"><span data-icon="timer"></span></span>
+                  <span><span class="ps-timer-name">Rice</span><b class="ps-clock" id="ps-clock">6:58</b></span>
+                </div>
+                <p class="ps-text">
+                  Boil the <span class="ps-m" data-spice="1">rice</span> with the <span class="ps-m" data-spice="2">cardamom</span> and
+                  <span class="ps-m" data-spice="3">bay leaf</span> until it’s about three-quarters done, around
+                  <span class="nowrap"
+                    ><span class="ps-t"><span data-icon="timer"></span><span id="ps-left">6:58 left</span></span
+                    >,</span
+                  >
+                  then drain.
+                </p>
+                <div class="ps-controls">
+                  <span class="ps-btn"><span data-icon="back"></span>Back</span>
+                  <span class="ps-btn"><span data-icon="read"></span>Read</span>
+                  <span class="ps-btn ps-next"><span data-icon="next"></span>Next</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Everywhere ============ -->
+      <section class="everywhere" id="everywhere" data-bg="paper" aria-labelledby="everywhere-title">
+        <div class="container">
+          <div class="everywhere-copy">
+            <h2 class="h2" id="everywhere-title" data-words>On the phone, the tablet and the computer.</h2>
+            <p class="body-lg">
+              Open it in any browser and install it to use it offline, or get the Android or Windows app. Prop the tablet by the stove, plan
+              the week on the computer.
+            </p>
+          </div>
+          <div class="devices" id="devices">
+            <figure class="device laptop" data-speed="0.4">
+              <div class="laptop-screen">
+                <img
+                  src="./screens/desktop-cookbook.webp"
+                  width="1920"
+                  height="1200"
+                  alt="Bookcook on a computer: the cookbook with Mom’s Chicken Biryani open."
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div class="laptop-base" aria-hidden="true"></div>
+            </figure>
+            <figure class="device tablet" data-speed="-0.5">
+              <img
+                src="./screens/tablet-cook.webp"
+                width="1600"
+                height="1112"
+                alt="Bookcook on a tablet: cook mode with the ingredients beside the step."
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+            <figure class="device handset" data-speed="-1.1">
+              <img
+                src="./screens/phone-recipe.webp"
+                width="780"
+                height="1688"
+                alt="Bookcook on a phone: the recipe page for Mom’s Chicken Biryani."
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Yours ============ -->
+      <section class="yours" id="yours" data-bg="night" aria-labelledby="yours-title">
+        <div class="container">
+          <h2 class="h2" id="yours-title" data-words>Yours, and only yours.</h2>
+          <ul class="nos" id="nos">
+            <li>No account to make.</li>
+            <li>No server holding your recipes.</li>
+            <li>No AI, and no paid services.</li>
+            <li>No ads, no tracking.</li>
+            <li>No streaks, no nagging.</li>
+          </ul>
+          <div class="facts">
+            <div class="fact">
+              <h3>It all lives on your device.</h3>
+              <p>Recipes, photos and voice notes stay on your phone or computer, not on someone else’s.</p>
+            </div>
+            <div class="fact">
+              <h3>Share it as a link.</h3>
+              <p>The recipe travels inside the link itself. Whoever opens it can add it to their own Bookcook.</p>
+            </div>
+            <div class="fact">
+              <h3>Back it all up.</h3>
+              <p>Save everything to a file you keep, photos and voice notes included.</p>
+            </div>
+            <div class="fact">
+              <h3>Open source.</h3>
+              <p>
+                Every line is public, under the MIT licence.
+                <a href="https://github.com/rvyyv-n/bookcook">Read the source on GitHub</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Get it ============ -->
+      <section class="get" id="get" data-bg="paper" aria-labelledby="get-title">
+        <div class="container get-inner">
+          <div class="get-pot"><!-- pot:rice --></div>
+          <h2 class="h2 get-title" id="get-title" data-words>Start with one recipe.</h2>
+          <p class="body-lg get-sub">The one you’d hate to lose.</p>
+          <div class="get-actions">
+            <a class="btn btn-primary btn-xl get-open" href="https://bookcook.pages.dev/"
+              >Open the app<span class="btn-arrow" data-icon="next"></span
+            ></a>
+            <a class="btn btn-secondary btn-xl" href="https://github.com/rvyyv-n/bookcook/releases/latest"
+              ><span data-icon="download"></span>Get it for Android</a
+            >
+            <a class="btn btn-secondary btn-xl" href="https://github.com/rvyyv-n/bookcook/releases/latest"
+              ><span data-icon="download"></span>Get it for Windows</a
+            >
+          </div>
+          <ul class="get-notes">
+            <li>Works in any modern browser. Install it from the browser menu to use it offline.</li>
+            <li>Talking works best in Chrome and Edge. Typing works everywhere.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" data-bg="paper">
+      <div class="container footer-inner">
+        <p class="footer-story"><!-- logo:rice --><span>Bookcook began as a way to save one mom’s recipes before they’re lost.</span></p>
+        <ul class="footer-links">
+          <li><a href="https://bookcook.pages.dev/">Open the app</a></li>
+          <li><a href="https://github.com/rvyyv-n/bookcook/releases/latest">Android and Windows</a></li>
+          <li><a href="https://github.com/rvyyv-n/bookcook">Source code</a></li>
+        </ul>
+        <div class="footer-by">
+          <a class="footer-maker" href="https://github.com/rvyyv-n"><span data-icon="github"></span>Made by rvyyv-n</a>
+          <p>Free and open source, under the MIT licence.</p>
+        </div>
+      </div>
+    </footer>
+
+    <nav class="getbar" id="getbar" aria-label="Get Bookcook">
+      <a class="btn btn-primary" href="https://bookcook.pages.dev/">Open the app</a>
+      <a class="btn btn-secondary for-android" href="https://github.com/rvyyv-n/bookcook/releases/latest">Android app</a>
+    </nav>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

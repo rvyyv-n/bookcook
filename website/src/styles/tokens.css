@@ -1,0 +1,209 @@
+/*
+ * The website's own tokens. They start from the app's palette (paper, ink, tomato, the logo's saffron and
+ * cardamom) and push it further: bigger type, a full tomato field, a night section.
+ *
+ * The page colour follows the section in the middle of the screen: html[data-bg] is set as you scroll,
+ * and the registered properties below let the whole page glide from one colour to the next.
+ */
+
+@property --bg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f8f2e9;
+}
+@property --fg {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1d1813;
+}
+@property --fg-2 {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #54493e;
+}
+@property --rule {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #e3d8c8;
+}
+@property --act {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #b63e26;
+}
+@property --act-ink {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+:root {
+  /* Paper and ink */
+  --paper: #f8f2e9;
+  --paper-2: #efe5d6;
+  --card: #fffdf9;
+  --ink: #1d1813;
+  --ink-2: #54493e;
+  --line: #e3d8c8;
+  --line-2: #c3b29b;
+  --line-control: #8f8172;
+
+  /* Tomato, from the logo tile to the cook-mode field */
+  --tomato: #b63e26;
+  --tomato-deep: #9a3320;
+  --tomato-text: #93321d;
+  --tomato-soft: #f7dcd2;
+  --field: #9a3320;
+  --field-2: #862b1a;
+  --field-ink: #fff6ef;
+
+  /* The logo's flecks of rice */
+  --saffron: #e9a23b;
+  --saffron-soft: #f8dfa6;
+  --cardamom: #2f5e2a;
+
+  /* Night */
+  --night: #14100d;
+  --night-2: #211b16;
+  --night-ink: #f3ede4;
+  --night-ink-2: #c2b6a8;
+  --night-line: #3a322b;
+  --ember: #ee7a5f;
+
+  /* Type */
+  --font-display: 'Fraunces Variable', 'Fraunces', Georgia, serif;
+  --font-body: 'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next', system-ui, sans-serif;
+  --font-old: 'EB Garamond Variable', 'EB Garamond', Georgia, serif;
+  --editorial: 'opsz' 144, 'SOFT' 40, 'WONK' 0;
+  --loud: 'opsz' 144, 'SOFT' 100, 'WONK' 1;
+  --voice: 'opsz' 48, 'SOFT' 100, 'WONK' 1;
+
+  /* Shape and depth */
+  --r-s: 10px;
+  --r-m: 18px;
+  --r-l: 28px;
+  --r-xl: 40px;
+  --shadow-color: 70 42 20;
+  --shadow-card: 0 1px 2px rgb(var(--shadow-color) / 0.08), 0 30px 60px -30px rgb(var(--shadow-color) / 0.38);
+  --shadow-deep: 0 2px 6px rgb(var(--shadow-color) / 0.1), 0 50px 90px -40px rgb(var(--shadow-color) / 0.5);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --spring: linear(
+    0,
+    0.0036 1.1%,
+    0.0567 4.6%,
+    0.2012 9.6%,
+    0.4231 15.6%,
+    0.6444 21.9%,
+    0.8014 27.9%,
+    0.9096 34.5%,
+    0.9665 41.3%,
+    0.9917 48.9%,
+    1.0017 58.7%,
+    1.0024 73.3%,
+    1
+  );
+  --bounce: linear(
+    0,
+    0.009,
+    0.035 2.1%,
+    0.141,
+    0.281 6.7%,
+    0.723 12.9%,
+    0.938 16.7%,
+    1.017,
+    1.077,
+    1.121,
+    1.149 24.3%,
+    1.159,
+    1.163,
+    1.161,
+    1.154 29.9%,
+    1.129 32.8%,
+    1.051 39.6%,
+    1.017 43.1%,
+    0.991,
+    0.977 51%,
+    0.974 53.8%,
+    0.975 57.1%,
+    0.997 69.8%,
+    1.003 76.9%,
+    1
+  );
+
+  /* What the page is wearing right now */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --rule: var(--line);
+  --act: var(--tomato);
+  --act-ink: #ffffff;
+  --mark: var(--tomato);
+
+  transition:
+    --bg 900ms var(--ease-in-out),
+    --fg 900ms var(--ease-in-out),
+    --fg-2 900ms var(--ease-in-out),
+    --rule 900ms var(--ease-in-out),
+    --act 900ms var(--ease-in-out),
+    --act-ink 900ms var(--ease-in-out);
+}
+
+:root[data-theme='dark'] {
+  --paper: #16120f;
+  --paper-2: #211b17;
+  --card: #231d18;
+  --ink: #f3ede4;
+  --ink-2: #c2b6a8;
+  --line: #352d26;
+  --line-2: #5a4d40;
+  --line-control: #7a6d5f;
+  --tomato-text: #f29a82;
+  --tomato-soft: #4a2419;
+  --saffron-soft: #5a4015;
+  --cardamom: #9ccb8a;
+  --night: #0c0907;
+  --night-2: #1a1511;
+  --shadow-color: 0 0 0;
+  --mark: var(--ember);
+  --act: var(--tomato);
+}
+
+:root[data-bg='field'] {
+  --bg: var(--field);
+  --fg: var(--field-ink);
+  --fg-2: #f6ddd3;
+  --rule: #b8543e;
+  --act: var(--field-ink);
+  --act-ink: var(--field);
+  --mark: var(--field-ink);
+}
+
+:root[data-bg='night'] {
+  --bg: var(--night);
+  --fg: var(--night-ink);
+  --fg-2: var(--night-ink-2);
+  --rule: var(--night-line);
+  --act: var(--ember);
+  --act-ink: #1a0f0b;
+  --mark: var(--ember);
+}
+
+/* Text sizes, as in the app: everything is in rem, so the whole page reflows. */
+:root {
+  font-size: 100%;
+}
+:root[data-size='large'] {
+  font-size: 120%;
+}
+:root[data-size='huge'] {
+  font-size: 145%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    transition: none;
+  }
+}

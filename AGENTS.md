@@ -8,6 +8,10 @@ A voice-first family recipe app: React 19, TypeScript, Vite, Tailwind v4, React 
 - [`docs/design/`](docs/design/): the design handoff (screens, components, tokens). It wins over the plan and the brief on anything visual. Decisions taken on it are in `DECISIONS.md`.
 - [`docs/roadmap.md`](docs/roadmap.md): what's built and what's next. Tick items off as they land.
 
+## The website
+
+[`website/`](website) is the product site at getbookcook.pages.dev, separate from the app. It has its own tokens and copy and isn't bound by the app's design rules below, only by readability: body text at least 18px, high contrast, labelled controls, reduced motion. It may import from `src/` (fonts, logo, parser) but the app never imports from it. `npm run site:dev` serves it at `localhost:5290`; `npm run site:deploy` publishes it.
+
 ## Rules
 
 - **Design values live only in `src/design/`.** `tokens.css`, `theme.css`, `skin.ts` and `icons.ts` stay byte-identical to the handoff; adapt the app to them. New design values that belong with the design (like motion) go in an app-owned file beside them, `motion.css`. Component styling lives in `src/ui/`; screens compose `src/ui` and don't style controls themselves. See `src/design/README.md`.

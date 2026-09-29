@@ -1,0 +1,438 @@
+/* Reset, type, buttons, the nav and the Get Bookcook bar. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote,
+fieldset {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+:focus-visible {
+  outline: 3px solid var(--fg);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--saffron-soft);
+  color: var(--ink);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 0.8rem 1.2rem;
+  border-radius: var(--r-s);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+  transform: translateY(-200%);
+}
+
+.skip:focus {
+  transform: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4.5vw, 72px);
+}
+
+/* A card that keeps paper colours whatever the page is wearing. */
+.surface {
+  --fg: var(--ink);
+  --fg-2: var(--ink-2);
+  --rule: var(--line);
+  --act: var(--tomato);
+  --act-ink: #ffffff;
+  --mark: var(--tomato);
+  background: var(--card);
+  color: var(--fg);
+}
+
+:root[data-theme='dark'] .surface {
+  --mark: var(--ember);
+}
+
+/* ---------- Type ---------- */
+
+.h2 {
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 340;
+  font-size: clamp(2.6rem, 5.4vw, 5.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.h2-loud {
+  font-variation-settings: var(--loud);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 380;
+  font-size: clamp(2rem, 3.2vw, 3.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.body-lg {
+  font-size: 1.3125rem;
+  line-height: 1.5;
+  color: var(--fg-2);
+  text-wrap: pretty;
+  max-width: 34rem;
+}
+
+/* Headings rise word by word from behind a line, once, as they come into view. */
+[data-words] .w {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.2em;
+  padding: 0.08em 0.06em 0.14em;
+  margin: -0.08em -0.06em -0.14em;
+  vertical-align: top;
+}
+
+[data-words] .w > span {
+  display: inline-block;
+  transform: translateY(108%) rotate(3deg);
+  transform-origin: 0 100%;
+  transition: transform 1100ms var(--ease-out);
+  transition-delay: calc(var(--i) * 55ms);
+}
+
+[data-words].is-in .w > span {
+  transform: none;
+}
+
+/* ---------- Brand ---------- */
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3rem;
+  text-decoration: none;
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-weight: 420;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+
+.brand .mark {
+  flex: none;
+  width: 2.35rem;
+  height: 2.35rem;
+  transition: transform 500ms var(--bounce);
+}
+
+.brand:hover .mark {
+  transform: rotate(-8deg) scale(1.06);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  --btn-h: 3.5rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: var(--btn-h);
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  isolation: isolate;
+  transition:
+    transform 450ms var(--spring),
+    background-color 250ms var(--ease-out),
+    color 250ms var(--ease-out),
+    box-shadow 250ms var(--ease-out);
+}
+
+.btn .icon {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+}
+
+.btn-xl {
+  --btn-h: 4.25rem;
+  padding-inline: 2.1rem;
+  font-size: 1.25rem;
+}
+
+.btn-primary {
+  background: var(--act);
+  color: var(--act-ink);
+}
+
+/* A darker fill wells up from where the pointer came in. */
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--act) 82%, #000);
+  clip-path: circle(0 at var(--mx, 50%) var(--my, 50%));
+  transition: clip-path 550ms var(--ease-out);
+}
+
+.btn-primary:hover::before {
+  clip-path: circle(150% at var(--mx, 50%) var(--my, 50%));
+}
+
+.btn-arrow {
+  transition: transform 450ms var(--spring);
+}
+
+.btn:hover .btn-arrow {
+  transform: translateX(5px);
+}
+
+.btn-secondary {
+  box-shadow: inset 0 0 0 1.5px var(--line-2);
+}
+
+.btn-secondary:hover {
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  box-shadow: inset 0 0 0 1.5px var(--fg);
+}
+
+/* ---------- Nav ---------- */
+
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  transition:
+    background-color 400ms var(--ease-out),
+    box-shadow 400ms var(--ease-out),
+    transform 500ms var(--ease-out);
+}
+
+.nav.is-stuck {
+  background: var(--bg);
+  box-shadow: 0 1px 0 var(--rule);
+}
+
+.nav.is-away {
+  transform: translateY(-100%);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin-inline: auto;
+  padding: 0.75rem clamp(20px, 4.5vw, 72px);
+}
+
+.nav-links {
+  display: flex;
+  gap: 0.25rem;
+  margin-inline: auto;
+}
+
+.nav-links a {
+  position: relative;
+  white-space: nowrap;
+  padding: 0.7rem 0.9rem;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0.9rem;
+  right: 0.9rem;
+  bottom: 0.45rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 450ms var(--ease-out);
+}
+
+.nav-links a:hover::after,
+.nav-links a[aria-current='true']::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* With bigger text, the section links make way for what matters: the text size and Open the app. */
+:root:is([data-size='large'], [data-size='huge']) .nav-links {
+  display: none;
+}
+
+:root:is([data-size='large'], [data-size='huge']) .nav-end {
+  margin-left: auto;
+}
+
+.nav-end {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-size {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  transition: background-color 250ms var(--ease-out);
+}
+
+.nav-size:hover {
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+}
+
+.nav-size-glyph {
+  font-family: var(--font-display);
+  font-variation-settings: var(--editorial);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.nav-size b {
+  font-weight: 700;
+}
+
+.nav-open {
+  --btn-h: 3rem;
+  padding-inline: 1.3rem;
+}
+
+/* ---------- Get Bookcook bar (phones, once the page's own buttons have scrolled away) ---------- */
+
+.getbar {
+  display: none;
+}
+
+/* ---------- Reduced motion: every beat is a calm still ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}
