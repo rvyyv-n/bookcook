@@ -211,7 +211,11 @@ On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev serve
 
 The app lives at **[bookcook.pages.dev](https://bookcook.pages.dev/)** on Cloudflare Pages, which also runs the From a link function (`functions/api/import.ts`; the `functions/` folder is picked up as is).
 
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then deployed to Cloudflare Pages with `wrangler pages deploy`, using the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and also built with the `/bookcook/` base path for the old address on [GitHub Pages](https://rvyyv-n.github.io/bookcook/), which now only sends people on: straight to the new address when nothing is saved there, or after asking them to back up and restore when recipes are (`VITE_MOVED_TO`, `src/app/moved.tsx`). To use the From a link function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address. The service worker precaches the app so it works offline once installed. The app checks for a new version when it opens, every hour while it's open, and when it comes back to the front, or on demand from Settings. When one is ready it offers Update, but never mid-cook or mid-recipe; ignored, the new version takes over the next time the app is opened. The Android app checks GitHub Releases instead: see [Android app](#android-app).
+[`deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` deploy to Cloudflare Pages with `wrangler pages deploy` (using the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` secrets). Pushing a `wip/` branch publishes a preview.
+
+The old [GitHub Pages](https://rvyyv-n.github.io/bookcook/) address is built with the `/bookcook/` base path and only sends people on to the new one, after asking them to back up and restore if they have recipes saved there (`VITE_MOVED_TO`, `src/app/moved.tsx`). To host the From a link function elsewhere, build with `VITE_IMPORT_URL` set to its address.
+
+The service worker precaches the app so it works offline. It checks for a new version on open, hourly, and when the app returns to the front, or on demand from Settings, and offers Update, but never mid-cook or mid-recipe. The Android and Windows apps check GitHub Releases instead: see below.
 
 ## Windows app
 
