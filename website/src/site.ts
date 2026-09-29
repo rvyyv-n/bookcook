@@ -19,6 +19,8 @@ const PATHS = {
   close: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
   alarm:
     '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3 2 6"/><path d="m22 6-3-3"/><path d="M6.38 18.7 4 21"/><path d="M17.64 18.67 20 21"/>',
+  replay: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  ingredients: '<path d="M13 5h8"/><path d="M13 12h8"/><path d="M13 19h8"/><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/>',
   startCooking:
     '<path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/>',
 } as const;
@@ -32,7 +34,7 @@ export function icon(name: IconName, className = 'icon'): string {
 /** Fill every `<span data-icon="name">` with its icon, so pages can write icons in plain HTML. */
 export function drawIcons(root: ParentNode = document) {
   root.querySelectorAll<HTMLElement>('[data-icon]').forEach((el) => {
-    el.outerHTML = icon(el.dataset.icon as IconName, el.className || 'icon');
+    el.outerHTML = icon(el.dataset.icon as IconName, `icon ${el.className}`.trim());
   });
 }
 

@@ -43,6 +43,7 @@ export default defineConfig({
     emptyOutDir: true,
     rolldownOptions: {
       input: {
+        main: page('index.html'),
         directions: page('directions/index.html'),
         'say-it': page('directions/say-it.html'),
         'hands-free': page('directions/hands-free.html'),

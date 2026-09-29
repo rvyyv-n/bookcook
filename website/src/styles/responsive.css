@@ -1,0 +1,128 @@
+/* Narrower screens. The page is designed wide first; below these widths the columns stack. */
+
+@media (max-width: 70rem) {
+  .nav-links {
+    display: none;
+  }
+  .nav-end {
+    margin-left: auto;
+  }
+  .hero-grid,
+  .tell-grid,
+  .cook-grid,
+  .looks-grid,
+  .ask,
+  .everywhere-copy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-grid {
+    min-height: 0;
+    padding-top: 2rem;
+  }
+  .hero-stage {
+    margin-top: 1rem;
+  }
+  .tell-intro,
+  .cook-intro {
+    position: static;
+  }
+  .keeps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .phone-wrap {
+    justify-self: center;
+  }
+}
+
+@media (max-width: 40rem) {
+  .nav-size-text {
+    display: none;
+  }
+  .nav-size {
+    padding: 0 0.75rem;
+  }
+  .nav-open {
+    display: none;
+  }
+  .hero {
+    padding-top: 5rem;
+  }
+  .hero-get {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-get .btn {
+    width: 100%;
+  }
+  .deck-1 {
+    padding: 1.25rem 1.1rem;
+  }
+  .rc-rows li {
+    grid-template-columns: 3.75rem 1fr;
+  }
+  .hears-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .console {
+    border-radius: var(--r-l);
+  }
+  .stage {
+    border-radius: var(--r-l);
+  }
+  .controls .btn {
+    font-size: 1.125rem;
+  }
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .devices {
+    aspect-ratio: 16 / 11;
+  }
+  .phone {
+    padding: 8px;
+    border-radius: 44px;
+  }
+  .phone-screen {
+    border-radius: 36px;
+    height: 700px;
+  }
+  .get-actions .btn {
+    width: 100%;
+  }
+
+  /* On phones, Open the app stays within reach at the bottom once the page's own buttons scroll away. */
+  .getbar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: var(--bg);
+    box-shadow: inset 0 1px 0 var(--rule);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform 500ms var(--ease-out),
+      visibility 0s linear 500ms;
+  }
+  .getbar.is-shown {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform 500ms var(--ease-out),
+      visibility 0s;
+  }
+  .getbar .btn {
+    flex: 1 1 9rem;
+    --btn-h: 3.25rem;
+    padding-inline: 1rem;
+  }
+  .footer {
+    padding-bottom: 5.5rem;
+  }
+}
