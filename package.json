@@ -1,7 +1,7 @@
 {
   "name": "bookcook",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Recipes in their own words: say or type a recipe, cook it hands-free.",
   "license": "MIT",
   "homepage": "https://rvyyv-n.github.io/bookcook/",
