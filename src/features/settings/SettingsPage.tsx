@@ -32,7 +32,7 @@ function TextSizeSection() {
   return (
     <Section title={ts.textSize}>
       <TextSizeSegmented label={ts.textSize} />
-      <p className="type-step rounded-md bg-surface px-4.5 py-4 text-xl leading-[1.2] text-pretty shadow-paper" aria-live="polite">
+      <p className="type-step rounded-lg bg-surface px-4.5 py-4 text-xl leading-[1.2] text-pretty shadow-paper" aria-live="polite">
         {ts.textPreview}
       </p>
     </Section>

@@ -41,7 +41,7 @@ export function TabBar({
     <nav
       aria-label={label}
       data-tab-bar
-      className="no-print fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t border-line bg-paper bg-(image:--grain) px-1 pt-2 pb-[calc(14px+env(safe-area-inset-bottom))]"
+      className="no-print fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 items-end border-t border-line bg-paper bg-(image:--grain) px-1 pt-2 pb-[max(14px,env(safe-area-inset-bottom))]"
     >
       {tab(a)}
       {tab(b)}

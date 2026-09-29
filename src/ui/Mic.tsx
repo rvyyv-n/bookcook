@@ -99,7 +99,7 @@ export function MicBlocked({
         <Icon name="micOff" size="3rem" />
       </span>
       <b className="text-lg">{title}</b>
-      <ol className="flex max-w-[20rem] list-decimal flex-col gap-1.5 rounded-md bg-surface py-3.5 pr-4.5 pl-9 text-left shadow-paper">
+      <ol className="flex max-w-[20rem] list-decimal flex-col gap-1.5 rounded-lg bg-surface py-3.5 pr-4.5 pl-9 text-left shadow-paper">
         {steps.map((s, i) => (
           <li key={i}>{s}</li>
         ))}
