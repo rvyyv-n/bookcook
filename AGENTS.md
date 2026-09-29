@@ -19,15 +19,13 @@ A voice-first family recipe app: React 19, TypeScript, Vite, Tailwind v4, React 
 
 ## Checks
 
-Run before every commit; all must pass:
+`npm run check` runs the tests, lint, formatting, typecheck and build. A local pre-commit hook runs it on every commit, so don't run it by hand first; CI runs it too.
 
-```sh
-npm test && npm run typecheck && npm run lint && npx prettier --check . && npm run build
-```
+`npm run test:visual` compares the key screens (every skin, light and dark, Huge, desktop) with the approved pictures in `e2e/snapshots`. The hook runs it when `src/` changes. When a screen is meant to change, run `npm run test:visual:update` and commit the new pictures with the change.
 
 ## Looking at the app
 
-Start `npm run dev -- --port 5288`, then screenshot with `node scripts/shot.mjs '<json>'`. The JSON sets the path, viewport, theme, text size, any setting (`"settings":{"skin":"heirloom"}`) and click actions; the example is at the top of the script.
+Screenshot only when a change is visual and can't be checked from tests or the page's text. Start `npm run dev -- --port 5288`, then `node scripts/shot.mjs '<json>'`. The JSON sets the path, viewport, theme, text size, any setting (`"settings":{"skin":"heirloom"}`) and click actions. To compare skins, themes, text sizes or widths, use `"grid"`: one labelled image instead of many shots. Examples are at the top of the script.
 
 ## Commits
 
@@ -35,4 +33,4 @@ Commits are authored and committed as `rvyyv-n <296653698+rvyyv-n@users.noreply.
 
 ## Deployment
 
-GitHub Actions (`.github/workflows/deploy.yml`) runs the checks on every push and publishes `main` to GitHub Pages under `/bookcook/`. Anything that builds a URL by hand must go through `import.meta.env.BASE_URL` (the router already uses it as its basename). After changing the logo, run `npm run icons` to redraw the favicon and app icons.
+GitHub Actions (`.github/workflows/deploy.yml`) runs the checks on every push and publishes `main` to GitHub Pages under `/bookcook/`. Pushing a `wip/` branch publishes a Cloudflare preview at `<branch-with-dashes>.bookcook.pages.dev` for trying a batch before it's merged. Anything that builds a URL by hand must go through `import.meta.env.BASE_URL` (the router already uses it as its basename). After changing the logo, run `npm run icons` to redraw the favicon and app icons.

@@ -1,10 +1,11 @@
 # Checks every push and pull request. Pushes to main are published to Cloudflare Pages (the app) and to
-# GitHub Pages, whose copy sends people on to the Cloudflare address.
+# GitHub Pages, whose copy sends people on to the Cloudflare address. Pushes to a wip/ branch get a Cloudflare
+# preview at <branch-with-dashes>.bookcook.pages.dev, to try a batch before it's merged.
 name: Check and deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'wip/**']
   pull_request:
   workflow_dispatch:
 
@@ -27,12 +28,9 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npm test
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npx prettier --check .
-      - name: Build for Pages
-        run: npm run build
+      # Tests, lint, formatting, then the typecheck and build.
+      - name: Check and build for Pages
+        run: npm run check
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
           # This copy only points people to the new address (src/app/moved.tsx).
@@ -56,9 +54,9 @@ jobs:
         uses: actions/deploy-pages@v5
 
   # Cloudflare Pages serves the app from the root and runs functions/, which the From a link import needs.
-  # Skipped until the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID repository secrets exist.
+  # main is the live app; any other branch is a preview. Skipped until the Cloudflare secrets exist.
   cloudflare:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/wip/')
     needs: build
     runs-on: ubuntu-latest
     env:
@@ -81,4 +79,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=bookcook
+          command: pages deploy dist --project-name=bookcook --branch=${{ github.ref_name }}

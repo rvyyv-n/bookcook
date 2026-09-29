@@ -224,9 +224,9 @@ function BasedOn({ recipe }: { recipe: Recipe }) {
 }
 
 /** A section heading in the skin's style (Heirloom centres it in small caps over a rule). */
-function SectionHeading({ id, children, desk }: { id: string; children: ReactNode; desk?: boolean }) {
+function SectionHeading({ id, children, desk, className }: { id: string; children: ReactNode; desk?: boolean; className?: string }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className={cx('flex flex-col gap-3', className)}>
       <h2 id={id} className={cx('type-heading text-(length:--heading-size)', !desk && '[text-align:var(--heading-align)]')}>
         {children}
       </h2>
@@ -276,8 +276,14 @@ function Ingredients({ adj, desk }: { adj: Adjusted; desk?: boolean }) {
         </div>
       ) : (
         <>
-          <SectionHeading id="ing-h">{t.ui.recipe.ingredients}</SectionHeading>
-          <IngredientControls {...adj} className="no-print" />
+          {/* Metric / Imperial sits beside the heading, where there's room, and drops below it when there isn't. */}
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-3">
+            <SectionHeading id="ing-h" className="flex-1">
+              {t.ui.recipe.ingredients}
+            </SectionHeading>
+            <IngredientControls {...adj} canScale={false} className="no-print" />
+          </div>
+          {adj.canScale && <IngredientControls {...adj} showUnits={false} className="no-print" />}
         </>
       )}
       <IngredientList ingredients={adj.ingredients} dense={desk} />
@@ -512,7 +518,11 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
     <article data-recipe-id={recipe.id} className="flex flex-col pb-10">
       {photo ? (
         <div className="relative">
-          <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)]')} />
+          <Photo
+            id={photo}
+            alt={recipe.title}
+            className={cx('w-full', pane ? 'h-62.5' : 'h-[min(17.7778rem,288px)] [view-transition-name:recipe-photo]')}
+          />
           {!pane && <BackButton floating />}
         </div>
       ) : (

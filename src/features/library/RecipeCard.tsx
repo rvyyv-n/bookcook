@@ -13,6 +13,9 @@ function useCardLines(recipe: Recipe, parentTitle: string | undefined) {
   return { meta, extra };
 }
 
+/** The card last opened: its photo grows into the recipe's photo, and shrinks back into it on the way back. */
+let opened: string | undefined;
+
 /** Phone cookbook card: a 4:3 photo (or stripes), the title, then who and how long. The whole card is one link. */
 export function RecipeCard({ recipe, parentTitle }: { recipe: Recipe; parentTitle?: string }) {
   const { meta, extra } = useCardLines(recipe, parentTitle);
@@ -20,9 +23,14 @@ export function RecipeCard({ recipe, parentTitle }: { recipe: Recipe; parentTitl
     <li className="min-w-0">
       <Link
         to={`/r/${recipe.id}`}
-        className="group flex flex-col gap-2 rounded-lg text-ink no-underline transition-transform duration-(--dur) ease-(--ease-out) hover:-translate-y-0.5"
+        onClick={() => (opened = recipe.id)}
+        className="group flex flex-col gap-2 rounded-lg text-ink no-underline transition-transform duration-(--dur) ease-(--ease-out) hover:-translate-y-0.5 active:scale-[.97]"
       >
-        <Photo id={recipe.photoIds[0]} alt="" className="aspect-[4/3] w-full rounded-lg" />
+        <Photo
+          id={recipe.photoIds[0]}
+          alt=""
+          className={cx('aspect-[4/3] w-full rounded-lg', opened === recipe.id && '[view-transition-name:recipe-photo]')}
+        />
         <span className="type-display text-lg leading-[1.12] text-balance">{recipe.title}</span>
         {(meta || extra) && (
           <span className="leading-[1.3] text-ink-muted">

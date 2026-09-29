@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { Link } from 'react-aria-components';
 import { ShortcutList } from '../../app/shortcuts';
 import { useAppUpdate } from '../../app/update';
 import { useIsDesktop } from '../../app/useMediaQuery';
@@ -84,6 +85,32 @@ function LookSection() {
 }
 
 /** Check for updates: web versions swap in place; the Android app downloads the new APK. */
+const GITHUB_USER = 'rvyyv-n';
+const external = 'text-accent-text underline underline-offset-4 data-[hovered]:text-ink';
+
+/** The small print at the bottom: the version, and where the code and its maker live. */
+function AboutApp() {
+  const ts = useT().ui.settings;
+  return (
+    <Section title={ts.about}>
+      <div className="flex flex-col gap-1.5 text-ink-muted">
+        <p>{ts.aboutLine(__APP_VERSION__)}</p>
+        <p className="flex flex-wrap gap-x-4 gap-y-1.5">
+          <Link href={`https://github.com/${GITHUB_USER}/bookcook`} target="_blank" rel="noreferrer noopener" className={external}>
+            {ts.sourceCode}
+          </Link>
+          <span>
+            {ts.madeBy}{' '}
+            <Link href={`https://github.com/${GITHUB_USER}`} target="_blank" rel="noreferrer noopener" className={external}>
+              @{GITHUB_USER}
+            </Link>
+          </span>
+        </p>
+      </div>
+    </Section>
+  );
+}
+
 function UpdateRow() {
   const t = useT();
   const ts = t.ui.settings;
@@ -105,7 +132,7 @@ function UpdateRow() {
   );
 }
 
-function AboutSection() {
+function PeopleSection() {
   const t = useT();
   const ts = t.ui.settings;
   const s = useSettings();
@@ -190,13 +217,14 @@ export function SettingsPage() {
         <div className="grid grid-cols-2 items-start gap-x-10">
           <div className="flex flex-col gap-8">
             <TextSizeSection />
-            <AboutSection />
+            <PeopleSection />
           </div>
           <div className="flex flex-col gap-8">
             <BackupCard layout="desk" />
             <VoiceSection onCommands={() => setSheet('commands')} />
             <LookSection />
             {more}
+            <AboutApp />
           </div>
         </div>
       ) : (
@@ -204,9 +232,10 @@ export function SettingsPage() {
           <BackupCard layout="phone" />
           <TextSizeSection />
           <LookSection />
-          <AboutSection />
+          <PeopleSection />
           <VoiceSection onCommands={() => setSheet('commands')} />
           {more}
+          <AboutApp />
         </>
       )}
       <VoiceCommandsSheet isOpen={sheet === 'commands'} onOpenChange={close} />

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useRef, type PointerEvent, type ReactNode } from 'react';
 import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components';
 import { useT } from '../i18n';
 import { Button } from './Button';
@@ -7,6 +7,83 @@ import { cx } from './cx';
 const widths = { md: 'desk:max-w-[36rem]', lg: 'desk:max-w-[42rem]', wide: 'desk:max-w-[37.7778rem]' } as const;
 /** The wide dialog (the New recipe chooser) has roomier padding on desktop. */
 const pad = (size: keyof typeof widths) => (size === 'wide' ? 'desk:px-7' : 'desk:px-5');
+
+/** How far (px) a finger moves before the sheet follows it, and how fast (px/ms) a flick closes it. */
+const DRAG_SLOP = 8;
+const FLICK = 0.5;
+
+/**
+ * Drag the top of a sheet down to close it, as on a phone: it follows the finger, and closes when
+ * pulled a third of the way or flicked; otherwise it springs back. Touch and pen only.
+ */
+function useDragToClose(close: () => void, enabled: boolean) {
+  const drag = useRef<{ y: number; t: number; dy: number; el: HTMLElement; moving: boolean } | null>(null);
+  const end = (e: PointerEvent<HTMLElement>) => {
+    const d = drag.current;
+    drag.current = null;
+    if (!d?.moving) return;
+    const { el, dy } = d;
+    const fast = dy / Math.max(1, e.timeStamp - d.t) > FLICK;
+    if (e.type === 'pointerup' && (dy > el.offsetHeight / 3 || fast)) {
+      el.style.transition = 'transform 180ms var(--ease-in)';
+      el.style.transform = 'translateY(100%)';
+      el.addEventListener(
+        'transitionend',
+        () => {
+          // Already off screen: skip the usual closing animation.
+          el.style.animation = 'none';
+          close();
+        },
+        { once: true },
+      );
+    } else {
+      el.style.transition = 'transform var(--dur) var(--ease-out)';
+      el.style.transform = '';
+    }
+  };
+  if (!enabled) return {};
+  return {
+    onPointerDown(e: PointerEvent<HTMLElement>) {
+      const el = e.currentTarget.closest<HTMLElement>('[data-sheet]');
+      if (e.pointerType !== 'mouse' && el) drag.current = { y: e.clientY, t: e.timeStamp, dy: 0, el, moving: false };
+    },
+    onPointerMove(e: PointerEvent<HTMLElement>) {
+      const d = drag.current;
+      if (!d) return;
+      d.dy = Math.max(0, e.clientY - d.y);
+      if (!d.moving) {
+        if (d.dy < DRAG_SLOP) return;
+        d.moving = true;
+        e.currentTarget.setPointerCapture(e.pointerId);
+        d.el.style.transition = 'none';
+      }
+      // Measure speed over the last move only, so a slow pull that ends in a flick still closes.
+      d.t = e.timeStamp;
+      d.el.style.transform = `translateY(${d.dy}px)`;
+    },
+    onPointerUp: end,
+    onPointerCancel: end,
+  };
+}
+
+/** The sheet's top (grabber, title, Close): the part a finger pulls down. */
+function SheetTop({
+  close,
+  dismissable,
+  className,
+  children,
+}: {
+  close: () => void;
+  dismissable: boolean;
+  className: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={cx(className, dismissable && 'touch-none')} {...useDragToClose(close, dismissable)}>
+      {children}
+    </div>
+  );
+}
 
 /**
  * A sheet: rises from the bottom on phones, a centred panel on desktop (or pinned to the
@@ -53,6 +130,7 @@ export function Sheet({
       )}
     >
       <Modal
+        data-sheet
         className={cx(
           'no-print flex max-h-[calc(var(--visual-viewport-height)*.92)] w-full flex-col rounded-t-xl bg-surface bg-(image:--grain) text-ink shadow-lift desk:rounded-xl',
           'data-[entering]:animate-rise data-[exiting]:animate-drop-out',
@@ -62,7 +140,11 @@ export function Sheet({
         <Dialog className="flex max-h-[calc(var(--visual-viewport-height)*.92)] flex-col outline-none">
           {({ close }) => (
             <>
-              <div className={cx('flex flex-col gap-2 px-4 pt-2.5', pad(size), size === 'wide' ? 'desk:pt-7' : 'desk:pt-5')}>
+              <SheetTop
+                close={close}
+                dismissable={isDismissable}
+                className={cx('flex flex-col gap-2 px-4 pt-2.5', pad(size), size === 'wide' ? 'desk:pt-7' : 'desk:pt-5')}
+              >
                 <span aria-hidden className="h-1.25 w-11 self-center rounded-full bg-line-strong desk:hidden" />
                 <div className={cx('flex justify-between gap-2 pl-1.5', description ? 'items-start' : 'items-center')}>
                   <div className="flex flex-col gap-1">
@@ -78,7 +160,7 @@ export function Sheet({
                     {t.ui.common.close}
                   </Button>
                 </div>
-              </div>
+              </SheetTop>
               <div className={cx('flex-1 overflow-y-auto px-4 pt-3.5 pb-[max(1.5556rem,env(safe-area-inset-bottom))]', pad(size))}>
                 {children}
               </div>

@@ -23,7 +23,7 @@ export function Sidebar({
   return (
     <nav
       aria-label={label}
-      className="no-print flex h-full w-[252px] flex-none flex-col gap-1 overflow-y-auto border-r border-line bg-sunk px-3.5 py-5"
+      className="no-print flex h-full w-[252px] [view-transition-name:sidebar] flex-none flex-col gap-1 overflow-y-auto border-r border-line bg-sunk px-3.5 py-5"
     >
       <Link
         href="/"

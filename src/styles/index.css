@@ -49,6 +49,24 @@
   [role='button'] {
     cursor: pointer;
   }
+  /* App-like touch: no grey flash on tap, no double-tap zoom wait, and controls don't select as text. */
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  a,
+  button,
+  label,
+  [role='button'],
+  [role='tab'],
+  [role='radio'],
+  [role='switch'],
+  [role='checkbox'],
+  [role='option'] {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
