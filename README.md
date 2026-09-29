@@ -20,10 +20,11 @@ then cook from them hands-free.
 
 Bookcook is for the family cook who wears reading glasses and has busy hands: very large text, big targets, and voice for everything. Tell it a recipe the way you'd tell a friend, and it turns what you said into ingredients, steps and timers, keeping the story behind the dish in the teller's own voice.
 
-**[Open the app](https://bookcook.pages.dev/)**, pick a text size on the welcome screen, and tap _Try an example_ for three sample recipes. Install it from the browser menu to use it as an app, offline too. There's nothing to sign up for.
+**[Open the app](https://bookcook.pages.dev/)**, pick a text size on the welcome screen, and tap _Try an example_ for three sample recipes. [Install it](#install) on your phone or computer to use it as an app, offline too. There's nothing to sign up for.
 
 ## Contents
 
+- [Install](#install)
 - [Features](#features)
 - [Privacy](#privacy)
 - [Browser support](#browser-support)
@@ -33,6 +34,31 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 - [Deployment](#deployment)
 - [Android app](#android-app)
 - [License](#license)
+
+## Install
+
+### Android
+
+Two ways, both free:
+
+- **The Android app (best for voice).** Download the APK from the [latest release](https://github.com/rvyyv-n/bookcook/releases/latest) on your phone and open it. The first time, Android asks you to allow installs from your browser: tap **Settings**, turn on **Allow from this source**, go back and tap **Install**. It uses Android's own speech recognition, and it tells you when a new version is out.
+- **From Chrome.** Open [bookcook.pages.dev](https://bookcook.pages.dev/), tap the **⋮** menu, then **Add to Home screen** and **Install**. It updates itself.
+
+### iPhone and iPad
+
+1. Open [bookcook.pages.dev](https://bookcook.pages.dev/) in **Safari**.
+2. Tap the **Share** button (the square with an arrow), then **Add to Home Screen**, then **Add**.
+3. Open Bookcook from its icon on the Home Screen.
+
+Reading aloud and typing work fully. Voice input on iPhone depends on Safari and may not work; where it doesn't, Bookcook offers to type instead.
+
+### Computer
+
+- **Chrome or Edge (Windows, Mac, Linux).** Open [bookcook.pages.dev](https://bookcook.pages.dev/) and click the **Install** icon at the right end of the address bar. Or use the menu: in Chrome, **Cast, save and share → Install page as app**; in Edge, **Apps → Install this site as an app**.
+- **Safari on a Mac.** Open the site, then choose **File → Add to Dock**.
+- **Firefox.** Firefox can't install web apps; use Bookcook in a tab and bookmark it. Voice input isn't available there, but typing and reading aloud are.
+
+Installed, Bookcook opens in its own window, works offline, and tells you when a new version is out. Your recipes stay on the device you saved them on: to move them, use **Settings → Back up now** and **Restore** on the other device.
 
 ## Features
 
@@ -187,7 +213,7 @@ The app lives at **[bookcook.pages.dev](https://bookcook.pages.dev/)** on Cloudf
 
 ## Android app
 
-The same app also runs as an Android app built with Capacitor, using Android's own speech recognition and voices. **Download the latest APK from [Releases](https://github.com/rvyyv-n/bookcook/releases/latest)** and open it to install. The app checks for new releases itself and offers **Download** when one is out.
+The same app also runs as an Android app built with Capacitor, using Android's own speech recognition and voices. **Download the latest APK from [Releases](https://github.com/rvyyv-n/bookcook/releases/latest)** and open it to install (see [Install](#install)). The app checks for new releases itself and offers **Download** when one is out.
 
 To publish a release, set the version in `package.json`, then push a matching tag:
 
