@@ -2,7 +2,7 @@ import { cookMode } from './cook';
 import { hearHeadline, momsCard } from './hero';
 import { looks } from './looks';
 import { deckTilt, getbar, pageColour, pointerFills, risingHeadings, scrollMoments, stickyNav } from './motion';
-import { drawIcons, reducedMotion } from './site';
+import { drawIcons, onScreen, reducedMotion, wait } from './site';
 import { sizeControls } from './size';
 import { tellIt } from './tell';
 
@@ -25,6 +25,7 @@ cookMode();
 looks();
 
 // The opening, once the fonts are in so nothing shifts: the headline is heard, then Mom's card deals in and writes itself.
+// On a phone the card sits below the headline, so it waits until it has been scrolled to.
 const card = momsCard();
 void document.fonts.ready.then(async () => {
   if (reducedMotion()) {
@@ -33,7 +34,8 @@ void document.fonts.ready.then(async () => {
     return void hearHeadline();
   }
   const heard = hearHeadline();
-  setTimeout(() => card.deal(), 900);
-  await heard;
+  await Promise.all([wait(900), onScreen(document.querySelector('.deck')!, 0.25)]);
+  card.deal();
+  await Promise.all([heard, wait(900), onScreen(document.getElementById('transcript')!, 0.6)]);
   card.start();
 });

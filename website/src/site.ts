@@ -39,6 +39,23 @@ export function drawIcons(root: ParentNode = document) {
 
 export const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+export const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** Resolves once `threshold` of the element is on screen, so a moment doesn't play out where nobody can see it. */
+export function onScreen(el: Element, threshold: number): Promise<void> {
+  return new Promise((resolve) => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        resolve();
+      },
+      { threshold },
+    );
+    io.observe(el);
+  });
+}
+
 // ---------- Speech ----------
 
 interface RecognitionResult {

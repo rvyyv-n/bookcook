@@ -6,9 +6,7 @@
 import { parseIngredient } from '../../src/lib/parse/ingredient';
 import { findDurations, formatDuration } from '../../src/lib/parse/timers';
 import { columns, escape } from './recipe-view';
-import { reducedMotion } from './site';
-
-const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+import { reducedMotion, wait } from './site';
 
 // ---------- The headline ----------
 
