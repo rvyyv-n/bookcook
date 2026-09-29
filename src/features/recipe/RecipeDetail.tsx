@@ -538,7 +538,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
         <>
           {photo ? (
             <div className="relative">
-              <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-75')} />
+              <Photo id={photo} alt={recipe.title} className={cx('w-full', pane ? 'h-62.5' : 'h-80')} />
               {!pane && <BackButton floating />}
             </div>
           ) : (
@@ -548,7 +548,15 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
               </div>
             )
           )}
-          <div className={cx('pt-5.5', pane ? 'px-8' : 'px-5')}>{titleBlock(false)}</div>
+          {/* On a phone the title sits on a sheet of paper drawn up over the photo, rounded to the skin. */}
+          <div
+            className={cx(
+              pane ? 'px-8 pt-5.5' : 'px-5',
+              !pane && (photo ? 'relative -mt-8 rounded-t-xl bg-paper bg-(image:--grain) pt-6.5' : 'pt-5.5'),
+            )}
+          >
+            {titleBlock(false)}
+          </div>
         </>
       )}
 
