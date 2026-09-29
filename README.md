@@ -33,6 +33,7 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 - [Development](#development)
 - [Deployment](#deployment)
 - [Android app](#android-app)
+- [Windows app](#windows-app)
 - [License](#license)
 
 ## Install
@@ -54,6 +55,7 @@ Reading aloud and typing work fully. Voice input on iPhone depends on Safari and
 
 ### Computer
 
+- **The Windows app.** Download `bookcook-1.1.0-setup.exe` from the [latest release](https://github.com/rvyyv-n/bookcook/releases/latest) and run it. It isn't signed yet, so Windows may say **Windows protected your PC**: click **More info**, then **Run anyway**. It installs for your account only (no administrator needed), works offline, and tells you when a new version is out.
 - **Chrome or Edge (Windows, Mac, Linux).** Open [bookcook.pages.dev](https://bookcook.pages.dev/) and click the **Install** icon at the right end of the address bar. Or use the menu: in Chrome, **Cast, save and share → Install page as app**; in Edge, **Apps → Install this site as an app**.
 - **Safari on a Mac.** Open the site, then choose **File → Add to Dock**.
 - **Firefox.** Firefox can't install web apps; use Bookcook in a tab and bookmark it. Voice input isn't available there, but typing and reading aloud are.
@@ -210,6 +212,12 @@ On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev serve
 The app lives at **[bookcook.pages.dev](https://bookcook.pages.dev/)** on Cloudflare Pages, which also runs the From a link function (`functions/api/import.ts`; the `functions/` folder is picked up as is).
 
 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then deployed to Cloudflare Pages with `wrangler pages deploy`, using the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and also built with the `/bookcook/` base path for the old address on [GitHub Pages](https://rvyyv-n.github.io/bookcook/), which now only sends people on: straight to the new address when nothing is saved there, or after asking them to back up and restore when recipes are (`VITE_MOVED_TO`, `src/app/moved.tsx`). To use the From a link function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address. The service worker precaches the app so it works offline once installed. The app checks for a new version when it opens, every hour while it's open, and when it comes back to the front, or on demand from Settings. When one is ready it offers Update, but never mid-cook or mid-recipe; ignored, the new version takes over the next time the app is opened. The Android app checks GitHub Releases instead: see [Android app](#android-app).
+
+## Windows app
+
+The same app also runs as a Windows app built with [Tauri](https://tauri.app/): a native window around the web app, using the Edge web view that comes with Windows. **Download `bookcook-<version>-setup.exe` from [Releases](https://github.com/rvyyv-n/bookcook/releases/latest)** and run it (see [Install](#install)). It is not code-signed, so Windows shows a warning the first time. Like the Android app it checks GitHub Releases for a newer version and offers **Download**. From a link asks the live app's function, since there's none beside the installed one.
+
+[`windows.yml`](.github/workflows/windows.yml) builds the installer on Windows when a version tag is pushed and attaches it to that release. To add one to a release that already exists, run the workflow by hand from `main` with that tag. It also builds on any `wip/` branch that changes `src-tauri/`, as a downloadable artifact only. To build locally you need Rust and the [Tauri prerequisites](https://tauri.app/start/prerequisites/), then `npx tauri icon public/icons/icon-512.png` once and `npm run tauri build`.
 
 ## Android app
 
