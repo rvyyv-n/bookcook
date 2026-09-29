@@ -780,6 +780,9 @@ export const en = {
       saved: 'Saved.',
       checkUpdates: 'Check for updates',
       version: (v: string) => `Version ${v}`,
+      aboutLine: (v: string) => `Bookcook ${v}. Free and open source.`,
+      sourceCode: 'Source code on GitHub',
+      madeBy: 'Made by',
       updateStatus: {
         idle: '',
         checking: 'Checking…',
