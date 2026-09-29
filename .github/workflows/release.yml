@@ -1,6 +1,6 @@
 # Publishes a release when a version tag is pushed (git tag v1.2.0 && git push origin v1.2.0).
-# The tag must match package.json. Moving an existing tag to a newer commit and pushing it again
-# (git tag -f v1.2.0 && git push -f origin v1.2.0) rebuilds that release's APK in place. The APK is signed with the Bookcook key (scripts/make-signing-key.mjs)
+# The tag must match package.json. Every release gets a new version: the Android update check ignores a rebuilt
+# tag, so don't move an existing one. The APK is signed with the Bookcook key (scripts/make-signing-key.mjs)
 # and attached to the GitHub release, where the Android app's update check finds it.
 name: Release
 

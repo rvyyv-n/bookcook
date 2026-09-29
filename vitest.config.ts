@@ -8,6 +8,8 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    // One jsdom per worker instead of per file (still isolated per file): about twice as fast.
+    pool: 'vmThreads',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'functions/**/*.test.ts'],
   },
