@@ -157,10 +157,10 @@ Tests sit next to the code they cover (`*.test.ts`).
 
 |         | Performance | Accessibility | Best practices | SEO |
 | ------- | ----------- | ------------- | -------------- | --- |
-| Mobile  | 76          | 100           | 100            | 100 |
-| Desktop | 97          | 100           | 100            | 100 |
+| Mobile  | 82          | 100           | 100            | 100 |
+| Desktop | 98          | 100           | 100            | 100 |
 
-Mobile performance is held back by the first paint: the app is one script (315 KB compressed) that has to load before anything shows. Splitting it by screen is the next improvement.
+The app icon shows while the first script loads, and each screen's code is fetched when it's first opened. What holds mobile performance back now is the size of the libraries the first screen needs (React, React Aria and the router, about 220 KB compressed).
 
 **Tests.** 170 unit tests (Vitest) cover the parser, the database, backups, share links and the platform wrappers.
 

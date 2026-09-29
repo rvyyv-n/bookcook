@@ -50,17 +50,17 @@ An outline to write up alongside a demo video. The facts from the build are fill
   - A three-step welcome that sets the text size first and asks for the microphone with plain help if it's blocked.
   - Every target raised to at least 56px and every label to at least 14px after the accessibility pass.
   - Phone wording for a blocked microphone in the Android app, instead of browser steps.
+  - Each screen's code loads when it's first opened, and the app icon shows while the first script loads: the first paint on a phone went from about 4 seconds to under 3.
 
 ## 8. Results
 
 - Parser: 214 of 214 fixture cases; 72% on held-out text before tuning.
-- Lighthouse on the live site: Accessibility, Best practices and SEO 100 on mobile and desktop; Performance 97 on desktop and 76 on mobile.
+- Lighthouse on the live site: Accessibility, Best practices and SEO 100 on mobile and desktop; Performance 98 on desktop and 82 on mobile.
 - An automated accessibility audit of every screen in every skin, light and dark, at Normal and Huge, finds no problems.
 - _To write:_ what Mom said at the end, and whether the recipe is now saved.
 
 ## 9. What's next
 
-- Split the app's script by screen, to speed up the first visit on phones.
 - Later: meal planning, scanning printed recipes, optional family sync, more languages.
 
 ## Demo video
