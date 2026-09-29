@@ -9,7 +9,7 @@
 Save the recipes that only live in someone's head by saying them out loud,<br />
 then cook from them hands-free.
 
-[**Try it**](https://bookcook.pages.dev/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/) · [Case study](docs/case-study.md)
+[**Try it**](https://bookcook.pages.dev/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/)
 
 [![Check and deploy](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml/badge.svg)](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -38,7 +38,7 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 
 ### Getting recipes in
 
-<img src="docs/images/tell-it.gif" alt="Tell it: a recipe told out loud. The name, whose it is and how many it feeds are answered, then each ingredient appears in the list as it's said" width="320" align="right" />
+<img src="docs/images/tell-it.gif" alt="Tell it: a recipe told out loud. The name, whose it is and how many it feeds are answered, then each ingredient appears in the list as it's said" width="364" align="right" />
 
 - **Tell it.** A gentle interview, one question at a time: the name, whose recipe it is, how many it feeds, the ingredients, the steps, tips and the story behind it. Ingredients appear as you say them and durations become timers. Hands-free if you like.
 - **Just talk.** Talk while you cook; Bookcook sorts it into ingredients and steps for you to check, and keeps every word as "In her words".
@@ -49,7 +49,7 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 
 ### Cooking
 
-<img src="docs/images/cook-mode.gif" alt="Cook mode: stepping to the next step, starting its seven-minute timer from the step text, and the timer turning hot in its last minute" width="320" align="right" />
+<img src="docs/images/cook-mode.gif" alt="Cook mode: stepping to the next step, starting its seven-minute timer from the step text, and the timer turning hot in its last minute" width="364" align="right" />
 
 - **Cook mode.** One step at a time, in type you can read from across the kitchen. Steps are read aloud, voice commands (next, back, repeat, timer, stop) move you along without touching the screen, and the screen stays awake.
 - **Timers.** Tap a duration in a step to start one. Several can run at once; a finished one chimes and speaks until you stop it, and they survive a reload.
