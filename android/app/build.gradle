@@ -1,5 +1,15 @@
 apply plugin: 'com.android.application'
 
+// The version comes from package.json, so the web app and the APK always agree.
+// versionCode must grow with every release: 1.2.3 becomes 10203.
+def appVersion = new groovy.json.JsonSlurper().parse(file('../../package.json')).version
+def appVersionCode = appVersion.tokenize('.-').take(3).collect { it.isInteger() ? it.toInteger() : 0 }
+        .inject(0) { code, part -> code * 100 + part }
+
+// Release builds are signed with the Bookcook key when it's provided (see scripts/make-signing-key.mjs).
+// Every release must use the same key, or Android won't install it over the previous one.
+def keystoreFile = System.getenv('BOOKCOOK_KEYSTORE')
+
 android {
     namespace = "io.github.rvyyvn.bookcook"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +17,8 @@ android {
         applicationId "io.github.rvyyvn.bookcook"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersion
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +26,19 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            if (keystoreFile) {
+                storeFile file(keystoreFile)
+                storePassword System.getenv('BOOKCOOK_KEYSTORE_PASSWORD')
+                keyAlias 'bookcook'
+                keyPassword System.getenv('BOOKCOOK_KEYSTORE_PASSWORD')
+            }
+        }
+    }
     buildTypes {
         release {
+            if (keystoreFile) signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

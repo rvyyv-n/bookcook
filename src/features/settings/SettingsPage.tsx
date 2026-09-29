@@ -83,19 +83,20 @@ function LookSection() {
   );
 }
 
-/** Web only: the Android app updates by installing a new APK. */
+/** Check for updates: web versions swap in place; the Android app downloads the new APK. */
 function UpdateRow() {
   const t = useT();
   const ts = t.ui.settings;
   const update = useAppUpdate();
-  if (!update.available) return null;
+  const ready = update.status === 'ready';
+  const status = ts.updateStatus[update.status] || ts.version(__APP_VERSION__);
   return (
     <>
       <RowButton
-        icon={update.status === 'ready' ? 'download' : 'retry'}
-        label={update.status === 'ready' ? t.ui.update.apply : ts.checkUpdates}
-        value={ts.updateStatus[update.status]}
-        onPress={() => (update.status === 'ready' ? update.apply() : void update.check())}
+        icon={ready ? 'download' : 'retry'}
+        label={ready ? (update.kind === 'apk' ? t.ui.update.download : t.ui.update.apply) : ts.checkUpdates}
+        value={status}
+        onPress={() => (ready ? update.apply() : void update.check())}
       />
       <p aria-live="polite" className="sr-only">
         {ts.updateStatus[update.status]}

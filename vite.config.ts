@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { importRecipe } from './functions/api/import';
+import { version } from './package.json';
 
 /** The From a link function (functions/api/import.ts) on the dev server, as Cloudflare Pages serves it. */
 const importFunction: Plugin = {
@@ -19,6 +20,7 @@ const importFunction: Plugin = {
 };
 
 export default defineConfig(({ mode }) => ({
+  define: { __APP_VERSION__: JSON.stringify(version) },
   // The GitHub Pages build sets BASE_PATH=/bookcook/; everywhere else the app is served from the root.
   base: process.env.BASE_PATH ?? '/',
   plugins: [
