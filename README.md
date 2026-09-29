@@ -9,7 +9,7 @@
 Save the recipes that only live in someone's head by saying them out loud,<br />
 then cook from them hands-free.
 
-[**Try it**](https://rvyyv-n.github.io/bookcook/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/) · [Case study](docs/case-study.md)
+[**Try it**](https://bookcook.pages.dev/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/) · [Case study](docs/case-study.md)
 
 [![Check and deploy](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml/badge.svg)](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -20,7 +20,7 @@ then cook from them hands-free.
 
 Bookcook is for the family cook who wears reading glasses and has busy hands: very large text, big targets, and voice for everything. Tell it a recipe the way you'd tell a friend, and it turns what you said into ingredients, steps and timers, keeping the story behind the dish in the teller's own voice.
 
-**[Open the app](https://rvyyv-n.github.io/bookcook/)**, pick a text size on the welcome screen, and tap _Try an example_ for three sample recipes. Install it from the browser menu to use it as an app, offline too. There's nothing to sign up for.
+**[Open the app](https://bookcook.pages.dev/)**, pick a text size on the welcome screen, and tap _Try an example_ for three sample recipes. Install it from the browser menu to use it as an app, offline too. There's nothing to sign up for.
 
 ## Contents
 
@@ -131,8 +131,8 @@ Tests sit next to the code they cover (`*.test.ts`).
 
 |         | Performance | Accessibility | Best practices | SEO |
 | ------- | ----------- | ------------- | -------------- | --- |
-| Mobile  | 75          | 100           | 100            | 100 |
-| Desktop | 98          | 100           | 100            | 100 |
+| Mobile  | 76          | 100           | 100            | 100 |
+| Desktop | 97          | 100           | 100            | 100 |
 
 Mobile performance is held back by the first paint: the app is one script (315 KB compressed) that has to load before anything shows. Splitting it by screen is the next improvement.
 
@@ -181,11 +181,9 @@ On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev serve
 
 ## Deployment
 
-[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then built with the `/bookcook/` base path and published to GitHub Pages. The service worker precaches the app so it works offline once installed.
+The app lives at **[bookcook.pages.dev](https://bookcook.pages.dev/)** on Cloudflare Pages, which also runs the From a link function (`functions/api/import.ts`; the `functions/` folder is picked up as is).
 
-From a link needs its function (`functions/api/import.ts`) deployed beside the app, which GitHub Pages can't do: there, every link ends in "We couldn't read that page", and Paste it still works. On Cloudflare Pages the `functions/` folder is picked up as is. To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address.
-
-Still to come: the move to Cloudflare Pages, so From a link works on the live site. See the [roadmap](docs/roadmap.md).
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) runs the checks on every push and pull request. Pushes to `main` are then deployed to Cloudflare Pages with `wrangler pages deploy`, using the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets, and also built with the `/bookcook/` base path for a copy on [GitHub Pages](https://rvyyv-n.github.io/bookcook/). GitHub Pages can't run the function, so there every link ends in "We couldn't read that page" (Paste it still works). To use a function hosted elsewhere, build with `VITE_IMPORT_URL` set to its address. The service worker precaches the app so it works offline once installed.
 
 ## Android app
 

@@ -54,14 +54,13 @@ An outline to write up alongside a demo video. The facts from the build are fill
 ## 8. Results
 
 - Parser: 214 of 214 fixture cases; 72% on held-out text before tuning.
-- Lighthouse on the live site: Accessibility, Best practices and SEO 100 on mobile and desktop; Performance 98 on desktop and 75 on mobile.
+- Lighthouse on the live site: Accessibility, Best practices and SEO 100 on mobile and desktop; Performance 97 on desktop and 76 on mobile.
 - An automated accessibility audit of every screen in every skin, light and dark, at Normal and Huge, finds no problems.
 - _To write:_ what Mom said at the end, and whether the recipe is now saved.
 
 ## 9. What's next
 
 - Split the app's script by screen, to speed up the first visit on phones.
-- Move hosting to Cloudflare Pages so importing from a link works on the live site.
 - Later: meal planning, scanning printed recipes, optional family sync, more languages.
 
 ## Demo video
