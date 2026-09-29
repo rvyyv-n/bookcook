@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" data-skin="colour-field">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#9A3320" />
+    <title>Bookcook: a cookbook you can talk to</title>
+    <meta name="description" content="Say a family recipe out loud and Bookcook writes it down. Then cook from it with your hands free." />
+    <script>
+      if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
+    </script>
+    <link rel="stylesheet" href="../src/site.css" />
+    <link rel="stylesheet" href="./hands-free.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero" data-surface="field" aria-labelledby="hero-title">
+        <div class="wrap hero-inner">
+          <a class="brand" href="./hands-free.html"><!-- logo:dark -->Bookcook</a>
+          <h1 id="hero-title" class="display hero-title">A cookbook you can talk to.</h1>
+          <p class="lead hero-lead">Tell it a family recipe out loud. Then cook from it one step at a time, with your hands free.</p>
+          <div class="get">
+            <a class="btn btn-primary get-open" href="https://bookcook.pages.dev/">Open the app</a>
+            <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest"
+              ><span data-icon="download"></span>Get it for Android</a
+            >
+            <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest"
+              ><span data-icon="download"></span>Get it for Windows</a
+            >
+          </div>
+          <p class="hero-promise">No account, no ads. Your recipes stay on your device.</p>
+        </div>
+        <div class="pot-stand"><!-- pot:rice --></div>
+      </section>
+
+      <section class="wrap cook" aria-labelledby="cook-title">
+        <h2 id="cook-title" class="display cook-title">Cook with busy hands.</h2>
+        <p class="lead">
+          One step at a time, in type you can read from across the kitchen. Tap Read to hear it. Tap a time and a timer starts.
+        </p>
+
+        <div class="panel" data-surface="field" id="panel">
+          <div class="panel-head">
+            <p class="panel-step" id="step-count" aria-live="polite">Step 1 of 5</p>
+            <button class="listen" id="listen" type="button" hidden aria-pressed="false">
+              <span class="listen-dot"></span><span id="listen-label">Listen</span>
+            </button>
+          </div>
+          <div class="progress" id="progress" aria-hidden="true"></div>
+
+          <ul class="timers" id="timers" aria-label="Timers"></ul>
+
+          <p class="step" id="step"></p>
+
+          <div class="controls">
+            <button class="btn btn-secondary" id="back" type="button"><span data-icon="back"></span>Back</button>
+            <button class="btn btn-secondary" id="read" type="button">
+              <span data-icon="read"></span><span id="read-label">Read</span>
+            </button>
+            <button class="btn btn-primary next" id="next" type="button"><span data-icon="next"></span>Next</button>
+          </div>
+        </div>
+        <p class="cook-note" id="cook-note">Say “next”, “back”, “repeat”, “timer” or “stop” once it’s listening.</p>
+      </section>
+
+      <div class="getbar-spacer"></div>
+    </main>
+
+    <nav class="getbar" id="getbar" aria-label="Get Bookcook">
+      <div class="getbar-inner">
+        <a class="btn btn-primary" href="https://bookcook.pages.dev/">Open the app</a>
+        <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest">Android app</a>
+      </div>
+    </nav>
+
+    <script type="module" src="./hands-free.ts"></script>
+  </body>
+</html>

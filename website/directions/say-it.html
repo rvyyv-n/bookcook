@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-skin="quiet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bookcook: a cookbook you can talk to</title>
+    <meta name="description" content="Say a family recipe out loud and Bookcook writes it down. Then cook from it with your hands free." />
+    <script>
+      if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
+    </script>
+    <link rel="stylesheet" href="../src/site.css" />
+    <link rel="stylesheet" href="./say-it.css" />
+  </head>
+  <body>
+    <header class="wrap top">
+      <a class="brand" href="./say-it.html"><!-- logo:rice -->Bookcook</a>
+    </header>
+
+    <main>
+      <section class="wrap hero" aria-labelledby="hero-title">
+        <p class="heard" aria-hidden="true">
+          <span class="heard-dot"></span>
+          <span class="heard-listening">Listening…</span>
+          <span class="heard-done"><span data-icon="check"></span>Written down</span>
+        </p>
+        <h1 id="hero-title" class="display hero-title">A cookbook you can talk to.</h1>
+        <p class="lead hero-lead">
+          Keep the recipes that only live in someone’s head. Say them out loud or type them, then cook from them with your hands free.
+        </p>
+        <div class="get">
+          <a class="btn btn-primary get-open" href="https://bookcook.pages.dev/">Open the app</a>
+          <ul class="get-more">
+            <li>
+              <a href="https://github.com/rvyyv-n/bookcook/releases/latest"><span data-icon="download"></span>Get it for Android</a>
+            </li>
+            <li>
+              <a href="https://github.com/rvyyv-n/bookcook/releases/latest"><span data-icon="download"></span>Get it for Windows</a>
+            </li>
+          </ul>
+          <p class="get-promise">Nothing to sign up for. Your recipes stay on your device.</p>
+        </div>
+      </section>
+
+      <section class="wrap tell" aria-labelledby="tell-title">
+        <h2 id="tell-title" class="display tell-title">Tell it, and we’ll write it down.</h2>
+        <p class="lead">Say an ingredient the way you’d tell a friend. Bookcook sorts out the amount, the ingredient and the note.</p>
+
+        <div class="card">
+          <div class="card-head">
+            <p class="card-recipe"><!-- art:biryani -->Mom’s Chicken Biryani</p>
+            <p class="card-count" aria-live="polite"><span id="count">2</span> ingredients</p>
+          </div>
+
+          <ol class="rows" id="rows" aria-label="Ingredients so far"></ol>
+
+          <p class="heard-line" id="heard-line" aria-live="polite"></p>
+
+          <form class="say" id="say" autocomplete="off">
+            <label class="say-label" for="say-input">Say or type an ingredient</label>
+            <div class="say-field">
+              <input id="say-input" class="say-input" type="text" enterkeyhint="done" placeholder="two cups basmati rice, washed" />
+              <button class="btn btn-secondary say-add" type="submit"><span data-icon="add"></span>Add</button>
+            </div>
+            <button class="mic" id="mic" type="button" hidden>
+              <span class="mic-disc"><span data-icon="mic"></span></span>
+              <span class="mic-label" id="mic-label">Speak</span>
+            </button>
+            <p class="say-note" id="no-speech" hidden>Speaking works in Chrome and Edge. Typing works everywhere.</p>
+          </form>
+
+          <div class="tries">
+            <p class="tries-label" id="tries-label">Or try one of these</p>
+            <ul class="tries-list" aria-labelledby="tries-label">
+              <li><button type="button" class="try">two cups basmati rice, washed</button></li>
+              <li><button type="button" class="try">half a cup of yogurt</button></li>
+              <li><button type="button" class="try">a pinch of saffron</button></li>
+              <li><button type="button" class="try">four green cardamom</button></li>
+              <li><button type="button" class="try">salt to taste</button></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="getbar-spacer"></div>
+    </main>
+
+    <nav class="getbar" id="getbar" aria-label="Get Bookcook">
+      <div class="getbar-inner">
+        <a class="btn btn-primary" href="https://bookcook.pages.dev/">Open the app</a>
+        <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest">Android app</a>
+      </div>
+    </nav>
+
+    <script type="module" src="./say-it.ts"></script>
+  </body>
+</html>

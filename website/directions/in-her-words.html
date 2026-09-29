@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-skin="heirloom">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bookcook: a cookbook you can talk to</title>
+    <meta name="description" content="Say a family recipe out loud and Bookcook writes it down. Then cook from it with your hands free." />
+    <script>
+      if (matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.dataset.theme = 'dark';
+    </script>
+    <link rel="stylesheet" href="../src/site.css" />
+    <link rel="stylesheet" href="./in-her-words.css" />
+  </head>
+  <body>
+    <header class="wrap top">
+      <a class="brand" href="./in-her-words.html"><!-- logo:rice -->Bookcook</a>
+    </header>
+
+    <main>
+      <section class="wrap hero" aria-labelledby="hero-title">
+        <h1 id="hero-title" class="display hero-title">A cookbook you can talk to.</h1>
+        <p class="lead hero-lead">
+          Keep the recipes that only live in someone’s head. Say them out loud or type them, then cook from them with your hands free.
+        </p>
+        <div class="get">
+          <a class="btn btn-primary get-open" href="https://bookcook.pages.dev/">Open the app</a>
+          <div class="get-more">
+            <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest"
+              ><span data-icon="download"></span>Get it for Android</a
+            >
+            <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest"
+              ><span data-icon="download"></span>Get it for Windows</a
+            >
+          </div>
+        </div>
+
+        <figure class="page">
+          <div class="page-art"><!-- art:biryani --></div>
+          <figcaption class="page-body">
+            <p class="page-title display">Mom’s Chicken Biryani</p>
+            <p class="page-from handwritten">From Mom’s kitchen</p>
+            <p class="rule-heading">In her words</p>
+            <blockquote class="page-quote handwritten">
+              <p>“My mother, every Eid. I learned by watching her hands, not measuring.”</p>
+            </blockquote>
+            <p class="page-why">
+              Bookcook keeps the person as well as the recipe: her name, her voice notes and the story, never corrected.
+            </p>
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="wrap read" aria-labelledby="read-title">
+        <h2 id="read-title" class="display read-title">Big enough to read from the stove.</h2>
+        <p class="lead read-lead">Three text sizes, up to Huge, for anyone who cooks in reading glasses. Try it: the whole page grows.</p>
+
+        <fieldset class="sizes">
+          <legend class="sizes-legend">Text size</legend>
+          <div class="sizes-options">
+            <label><input type="radio" name="size" value="normal" checked /><span>Normal</span></label>
+            <label><input type="radio" name="size" value="large" /><span>Large</span></label>
+            <label><input type="radio" name="size" value="huge" /><span>Huge</span></label>
+          </div>
+        </fieldset>
+
+        <div class="recipe">
+          <p class="rule-heading">Ingredients</p>
+
+          <div class="serves">
+            <p class="serves-value" aria-hidden="true">Serves <span id="serves-n">6</span></p>
+            <div class="serves-row">
+              <button class="btn btn-secondary" id="fewer" type="button"><span data-icon="remove"></span>Fewer</button>
+              <button class="btn btn-secondary" id="more" type="button"><span data-icon="add"></span>More</button>
+            </div>
+            <div class="ruler-wrap">
+              <div
+                class="ruler"
+                id="ruler"
+                role="slider"
+                tabindex="0"
+                aria-label="Servings"
+                aria-valuemin="1"
+                aria-valuemax="12"
+                aria-valuenow="6"
+                aria-valuetext="Serves 6"
+              >
+                <div class="ruler-track" id="ruler-track"></div>
+              </div>
+              <span class="ruler-needle" aria-hidden="true"></span>
+            </div>
+            <p class="serves-hint">Drag the ruler, or use Fewer and More. Every amount changes with it.</p>
+          </div>
+
+          <div id="ingredients"></div>
+        </div>
+      </section>
+
+      <div class="getbar-spacer"></div>
+    </main>
+
+    <nav class="getbar" id="getbar" aria-label="Get Bookcook">
+      <div class="getbar-inner">
+        <a class="btn btn-primary" href="https://bookcook.pages.dev/">Open the app</a>
+        <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest">Android app</a>
+      </div>
+    </nav>
+
+    <script type="module" src="./in-her-words.ts"></script>
+  </body>
+</html>

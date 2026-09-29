@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" data-skin="quiet" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Website directions</title>
+    <link rel="stylesheet" href="../src/site.css" />
+    <style>
+      .intro {
+        padding-block: 2.5rem 1.5rem;
+      }
+      .intro h1 {
+        font-size: clamp(2.2rem, 7vw, 3.5rem);
+      }
+      .intro p {
+        margin-top: 0.75rem;
+        max-width: 44rem;
+      }
+      .options {
+        display: grid;
+        gap: 2.5rem;
+        padding-bottom: 4rem;
+      }
+      .option h2 {
+        font-size: var(--text-2xl);
+      }
+      .option .idea {
+        margin-top: 0.25rem;
+        font-size: var(--text-lg);
+        color: var(--accent-text);
+      }
+      .option p {
+        margin-top: 0.6rem;
+      }
+      .option .btn {
+        margin-top: 1rem;
+      }
+      .phone {
+        display: none;
+      }
+      @media (min-width: 78rem) {
+        .options {
+          grid-template-columns: repeat(3, 390px);
+          justify-content: space-between;
+          max-width: 1300px;
+        }
+        .phone {
+          display: block;
+          width: 390px;
+          height: 844px;
+          margin-top: 1.25rem;
+          border: 0;
+          border-radius: 32px;
+          background: var(--sunk);
+          box-shadow:
+            inset 0 0 0 1px var(--line),
+            var(--shadow-lift);
+        }
+        .option .text {
+          min-height: 13.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="wrap intro">
+      <h1 class="display">Three directions for the website</h1>
+      <p>
+        Each one is the opening screen and one working section, at phone width. They all use the app’s own colours, type, logo and recipe
+        reader, so what they show is what the app does. Pick one and we’ll design the full page in that direction.
+      </p>
+    </header>
+
+    <main class="wrap options">
+      <section class="option" aria-labelledby="a-title">
+        <div class="text">
+          <h2 id="a-title" class="display">A. Say it</h2>
+          <p class="idea">Quiet Page. The headline is written down as it’s said.</p>
+          <p>
+            Calm and editorial. The try-it section is the Tell it screen: speak or type an ingredient and it’s sorted into amount,
+            ingredient and note.
+          </p>
+          <a class="btn btn-secondary" href="./say-it.html">Open on its own</a>
+        </div>
+        <iframe class="phone" src="./say-it.html" title="Direction A, Say it" allow="microphone; autoplay"></iframe>
+      </section>
+
+      <section class="option" aria-labelledby="b-title">
+        <div class="text">
+          <h2 id="b-title" class="display">B. Hands free</h2>
+          <p class="idea">Colour field. The page opens on the tomato of cook mode.</p>
+          <p>
+            Bold and loud. The try-it section is cook mode itself: real steps, real timers you start by tapping a time, Read, and listening
+            for “next”.
+          </p>
+          <a class="btn btn-secondary" href="./hands-free.html">Open on its own</a>
+        </div>
+        <iframe class="phone" src="./hands-free.html" title="Direction B, Hands free" allow="microphone; autoplay"></iframe>
+      </section>
+
+      <section class="option" aria-labelledby="c-title">
+        <div class="text">
+          <h2 id="c-title" class="display">C. In her words</h2>
+          <p class="idea">Letterpress Heirloom. A page from the family cookbook.</p>
+          <p>
+            Warm and personal, led by Mom’s story. The try-it section grows the whole page to Huge, and a servings ruler rescales the recipe
+            as you drag it.
+          </p>
+          <a class="btn btn-secondary" href="./in-her-words.html">Open on its own</a>
+        </div>
+        <iframe class="phone" src="./in-her-words.html" title="Direction C, In her words" allow="microphone; autoplay"></iframe>
+      </section>
+    </main>
+  </body>
+</html>
