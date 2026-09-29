@@ -9,14 +9,14 @@
 Save the recipes that only live in someone's head by saying them out loud,<br />
 then cook from them hands-free.
 
-[**Try it**](https://bookcook.pages.dev/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/)
+[**Try it**](https://bookcook.pages.dev/) · [Website](https://getbookcook.pages.dev/) · [Roadmap](docs/roadmap.md) · [Design docs](docs/design/)
 
 [![Check and deploy](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml/badge.svg)](https://github.com/rvyyv-n/bookcook/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 </div>
 
-![Cookbook, recipe and cook mode on a phone, in the Quiet and Colour field skins](docs/images/phone.jpg)
+[![The Bookcook website: “A cookbook you can talk to”, beside Mom’s Chicken Biryani being written down from what she said](docs/images/website-opening.jpg)](https://getbookcook.pages.dev/)
 
 Bookcook is for the family cook who wears reading glasses and has busy hands: very large text, big targets, and voice for everything. Tell it a recipe the way you'd tell a friend, and it turns what you said into ingredients, steps and timers, keeping the story behind the dish in the teller's own voice.
 
@@ -31,6 +31,7 @@ Bookcook is for the family cook who wears reading glasses and has busy hands: ve
 - [How it's built](#how-its-built)
 - [Quality](#quality)
 - [Development](#development)
+- [Website](#website)
 - [Deployment](#deployment)
 - [Android app](#android-app)
 - [Windows app](#windows-app)
@@ -63,6 +64,8 @@ Reading aloud and typing work fully. Voice input on iPhone depends on Safari and
 Installed, Bookcook opens in its own window, works offline, and tells you when a new version is out. Your recipes stay on the device you saved them on: to move them, use **Settings → Back up now** and **Restore** on the other device.
 
 ## Features
+
+![Cookbook, recipe and cook mode on a phone, in the Quiet and Colour field skins](docs/images/phone.jpg)
 
 ### Getting recipes in
 
@@ -206,6 +209,22 @@ npm test && npm run typecheck && npm run lint && npx prettier --check . && npm r
 ### Troubleshooting
 
 On Windows, if `npm ci` fails with `EPERM ... lightningcss`, a running dev server still has the file open: stop it (Ctrl+C) and try again.
+
+## Website
+
+**[getbookcook.pages.dev](https://getbookcook.pages.dev/)** is the place to send people. It tells the story and lets them try the real thing: its demos use the app's own parser, timers and speech, so what they see is what the app does.
+
+<table>
+  <tr>
+    <td><img src="docs/images/website-cook.jpg" alt="The website's cook mode section: the page turns tomato red, with a real step, a running chicken timer and Back, Read and Next" /></td>
+    <td><img src="docs/images/website-looks.jpg" alt="The website's looks section: text size, the five looks and light or dark, with a phone showing cook mode in Colour field" /></td>
+  </tr>
+  <tr>
+    <td colspan="2"><img src="docs/images/website-devices.jpg" alt="The website's devices section: Bookcook on a phone, a tablet and a computer" /></td>
+  </tr>
+</table>
+
+It lives in [`website/`](website): plain pages built with Vite that borrow the app's fonts, logo, pixel art and parser from `src/`. `npm run site:dev` serves it at `localhost:5290`, and `npm run site:deploy` builds it and publishes it to the `getbookcook` Cloudflare Pages project.
 
 ## Deployment
 

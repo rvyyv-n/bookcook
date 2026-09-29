@@ -1,7 +1,4 @@
-/** What every page of the website shares: icons, the device theme, the Get Bookcook bar and speech. */
-
-export const APP_URL = 'https://bookcook.pages.dev/';
-export const RELEASES_URL = 'https://github.com/rvyyv-n/bookcook/releases/latest';
+/** What the website's scripts share: icons, reduced motion, speech and the timer chime. */
 
 // Lucide icons (the set the app uses), as SVG strings. Every icon sits beside a visible label.
 const PATHS = {
@@ -39,29 +36,6 @@ export function drawIcons(root: ParentNode = document) {
 }
 
 export const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-/** Light or dark, following the device, unless the page pins a theme with data-theme-fixed. */
-export function followDeviceTheme() {
-  const root = document.documentElement;
-  if (root.hasAttribute('data-theme-fixed')) return;
-  const dark = matchMedia('(prefers-color-scheme: dark)');
-  const apply = () => root.setAttribute('data-theme', dark.matches ? 'dark' : 'light');
-  apply();
-  dark.addEventListener('change', apply);
-}
-
-/** Show the Get Bookcook bar whenever none of the page's own Open the app buttons are on screen. */
-export function getbar(bar: HTMLElement, watched: Element[]) {
-  const visible = new Set<Element>();
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (e.isIntersecting) visible.add(e.target);
-      else visible.delete(e.target);
-    }
-    bar.classList.toggle('is-shown', visible.size === 0);
-  });
-  watched.forEach((el) => io.observe(el));
-}
 
 // ---------- Speech ----------
 

@@ -44,10 +44,6 @@ export default defineConfig({
     rolldownOptions: {
       input: {
         main: page('index.html'),
-        directions: page('directions/index.html'),
-        'say-it': page('directions/say-it.html'),
-        'hands-free': page('directions/hands-free.html'),
-        'in-her-words': page('directions/in-her-words.html'),
       },
     },
   },
