@@ -1,31 +1,36 @@
-import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
-import { FromLinkPage } from '../features/capture/FromLink';
-import { NewRecipePage } from '../features/capture/NewRecipe';
-import { JustTalkPage } from '../features/capture/JustTalk';
-import { PasteItPage } from '../features/capture/PasteIt';
-import { TellItPage } from '../features/capture/TellIt';
-import { CookModePage } from '../features/cook/CookMode';
+import type { ComponentType } from 'react';
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useRouteError } from 'react-router';
 import { firstRunLoader } from '../features/onboarding/firstRun';
 import { WelcomePage } from '../features/onboarding/Welcome';
-import { PrintPage } from '../features/print/PrintPage';
-import { GroceryPage } from '../features/grocery/GroceryPage';
-import { EditRecipePage, TypeItPage } from '../features/editor/RecipeEditor';
-import { ReviewPage } from '../features/editor/Review';
-import { CollectionPage, CollectionsPage, TagPage, TagsPage } from '../features/library/Browse';
 import { CookbookPage } from '../features/library/Cookbook';
-import { RecipeDetailPage } from '../features/recipe/RecipeDetail';
-import { ImportPage } from '../features/requests/ImportPage';
-import { RequestsPage } from '../features/requests/RequestsPage';
-import { SettingsPage } from '../features/settings/SettingsPage';
 import { useT } from '../i18n';
 import { ButtonLink } from '../ui/Button';
+import { MovedSheet, movedLoader } from './moved';
 import { Providers } from './providers';
 import { AppShell } from './Shell';
 
+/**
+ * Loads a screen's code the first time it's opened, so the first screen draws sooner.
+ * The cookbook, the welcome and the app shell stay in the main bundle.
+ */
+function page<M extends Record<string, unknown>>(load: () => Promise<M>, name: keyof M & string) {
+  return async () => ({ Component: (await load())[name] as ComponentType });
+}
+
+function BootScreen() {
+  return (
+    <div className="boot" aria-hidden="true">
+      <img src={`${import.meta.env.BASE_URL}icons/icon-192.png`} alt="" />
+    </div>
+  );
+}
+
 function Root() {
+  const moved = useLoaderData<typeof movedLoader>();
   return (
     <Providers>
       <Outlet />
+      {moved && <MovedSheet />}
     </Providers>
   );
 }
@@ -60,35 +65,36 @@ const router = createBrowserRouter(
   [
     {
       element: <Root />,
+      loader: movedLoader,
       errorElement: <RouteError />,
-      // The first-run check reads the database before drawing, so there's nothing to show meanwhile.
-      HydrateFallback: () => null,
+      // The first-run check reads the database before drawing; meanwhile the loading screen from index.html stays.
+      HydrateFallback: BootScreen,
       children: [
         // Full-screen, no app shell: cook mode, Tell it, Just talk, Check your recipe and the welcome.
-        { path: '/r/:id/cook', element: <CookModePage /> },
-        { path: '/new/tell/:draftId', element: <TellItPage /> },
-        { path: '/new/talk/:draftId', element: <JustTalkPage /> },
-        { path: '/new/review/:draftId', element: <ReviewPage /> },
-        { path: '/print', element: <PrintPage /> },
+        { path: '/r/:id/cook', lazy: page(() => import('../features/cook/CookMode'), 'CookModePage') },
+        { path: '/new/tell/:draftId', lazy: page(() => import('../features/capture/TellIt'), 'TellItPage') },
+        { path: '/new/talk/:draftId', lazy: page(() => import('../features/capture/JustTalk'), 'JustTalkPage') },
+        { path: '/new/review/:draftId', lazy: page(() => import('../features/editor/Review'), 'ReviewPage') },
+        { path: '/print', lazy: page(() => import('../features/print/PrintPage'), 'PrintPage') },
         { path: '/welcome', element: <WelcomePage /> },
         {
           element: <AppShell />,
           children: [
             { path: '/', element: <CookbookPage />, loader: firstRunLoader },
-            { path: '/r/:id', element: <RecipeDetailPage /> },
-            { path: '/r/:id/edit', element: <EditRecipePage /> },
-            { path: '/new', element: <NewRecipePage /> },
-            { path: '/new/type/:draftId', element: <TypeItPage /> },
-            { path: '/new/paste/:draftId', element: <PasteItPage /> },
-            { path: '/new/link/:draftId', element: <FromLinkPage /> },
-            { path: '/c', element: <CollectionsPage /> },
-            { path: '/c/:id', element: <CollectionPage /> },
-            { path: '/t', element: <TagsPage /> },
-            { path: '/t/:tag', element: <TagPage /> },
-            { path: '/grocery', element: <GroceryPage /> },
-            { path: '/requests', element: <RequestsPage /> },
-            { path: '/settings', element: <SettingsPage /> },
-            { path: '/import', element: <ImportPage /> },
+            { path: '/r/:id', lazy: page(() => import('../features/recipe/RecipeDetail'), 'RecipeDetailPage') },
+            { path: '/r/:id/edit', lazy: page(() => import('../features/editor/RecipeEditor'), 'EditRecipePage') },
+            { path: '/new', lazy: page(() => import('../features/capture/NewRecipe'), 'NewRecipePage') },
+            { path: '/new/type/:draftId', lazy: page(() => import('../features/editor/RecipeEditor'), 'TypeItPage') },
+            { path: '/new/paste/:draftId', lazy: page(() => import('../features/capture/PasteIt'), 'PasteItPage') },
+            { path: '/new/link/:draftId', lazy: page(() => import('../features/capture/FromLink'), 'FromLinkPage') },
+            { path: '/c', lazy: page(() => import('../features/library/Browse'), 'CollectionsPage') },
+            { path: '/c/:id', lazy: page(() => import('../features/library/Browse'), 'CollectionPage') },
+            { path: '/t', lazy: page(() => import('../features/library/Browse'), 'TagsPage') },
+            { path: '/t/:tag', lazy: page(() => import('../features/library/Browse'), 'TagPage') },
+            { path: '/grocery', lazy: page(() => import('../features/grocery/GroceryPage'), 'GroceryPage') },
+            { path: '/requests', lazy: page(() => import('../features/requests/RequestsPage'), 'RequestsPage') },
+            { path: '/settings', lazy: page(() => import('../features/settings/SettingsPage'), 'SettingsPage') },
+            { path: '/import', lazy: page(() => import('../features/requests/ImportPage'), 'ImportPage') },
             { path: '*', element: <NotFound /> },
           ],
         },

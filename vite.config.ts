@@ -23,6 +23,20 @@ export default defineConfig(({ mode }) => ({
   define: { __APP_VERSION__: JSON.stringify(version) },
   // The GitHub Pages build sets BASE_PATH=/bookcook/; everywhere else the app is served from the root.
   base: process.env.BASE_PATH ?? '/',
+  build: {
+    rolldownOptions: {
+      output: {
+        // Screens load on demand (src/app/App.tsx). What they share goes in two files, not dozens, since
+        // on a slow phone connection each extra request costs more than the bytes it saves.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor', test: /node_modules\/(?!fflate|minisearch)/ },
+            { name: 'shared', test: /\/src\//, minShareCount: 2 },
+          ],
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     importFunction,

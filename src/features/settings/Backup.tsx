@@ -21,12 +21,37 @@ const OVERDUE_DAYS = 30;
  * "Last backup: 34 days ago" with Back up now and Restore. On --accent-soft (and with the screen's
  * primary button) when a backup is overdue; a quiet card otherwise.
  */
-export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
-  const t = useT();
-  const ts = t.ui.settings;
+/** Back up now: saves the .bookcook file, and says how many recipes it holds. Resolves true once saved. */
+export function useBackUp() {
+  const ts = useT().ui.settings;
   const toast = useToast();
   const { lastBackupAt } = useSettings();
   const [saving, setSaving] = useState(false);
+
+  async function backUp(): Promise<boolean> {
+    setSaving(true);
+    try {
+      const { blob, filename, counts } = await exportBackup();
+      if (!(await saveFile(blob, filename))) {
+        // Share sheet dismissed in the app: nothing was kept, so the last backup stands.
+        await setSetting('lastBackupAt', lastBackupAt);
+        return false;
+      }
+      void requestPersistentStorage({ again: true });
+      toast.show({ message: ts.backedUp(counts.recipes), tone: 'success' });
+      return true;
+    } finally {
+      setSaving(false);
+    }
+  }
+  return { saving, backUp };
+}
+
+export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
+  const t = useT();
+  const ts = t.ui.settings;
+  const { lastBackupAt } = useSettings();
+  const { saving, backUp } = useBackUp();
   const restoring = useRestore();
   const busy = saving || restoring.busy;
   // Read once per visit; the page doesn't need to tick over while it's open.
@@ -34,22 +59,6 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
   const overdue = lastBackupAt === null || now - lastBackupAt > OVERDUE_DAYS * 86_400_000;
   const when = lastBackupAt === null ? ts.noBackup : ts.lastBackup(relativeTime(lastBackupAt));
   const body = overdue ? (layout === 'desk' ? ts.backupNudgeShort : ts.backupNudge) : ts.backupOk;
-
-  async function backUp() {
-    setSaving(true);
-    try {
-      const { blob, filename, counts } = await exportBackup();
-      if (!(await saveFile(blob, filename))) {
-        // Share sheet dismissed in the app: nothing was kept, so the last backup stands.
-        await setSetting('lastBackupAt', lastBackupAt);
-        return;
-      }
-      void requestPersistentStorage({ again: true });
-      toast.show({ message: ts.backedUp(counts.recipes), tone: 'success' });
-    } finally {
-      setSaving(false);
-    }
-  }
 
   return (
     <section
@@ -73,7 +82,7 @@ export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
           variant={overdue ? 'primary' : 'secondary'}
           icon={layout === 'desk' ? undefined : 'backup'}
           isDisabled={busy}
-          onPress={backUp}
+          onPress={() => void backUp()}
         >
           {ts.backUpNow}
         </Button>

@@ -788,6 +788,15 @@ export const en = {
         failed: 'Couldn’t check. Are you online?',
       },
     },
+    moved: {
+      title: 'Bookcook has moved',
+      body: (host: string) =>
+        `Bookcook now lives at ${host}. Your recipes are saved here, at the old address, so bring them with you: back up here, then open the new address and choose Restore in Settings.`,
+      backedUp: 'Now open the new address and choose Restore in Settings.',
+      backUp: 'Back up now',
+      open: 'Open the new address',
+      later: 'Not now',
+    },
     update: {
       ready: 'A new version of Bookcook is ready.',
       apply: 'Update',

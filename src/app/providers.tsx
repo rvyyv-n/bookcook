@@ -15,6 +15,13 @@ declare module 'react-aria-components' {
   }
 }
 
+/** Router hrefs gain the base path; a full address to another site ("https://…") is left as it is. */
+function useAppHref(href: string): string {
+  const external = /^[a-z][a-z\d+.-]*:/i.test(href);
+  const internal = useHref(external ? '/' : href);
+  return external ? href : internal;
+}
+
 /** Writes the appearance settings onto <html> (data-skin, data-theme, …) so tokens.css can react. */
 function Appearance() {
   const { skin, theme, accent, textSize, spiceColours, stepPhoto, lang } = useSettings();
@@ -37,7 +44,7 @@ function Appearance() {
 export function Providers({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   return (
-    <AriaRouterProvider navigate={navigate} useHref={useHref}>
+    <AriaRouterProvider navigate={navigate} useHref={useAppHref}>
       <SpeechProvider>
         <ToastProvider>
           <UpdateProvider>

@@ -1,5 +1,6 @@
 # Publishes a release when a version tag is pushed (git tag v1.2.0 && git push origin v1.2.0).
-# The tag must match package.json. The APK is signed with the Bookcook key (scripts/make-signing-key.mjs)
+# The tag must match package.json. Moving an existing tag to a newer commit and pushing it again
+# (git tag -f v1.2.0 && git push -f origin v1.2.0) rebuilds that release's APK in place. The APK is signed with the Bookcook key (scripts/make-signing-key.mjs)
 # and attached to the GitHub release, where the Android app's update check finds it.
 name: Release
 
@@ -51,4 +52,9 @@ jobs:
         run: |
           NOTES="docs/releases/$TAG.md"
           if [ -f "$NOTES" ]; then set -- --notes-file "$NOTES"; else set -- --generate-notes; fi
-          gh release create "$TAG" "bookcook-$VERSION.apk" --title "Bookcook $VERSION" "$@"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "bookcook-$VERSION.apk" --clobber
+            if [ -f "$NOTES" ]; then gh release edit "$TAG" --notes-file "$NOTES"; fi
+          else
+            gh release create "$TAG" "bookcook-$VERSION.apk" --title "Bookcook $VERSION" "$@"
+          fi
