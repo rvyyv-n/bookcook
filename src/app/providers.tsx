@@ -6,6 +6,7 @@ import { applyAppearance } from '../design/skin';
 import { matchSystemBars } from '../lib/platform/systemBars';
 import { ToastProvider } from '../ui/Toast';
 import { SpeechProvider } from './speech';
+import { UpdateProvider } from './update';
 import { usePrefersDark } from './useMediaQuery';
 
 declare module 'react-aria-components' {
@@ -39,8 +40,10 @@ export function Providers({ children }: { children: ReactNode }) {
     <AriaRouterProvider navigate={navigate} useHref={useHref}>
       <SpeechProvider>
         <ToastProvider>
-          <Appearance />
-          {children}
+          <UpdateProvider>
+            <Appearance />
+            {children}
+          </UpdateProvider>
         </ToastProvider>
       </SpeechProvider>
     </AriaRouterProvider>

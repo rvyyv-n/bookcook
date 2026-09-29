@@ -28,7 +28,9 @@ export default defineConfig(({ mode }) => ({
     VitePWA({
       // The Android app ships its files inside the APK, so it has no use for a service worker.
       disable: mode === 'native',
-      registerType: 'autoUpdate',
+      // A new version waits until the person chooses Update (or next opens the app): see src/app/update.tsx.
+      registerType: 'prompt',
+      injectRegister: false,
       includeAssets: ['favicon.svg', 'icons/apple-touch-icon.png'],
       manifest: {
         name: 'Bookcook',
