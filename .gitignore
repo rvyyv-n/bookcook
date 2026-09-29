@@ -27,3 +27,8 @@ android/app/src/main/assets/capacitor.config.json
 android/app/src/main/assets/capacitor.plugins.json
 android/capacitor-cordova-android-plugins
 android/local.properties
+
+# Tauri (the Windows app): build output and generated files. The icons are drawn from public/icons at build time.
+src-tauri/target
+src-tauri/gen
+src-tauri/icons
