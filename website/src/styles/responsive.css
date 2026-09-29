@@ -161,23 +161,93 @@
   .facts {
     grid-template-columns: minmax(0, 1fr);
   }
-  .devices {
-    aspect-ratio: 16 / 11;
-  }
   .phone {
     padding: 8px;
     border-radius: 44px;
   }
   .phone-screen {
     border-radius: 36px;
-    height: clamp(32rem, 64svh, 700px);
+    height: auto;
+    min-height: clamp(32rem, 64svh, 700px);
+    max-height: none;
   }
-  /* A shorter screen, so the look you pick shows on it without scrolling away from the choices. */
+  /* A shorter screen, so the look you pick shows on it without scrolling away from the choices.
+     The step's type follows the screen's height too, so it still fits on short phones. */
   .ps-text {
-    font-size: clamp(1.6rem, 8vw, 2.3rem);
+    font-size: clamp(1.25rem, min(8vw, 3.7svh), 2.3rem);
+  }
+  .skins {
+    grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr));
+  }
+  .get-inner {
+    grid-template-columns: minmax(0, 1fr);
   }
   .get-actions .btn {
     width: 100%;
+    padding-inline: 1.25rem;
+    font-size: 1.125rem;
+    white-space: normal;
+  }
+
+  /* With Huge text: nothing runs off the side. */
+  .nav-inner {
+    gap: 0.75rem;
+  }
+  .quote {
+    font-size: min(2.75rem, 13vw);
+  }
+  .chat {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .bubble-link > div {
+    min-width: 0;
+  }
+  .bubble-link-url {
+    overflow-wrap: anywhere;
+  }
+  :root:is([data-size='large'], [data-size='huge']) .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+  :root:is([data-size='large'], [data-size='huge']) .controls #next {
+    grid-column: 1 / -1;
+  }
+  /* Normal, Large and Huge wrap onto two lines when Huge makes them wider than the screen. */
+  .seg {
+    flex-wrap: wrap;
+  }
+  .seg label {
+    flex: 1 0 auto;
+  }
+  .seg span {
+    padding: 0 0.6rem;
+  }
+  :root[data-size='huge'] .seg {
+    border-radius: var(--r-l);
+  }
+  :root[data-size='huge'] .deck-1 {
+    rotate: -0.5deg;
+  }
+  :root[data-size='huge'] .deck-3 {
+    translate: 0 0;
+  }
+
+  /* The devices sit one after another, big enough to see: the computer, then the tablet and the phone side by side. */
+  .devices {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr);
+    align-items: end;
+    gap: 1.5rem 1rem;
+    aspect-ratio: auto;
+  }
+  .device {
+    position: static;
+    width: auto;
+    transform: none;
+  }
+  .laptop {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: 88%;
   }
 
   /* Less room between sections: on a phone, the wide screen's breathing room is mostly scrolling. */
