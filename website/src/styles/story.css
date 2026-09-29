@@ -210,18 +210,13 @@
   color: var(--ink-2);
 }
 
+.hear {
+  transition: background-color 900ms var(--ease-out);
+}
+
 .hear.is-changed {
-  animation: flash 900ms var(--ease-out);
-}
-
-.hear.is-changed dd {
-  animation: rise 500ms var(--ease-out);
-}
-
-@keyframes flash {
-  from {
-    background: var(--saffron-soft);
-  }
+  background: var(--saffron-soft);
+  transition-duration: 250ms;
 }
 
 .tries {

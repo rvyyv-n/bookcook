@@ -417,16 +417,6 @@
   font-weight: 700;
 }
 
-.check {
-  display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0 0.6rem;
-  border-radius: 999px;
-  background: var(--saffron-soft);
-  color: var(--ink);
-  font-weight: 700;
-}
-
 .rc-foot {
   display: flex;
   align-items: center;

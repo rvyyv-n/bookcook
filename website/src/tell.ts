@@ -21,6 +21,17 @@ export function tellIt() {
 
   // ---------- What Bookcook hears, live ----------
 
+  // A tile warms while its value is changing and cools once it settles, so typing never makes it flicker.
+  const cooling = new WeakMap<HTMLElement, number>();
+  const glow = (tile: HTMLElement) => {
+    tile.classList.add('is-changed');
+    clearTimeout(cooling.get(tile));
+    cooling.set(
+      tile,
+      window.setTimeout(() => tile.classList.remove('is-changed'), 650),
+    );
+  };
+
   const hear = () => {
     const typed = input.value.trim();
     const parsed = columns(parseIngredient(typed || input.placeholder));
@@ -30,12 +41,7 @@ export function tellIt() {
       el.classList.toggle('is-empty', !typed || !parsed[key]);
       if (el.textContent === value) continue;
       el.textContent = value;
-      if (typed && !reducedMotion()) {
-        const tile = el.parentElement!;
-        tile.classList.remove('is-changed');
-        void tile.offsetWidth;
-        tile.classList.add('is-changed');
-      }
+      if (typed) glow(el.parentElement!);
     }
   };
   input.addEventListener('input', hear);

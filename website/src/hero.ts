@@ -1,7 +1,7 @@
 /**
  * The opening: the headline is heard word by word, then Mom's recipe card writes itself from what she
- * says. Her words are the real transcript of the example recipe (src/features/library/examples.ts), and
- * each ingredient is read by the app's own parser.
+ * says. Her words follow the example recipe's transcript (src/features/library/examples.ts), with the
+ * ingredients named so anyone can follow them, and each one is read by the app's own parser.
  */
 import { parseIngredient } from '../../src/lib/parse/ingredient';
 import { findDurations, formatDuration } from '../../src/lib/parse/timers';
@@ -42,7 +42,7 @@ export async function hearHeadline(): Promise<void> {
 
 // ---------- Mom's card ----------
 
-type Mark = 'chicken' | 'yogurt' | 'chilli' | 'haldi' | 'salt' | 'timer';
+type Mark = 'chicken' | 'yogurt' | 'chilli' | 'turmeric' | 'salt' | 'timer';
 
 /** What she says, and which parts Bookcook picks out. */
 const SAID: [string, Mark?][] = [
@@ -50,28 +50,27 @@ const SAID: [string, Mark?][] = [
   ['the chicken, about a kilo,', 'chicken'],
   ['and put'],
   ['the yogurt, maybe a cup,', 'yogurt'],
-  ['and then the masala, you know,'],
+  ['and then the spices, you know,'],
   ['the red chilli,', 'chilli'],
-  ['haldi,', 'haldi'],
+  ['turmeric,', 'turmeric'],
   ['a little salt…', 'salt'],
   ['and leave it,'],
   ['at least half an hour.', 'timer'],
 ];
 
 /** How the app reads each part once it has sorted her words. */
-const ROWS: Record<Exclude<Mark, 'timer'>, { line: string; check?: string }> = {
+const ROWS: Record<Exclude<Mark, 'timer'>, { line: string }> = {
   chicken: { line: 'about a kilo of chicken' },
   yogurt: { line: 'maybe a cup of yogurt' },
   chilli: { line: 'the red chilli' },
-  haldi: { line: 'haldi', check: 'Check this · heard “haldi”' },
+  turmeric: { line: 'turmeric' },
   salt: { line: 'a little salt' },
 };
 
 function rowHtml(mark: Exclude<Mark, 'timer'>) {
-  const { line, check } = ROWS[mark];
+  const { line } = ROWS[mark];
   const { amount, name, note } = columns(parseIngredient(line));
-  const checkTag = check ? `<span class="check">${escape(check)}</span>` : '';
-  return `<span class="amount">${escape(amount)}</span><span>${escape(name)}${note ? `, ${escape(note)}` : ''}${checkTag}</span>`;
+  return `<span class="amount">${escape(amount)}</span><span>${escape(name)}${note ? `, ${escape(note)}` : ''}</span>`;
 }
 
 export function momsCard() {

@@ -640,10 +640,7 @@
   padding-block: clamp(7rem, 14vw, 13rem);
 }
 
-.nos {
-  margin-top: clamp(3rem, 6vw, 5rem);
-}
-
+.yours .h2,
 .nos li {
   font-family: var(--font-display);
   font-variation-settings: var(--editorial);
@@ -702,6 +699,14 @@
 .get-pot .pot {
   width: clamp(9rem, 16vw, 15rem);
   height: auto;
+}
+
+/* In dark, the pot's ink outline would vanish into the page, so it sits in a soft pool of light. */
+:root[data-theme='dark'] .get-pot {
+  padding: 2.5rem;
+  margin: -2.5rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(243 237 228 / 0.16), transparent);
 }
 
 .get-pot .steam {
