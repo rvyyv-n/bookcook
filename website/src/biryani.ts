@@ -8,7 +8,7 @@ import type { ParsedIngredient } from '../../src/lib/parse/types';
 export const title = "Mom's Chicken Biryani";
 export const author = 'Mom';
 export const servings = 6;
-export const story = 'My mother, every Eid. I learned by watching her hands, not measuring.';
+export const story = 'My mother, every Sunday. I learned by watching her hands, not measuring.';
 export const tip = 'Don’t stir after layering. Just trust it.';
 
 const lines: (string | { section: string })[] = [
