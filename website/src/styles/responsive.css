@@ -69,8 +69,41 @@
   .hero-get .btn {
     width: 100%;
   }
+  /* A tighter first screen, so the top of Mom's card peeks in under the buttons. */
+  .hero-grid {
+    gap: 1.5rem;
+    padding-block: 0.75rem 1.5rem;
+  }
+  .hero-stage {
+    margin-top: 0;
+  }
+  .hero-lead {
+    margin-top: 1.25rem;
+  }
+  .hero-get {
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .hero-promise {
+    margin-top: 1.25rem;
+  }
+  /* The Windows app can't go on a phone (it's still offered at the bottom), nor the Android one on an iPhone. */
+  .downloads .for-windows,
+  :root[data-os='ios'] .downloads {
+    display: none;
+  }
+  .replay {
+    margin-top: 1rem;
+  }
   .deck-1 {
     padding: 1.25rem 1.1rem;
+  }
+  /* What Bookcook is doing goes under the wave, so it reads on one line. */
+  .rc-voice {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    border-radius: var(--r-m);
   }
   /* The cards behind fan out less, so their tabs stay on screen. */
   .deck-3 {
@@ -94,10 +127,33 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .console {
+    padding: 1.25rem;
     border-radius: var(--r-l);
   }
+  /* Small enough that the example fits the line, never below body size. */
+  .console-input {
+    font-size: clamp(1.125rem, 5.6vw, 1.6rem);
+  }
+  .console-actions {
+    gap: 0.75rem;
+  }
+  .mic {
+    gap: 0.7rem;
+    min-height: 3.5rem;
+  }
+  .mic-disc {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  /* The stage is as tall as the longest step (measured in cook.ts), not most of the screen. */
   .stage {
+    min-height: 0;
     border-radius: var(--r-l);
+  }
+  .step {
+    flex: none;
+    min-height: var(--step-h, auto);
+    margin-top: 1.5rem;
   }
   .controls .btn {
     font-size: 1.125rem;
@@ -122,6 +178,38 @@
   }
   .get-actions .btn {
     width: 100%;
+  }
+
+  /* Less room between sections: on a phone, the wide screen's breathing room is mostly scrolling. */
+  .tell,
+  .get {
+    padding-block: 4.5rem 3.5rem;
+  }
+  .cook,
+  .looks {
+    padding-block: 4.5rem;
+  }
+  .words {
+    padding-block: 5rem 3.5rem;
+  }
+  .everywhere {
+    padding-block: 4rem;
+  }
+  .yours {
+    padding-block: 5rem;
+  }
+  .questions {
+    margin-top: 2rem;
+  }
+  .keeps,
+  .facts {
+    margin-top: 3rem;
+  }
+  .ask {
+    margin-top: 4rem;
+  }
+  .devices {
+    margin-top: 2.5rem;
   }
 
   /* On phones, Open the app stays within reach at the bottom once the page's own buttons scroll away. */
@@ -155,5 +243,23 @@
   }
   .footer {
     padding-bottom: 5.5rem;
+  }
+}
+
+:root[data-os='ios'] :is(.downloads, .getbar) .for-android {
+  display: none;
+}
+
+/* Touch screens have no arrow keys. */
+.for-touch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .for-keys {
+    display: none;
+  }
+  .for-touch {
+    display: inline;
   }
 }

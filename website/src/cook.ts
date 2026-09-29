@@ -8,6 +8,7 @@ import { formatClock, spokenDuration } from '../../src/lib/parse/timers';
 import { ingredients, steps } from './biryani';
 import { escape } from './recipe-view';
 import { chime, icon, makeRecognition, say } from './site';
+import { onSize } from './size';
 
 type Command = 'next' | 'back' | 'repeat' | 'timer' | 'stop';
 
@@ -86,12 +87,8 @@ export function cookMode() {
 
   // ---------- The step ----------
 
-  const render = (i: number, direction: 'next' | 'back' | null) => {
-    current = i;
-    countEl.textContent = `Step ${i + 1} of ${steps.length}`;
-    [...progress.children].forEach((bar, n) => bar.classList.toggle('is-done', n <= i));
-    const running = timers.has(i);
-    stepEl.innerHTML = segments[i]!.map((seg) => {
+  const stepHtml = (i: number, running: boolean) =>
+    segments[i]!.map((seg) => {
       if (seg.duration) {
         const label = running ? '<span class="time-left"></span>' : escape(seg.text);
         const aria = running ? 'Timer running' : `Start a ${escape(seg.text)} timer`;
@@ -100,6 +97,35 @@ export function cookMode() {
       if (seg.ingredientId) return `<span class="mention">${escape(seg.text)}</span>`;
       return escape(seg.text);
     }).join('');
+
+  // On phones the stage is as tall as its longest step (see --step-h in responsive.css), so Next stays put without a gap.
+  let fittedWidth = 0;
+  const fitSteps = () => {
+    fittedWidth = stepEl.clientWidth;
+    const probe = document.createElement('p');
+    probe.className = 'step';
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = `position:absolute;visibility:hidden;flex:none;min-height:0;width:${stepEl.clientWidth}px`;
+    stepEl.after(probe);
+    let tallest = 0;
+    for (const i of steps.keys()) {
+      probe.innerHTML = stepHtml(i, false);
+      tallest = Math.max(tallest, probe.offsetHeight);
+    }
+    probe.remove();
+    stepEl.style.setProperty('--step-h', `${tallest}px`);
+  };
+  addEventListener('resize', () => {
+    if (stepEl.clientWidth !== fittedWidth) fitSteps();
+  });
+  void document.fonts.ready.then(fitSteps);
+  onSize(() => requestAnimationFrame(fitSteps));
+
+  const render = (i: number, direction: 'next' | 'back' | null) => {
+    current = i;
+    countEl.textContent = `Step ${i + 1} of ${steps.length}`;
+    [...progress.children].forEach((bar, n) => bar.classList.toggle('is-done', n <= i));
+    stepEl.innerHTML = stepHtml(i, timers.has(i));
     stepEl.querySelector('.time')?.addEventListener('click', () => startTimer(current));
     if (direction) {
       stepEl.classList.remove('is-next', 'is-back');

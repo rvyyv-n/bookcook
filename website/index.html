@@ -26,6 +26,9 @@
       (function () {
         var root = document.documentElement;
         if (matchMedia('(prefers-color-scheme: dark)').matches) root.dataset.theme = 'dark';
+        // iPhones and iPads (which call themselves Macs) can't install the Android app, so it isn't offered there.
+        var ua = navigator.userAgent;
+        if (/iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) root.dataset.os = 'ios';
         try {
           var size = localStorage.getItem('bookcook-site-size');
           if (size === 'large' || size === 'huge') root.dataset.size = size;
@@ -77,10 +80,10 @@
                 >Open the app<span class="btn-arrow" data-icon="next"></span
               ></a>
               <ul class="downloads" aria-label="Or get the app">
-                <li>
+                <li class="for-android">
                   <a href="https://github.com/rvyyv-n/bookcook/releases/latest"><span data-icon="download"></span>Get it for Android</a>
                 </li>
-                <li>
+                <li class="for-windows">
                   <a href="https://github.com/rvyyv-n/bookcook/releases/latest"><span data-icon="download"></span>Get it for Windows</a>
                 </li>
               </ul>
@@ -225,7 +228,9 @@
           <div class="stage field-surface" id="stage" tabindex="-1" aria-label="Cook mode: Mom’s Chicken Biryani">
             <div class="stage-head">
               <p class="stage-step" id="step-count" aria-live="polite">Step 1 of 5</p>
-              <p class="stage-hint">Use the arrow keys, or tap a time</p>
+              <p class="stage-hint">
+                <span class="for-keys">Use the arrow keys, or tap a time</span><span class="for-touch">Tap a time to start a timer</span>
+              </p>
             </div>
             <div class="progress" id="progress" aria-hidden="true"></div>
             <ul class="timers" id="timers" aria-label="Timers"></ul>
@@ -507,7 +512,7 @@
 
     <nav class="getbar" id="getbar" aria-label="Get Bookcook">
       <a class="btn btn-primary" href="https://bookcook.pages.dev/">Open the app</a>
-      <a class="btn btn-secondary" href="https://github.com/rvyyv-n/bookcook/releases/latest">Android app</a>
+      <a class="btn btn-secondary for-android" href="https://github.com/rvyyv-n/bookcook/releases/latest">Android app</a>
     </nav>
 
     <script type="module" src="./src/main.ts"></script>

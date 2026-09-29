@@ -50,9 +50,18 @@ export function pageColour() {
   document.querySelectorAll('[data-bg]:not(html)').forEach((s) => io.observe(s));
 }
 
+/** On phones the nav slips away while you read down the page, and comes back as soon as you scroll up. */
 export function stickyNav() {
   const nav = document.getElementById('nav')!;
-  const update = () => nav.classList.toggle('is-stuck', scrollY > 8);
+  const phone = matchMedia('(max-width: 40rem)');
+  let lastY = scrollY;
+  const update = () => {
+    const y = scrollY;
+    nav.classList.toggle('is-stuck', y > 8);
+    if (Math.abs(y - lastY) < 10) return;
+    nav.classList.toggle('is-away', phone.matches && y > lastY && y > 300 && !nav.contains(document.activeElement));
+    lastY = y;
+  };
   addEventListener('scroll', update, { passive: true });
   update();
 }
