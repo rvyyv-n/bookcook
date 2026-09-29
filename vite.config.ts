@@ -42,8 +42,8 @@ export default defineConfig(({ mode }) => ({
     importFunction,
     tailwindcss(),
     VitePWA({
-      // The Android app ships its files inside the APK, so it has no use for a service worker.
-      disable: mode === 'native',
+      // The Android and Windows apps ship their files inside the app, so they have no use for a service worker.
+      disable: mode === 'native' || mode === 'desktop',
       // A new version waits until the person chooses Update (or next opens the app): see src/app/update.tsx.
       registerType: 'prompt',
       injectRegister: false,

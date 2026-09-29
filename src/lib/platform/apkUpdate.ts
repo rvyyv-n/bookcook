@@ -1,11 +1,12 @@
-// The Android app's update check: the latest GitHub release, compared with this build's version.
-// Releases are published by .github/workflows/release.yml, each with its signed APK attached.
+// The installed apps' update check: the latest GitHub release, compared with this build's version.
+// Releases are published by .github/workflows/release.yml with the signed APK attached; the Windows
+// installer is attached to the same release by .github/workflows/windows.yml.
 
 const LATEST = 'https://api.github.com/repos/rvyyv-n/bookcook/releases/latest';
 
 export interface Release {
   version: string;
-  /** Where the APK downloads from. */
+  /** Where the installer (APK or Windows setup) downloads from. */
   url: string;
 }
 
@@ -36,19 +37,19 @@ interface GitHubRelease {
 }
 
 /** The latest published release, or null when there is none yet. Throws when offline or rate-limited. */
-export async function latestRelease(fetchImpl: typeof fetch = fetch): Promise<Release | null> {
+export async function latestRelease(fetchImpl: typeof fetch = fetch, extension = '.apk'): Promise<Release | null> {
   const res = await fetchImpl(LATEST, { headers: { Accept: 'application/vnd.github+json' } });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`GitHub answered ${res.status}`);
   const body = (await res.json()) as GitHubRelease;
   if (!body.tag_name) return null;
-  const apk = body.assets?.find((a) => a.name?.endsWith('.apk'))?.browser_download_url;
-  const url = apk ?? body.html_url;
+  const file = body.assets?.find((a) => a.name?.endsWith(extension))?.browser_download_url;
+  const url = file ?? body.html_url;
   return url ? { version: body.tag_name.replace(/^v/i, ''), url } : null;
 }
 
 /** The newer release to offer, or null when this build is the latest. */
-export async function checkApkUpdate(current: string, fetchImpl: typeof fetch = fetch): Promise<Release | null> {
-  const latest = await latestRelease(fetchImpl);
+export async function checkApkUpdate(current: string, fetchImpl: typeof fetch = fetch, extension = '.apk'): Promise<Release | null> {
+  const latest = await latestRelease(fetchImpl, extension);
   return latest && isNewer(latest.version, current) ? latest : null;
 }

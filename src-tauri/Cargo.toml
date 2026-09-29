@@ -1,0 +1,22 @@
+[package]
+name = "bookcook"
+version = "0.0.0"
+description = "Recipes in their own words: say or type a recipe, cook it hands-free."
+license = "MIT"
+edition = "2021"
+
+[lib]
+name = "bookcook_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+
+[profile.release]
+lto = true
+opt-level = "s"
+strip = true

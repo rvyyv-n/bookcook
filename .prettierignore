@@ -11,3 +11,6 @@ src/design/theme.css
 src/design/skin.ts
 src/design/icons.ts
 
+
+# The Windows app (Tauri): Rust and its config
+src-tauri

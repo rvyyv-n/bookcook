@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useLocation } from 'react-router';
+import { openUrl } from '@tauri-apps/plugin-opener';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 import { useT } from '../i18n';
-import { isNative } from '../lib/platform/isNative';
+import { isDesktopApp, isInstalledApp } from '../lib/platform/isNative';
 import { checkApkUpdate, type Release } from '../lib/platform/apkUpdate';
 import { checkForUpdate } from '../lib/platform/swUpdate';
 import { useToast } from '../ui/Toast';
@@ -39,7 +40,9 @@ const BUSY = [/^\/r\/[^/]+\/cook$/, /^\/new\/(tell|talk)\//];
  * Either way a new version is offered once, never mid-cook, and Settings can check on demand.
  */
 export function UpdateProvider({ children }: { children: ReactNode }) {
-  const native = isNative();
+  const native = isInstalledApp();
+  // The Windows installer is a .exe; the Android one an .apk.
+  const extension = isDesktopApp() ? '-setup.exe' : '.apk';
   const t = useT();
   const toast = useToast();
   const { pathname } = useLocation();
@@ -62,7 +65,7 @@ export function UpdateProvider({ children }: { children: ReactNode }) {
 
   // The Android app: the release to offer, once one newer than this build is found.
   const [apk, setApk] = useState<Release | null>(null);
-  const checkApk = useCallback(async () => setApk(await checkApkUpdate(__APP_VERSION__)), []);
+  const checkApk = useCallback(async () => setApk(await checkApkUpdate(__APP_VERSION__, fetch, extension)), [extension]);
   useEffect(() => {
     if (!native) return;
     const quietCheck = () => {
@@ -79,9 +82,11 @@ export function UpdateProvider({ children }: { children: ReactNode }) {
 
   const ready = native ? !!apk : swReady;
 
-  // Capacitor opens an address outside the app in the phone's browser, which downloads the APK.
+  // Capacitor opens an address outside the app in the phone's browser, which downloads the APK; the
+  // Windows app hands the address to the default browser.
   const apply = useCallback(() => {
     if (!native) void updateServiceWorker(true);
+    else if (apk && isDesktopApp()) void openUrl(apk.url);
     else if (apk) window.location.assign(apk.url);
   }, [native, apk, updateServiceWorker]);
 
@@ -89,7 +94,7 @@ export function UpdateProvider({ children }: { children: ReactNode }) {
     if (native) {
       setStatus('checking');
       try {
-        const found = await checkApkUpdate(__APP_VERSION__);
+        const found = await checkApkUpdate(__APP_VERSION__, fetch, extension);
         setApk(found);
         setStatus(found ? 'ready' : 'current');
       } catch {
@@ -108,7 +113,7 @@ export function UpdateProvider({ children }: { children: ReactNode }) {
     } catch {
       setStatus('failed');
     }
-  }, [native]);
+  }, [native, extension]);
 
   // Offer the new version once, when nobody is in the middle of cooking or telling a recipe.
   // Ignored, it takes over the next time the app is opened.

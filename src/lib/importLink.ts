@@ -1,7 +1,7 @@
 import { CapacitorHttp } from '@capacitor/core';
 import { recipeFromHtml } from './parse/schemaOrg';
 import type { ParsedRecipe } from './parse/types';
-import { isNative } from './platform/isNative';
+import { isDesktopApp, isNative } from './platform/isNative';
 
 /**
  * Where the From a link function lives: `VITE_IMPORT_URL` when set (a function deployed elsewhere),
@@ -22,8 +22,11 @@ export function normaliseUrl(raw: string): string | undefined {
   }
 }
 
+/** The Windows app has no function beside it, so it asks the live app's (which allows any origin). */
+const LIVE_ENDPOINT = 'https://bookcook.pages.dev/api/import';
+
 async function viaFunction(url: string, signal?: AbortSignal): Promise<ParsedRecipe | undefined> {
-  const res = await fetch(`${ENDPOINT}?url=${encodeURIComponent(url)}`, { signal });
+  const res = await fetch(`${isDesktopApp() ? LIVE_ENDPOINT : ENDPOINT}?url=${encodeURIComponent(url)}`, { signal });
   if (!res.headers.get('content-type')?.includes('json')) return undefined; // no function here (GitHub Pages)
   const body = (await res.json()) as { recipe?: ParsedRecipe };
   return body.recipe;
