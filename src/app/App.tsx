@@ -1,10 +1,11 @@
 import type { ComponentType } from 'react';
-import { createBrowserRouter, Outlet, RouterProvider, useRouteError } from 'react-router';
+import { createBrowserRouter, Outlet, RouterProvider, useLoaderData, useRouteError } from 'react-router';
 import { firstRunLoader } from '../features/onboarding/firstRun';
 import { WelcomePage } from '../features/onboarding/Welcome';
 import { CookbookPage } from '../features/library/Cookbook';
 import { useT } from '../i18n';
 import { ButtonLink } from '../ui/Button';
+import { MovedSheet, movedLoader } from './moved';
 import { Providers } from './providers';
 import { AppShell } from './Shell';
 
@@ -25,9 +26,11 @@ function BootScreen() {
 }
 
 function Root() {
+  const moved = useLoaderData<typeof movedLoader>();
   return (
     <Providers>
       <Outlet />
+      {moved && <MovedSheet />}
     </Providers>
   );
 }
@@ -62,6 +65,7 @@ const router = createBrowserRouter(
   [
     {
       element: <Root />,
+      loader: movedLoader,
       errorElement: <RouteError />,
       // The first-run check reads the database before drawing; meanwhile the loading screen from index.html stays.
       HydrateFallback: BootScreen,
