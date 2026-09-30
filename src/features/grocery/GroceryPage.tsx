@@ -93,7 +93,7 @@ function AddItem() {
         onChange={setText}
         className="min-w-[min(100%,13rem)] flex-1"
       />
-      <Button type="submit" variant="primary" className="px-[1.1rem]">
+      <Button type="submit" variant="primary" className="self-stretch px-[1.1rem]">
         {t.ui.grocery.add}
       </Button>
     </Form>
