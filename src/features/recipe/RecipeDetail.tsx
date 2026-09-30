@@ -105,8 +105,10 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
     ));
   const cls = {
     grid: 'grid grid-cols-2 gap-2',
-    list: 'flex flex-col border-t border-line-strong',
-    iconRow: 'grid grid-cols-[repeat(auto-fit,minmax(3.6rem,1fr))] gap-x-1 gap-y-2',
+    // Heirloom: a contents page, between a double rule.
+    list: 'flex flex-col border-y-[3px] border-double border-line-strong py-1',
+    // The Tin skins: one tray, the actions in equal columns.
+    iconRow: 'grid auto-cols-fr grid-flow-col gap-1 rounded-lg bg-sunk p-1.5',
   }[style];
   return (
     <div role="group" aria-label={t.ui.recipe.actions} className={cls}>
@@ -124,21 +126,27 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
           <AriaButton
             key={a.id}
             onPress={a.onPress}
-            className="flex min-h-[3.5rem] items-center gap-3 border-b border-line px-1 text-left data-[hovered]:bg-sunk"
+            className="group flex min-h-[3.5rem] items-center gap-3 rounded-md px-2 text-left transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:bg-line"
           >
-            <Icon name={a.icon} className="shrink-0 text-accent-text" />
-            <span className="flex-1 font-semibold">{a.label}</span>
-            <Icon name="chevron" className="shrink-0 text-ink-muted" />
+            <Icon name={a.icon} size="1.2rem" className="shrink-0 text-accent-text" />
+            <span className="type-display text-lg leading-none">{a.label}</span>
+            {/* A dotted leader to the arrow, as in a book's contents. */}
+            <span aria-hidden className="mx-1 flex-1 self-center border-b-2 border-dotted border-line-strong" />
+            <Icon
+              name="chevron"
+              size="1.2rem"
+              className="shrink-0 text-ink-muted transition-transform duration-(--dur) group-data-[hovered]:translate-x-0.5"
+            />
           </AriaButton>
         ) : (
           <AriaButton
             key={a.id}
             onPress={a.onPress}
             aria-label={a.label}
-            className="group flex min-h-20 flex-col items-center gap-1.5 text-center text-[min(0.875rem,16px)] leading-[1.15] font-bold"
+            className="group flex min-h-24 min-w-0 flex-col items-center justify-center gap-2 rounded-md px-1 py-2.5 text-center text-[min(0.875rem,16px)] leading-[1.15] font-bold transition-colors duration-(--dur) data-[hovered]:bg-(--control-fill-hover) data-[pressed]:bg-line"
           >
-            <span className="grid size-[3.5rem] place-items-center rounded-full bg-(--control-fill) transition-colors group-data-[hovered]:bg-(--control-fill-hover)">
-              <Icon name={a.icon} />
+            <span className="grid size-12 place-items-center rounded-full bg-surface shadow-paper transition-transform duration-(--dur) group-data-[pressed]:scale-90">
+              <Icon name={a.icon} size="1.35rem" />
             </span>
             {a.short}
           </AriaButton>
