@@ -615,7 +615,7 @@ export const en = {
       dish: 'Which dish?',
       dishPlaceholder: 'Nihari',
       askWho: 'Who are you asking?',
-      askWhoPlaceholder: 'Nani',
+      askWhoPlaceholder: 'Mom',
       note: 'A note (optional)',
       notePlaceholder: 'The one you made for Eid',
       yourName: 'Your name',
