@@ -48,7 +48,8 @@ function PhoneShell() {
         className={cx(
           'mx-auto w-full max-w-3xl',
           !bleed && 'px-5 pt-[max(1.25rem,env(safe-area-inset-top))]',
-          focused ? !bleed && 'pb-8' : 'pb-[calc(3.5556rem+1.5rem+env(safe-area-inset-bottom))]',
+          // Clear of the floating tab bar (its 4.75rem, the gap under it) with room to spare.
+          focused ? !bleed && 'pb-8' : 'pb-[calc(4.75rem+1.5rem+max(0.75rem,env(safe-area-inset-bottom)))]',
         )}
       >
         <Outlet />

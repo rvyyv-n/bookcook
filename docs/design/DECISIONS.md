@@ -97,3 +97,9 @@ The handoff has no screens for these, so they're built from the request link pag
 - **A recipe told for a request carries that request's id.** The asker's copy of the request shares the id, so adding the recipe marks their outgoing request told.
 - **Restore asks how** after the file is picked, in a Sheet: **Add to my cookbook** (merge, the primary) or **Replace everything** (destructive). Replace keeps this device's own settings (last backup, the storage request).
 - **`storage.persist()` is asked for once on saving** (the first saved recipe or added link), as Firefox shows a prompt each time. **Each backup asks again**, as Chrome decides silently and says yes once the site is used more or installed.
+
+## The floating tab bar (1.4.0)
+
+- **The phone tab bar floats** instead of running edge to edge: inset 12px from the sides, lifted just above the home indicator (`max(12px, safe-area − 4px)` from the bottom), rounded to the skin's `--radius-xl`, on frosted `--surface` with a hairline and `--shadow-lift`. A bar glued to the bottom sat awkwardly on the iPhone home indicator in the installed app; floating clears it the way iOS's own apps do, and the page scrolls softly underneath.
+- **The current tab sits on a soft `--accent-soft` pill** that glides to the next tab (the settle move in [`MOTION.md`](MOTION.md)). The handoff's bold label and heavier icon stay. `--sunk` read as a hole in dark themes.
+- The five columns, labels, 56px+ targets and the New disc are as the handoff has them.

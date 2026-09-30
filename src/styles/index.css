@@ -129,9 +129,9 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Toasts sit above the phone tab bar (64px items plus its padding), or 12px above the editor's save bar. */
+/* Toasts sit 12px above the floating tab bar (its 4.75rem, lifted off the bottom), or above the editor's save bar. */
 :root:has([data-tab-bar]) {
-  --toast-offset: calc(3.5556rem + 2.25rem);
+  --toast-offset: calc(4.75rem + 0.75rem + 0.75rem);
 }
 :root:has([data-save-bar]) {
   --toast-offset: calc(3.5556rem + 2.3333rem);
