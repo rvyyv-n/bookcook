@@ -64,7 +64,7 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
     {
       id: 'grocery',
       icon: 'addToGrocery',
-      label: t.ui.recipe.addToGrocery,
+      label: s.grocery,
       short: s.grocery,
       onPress: async () => {
         await addToGrocery(adj.ingredients, recipe.id);
@@ -506,7 +506,8 @@ function More({ recipe }: { recipe: Recipe }) {
 function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane: boolean }) {
   const t = useT();
   const settings = useSettings();
-  const actions = useActions(recipe, adj);
+  // Print stays on desktop (the pane beside the list, and the full page); on a phone it's one button too many.
+  const actions = useActions(recipe, adj).filter((a) => pane || a.id !== 'print');
   const cfg = skinConfig[settings.skin];
   const photo = recipe.photoIds[0];
   const center = !pane && cfg.detailAlign === 'center';

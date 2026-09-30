@@ -292,7 +292,6 @@ export const en = {
     recipe: {
       startCooking: 'Start cooking',
       makeMyVersion: 'Make Mine',
-      addToGrocery: 'Add to grocery',
       addedToGrocery: (n: number) => (n === 1 ? 'Added 1 item to your grocery list.' : `Added ${n} items to your grocery list.`),
       share: 'Share',
       print: 'Print',
