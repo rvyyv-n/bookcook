@@ -4,7 +4,7 @@
  */
 @import '../design/theme.css';
 @import '../design/motion.css';
-@import '../design/heirloom-dark.css';
+@import '../design/heirloom.css';
 @import './print.css';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));

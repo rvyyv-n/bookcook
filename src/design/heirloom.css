@@ -1,0 +1,18 @@
+/* Owned by the app, not the handoff. Letterpress Heirloom's cards are meant to sit pressed into the
+   paper. The shadow-paper class carries a plain default shadow inline, so the skin's own never
+   reached them, and in dark the cards were close to the paper in tone. These give each card a soft
+   dent along its top edge, a faint rim and a lit lip below, the way a plate leaves its mark. */
+:root[data-skin='heirloom'] .shadow-paper {
+  --tw-shadow: var(--shadow-paper);
+}
+:root[data-skin='heirloom'][data-theme='light'] {
+  --shadow-paper:
+    inset 0 1px 3px rgb(92 64 36 / 0.26), inset 0 0 0 1px rgb(92 64 36 / 0.09), 0 1px 0 rgb(255 255 255 / 0.85),
+    0 6px 12px -10px rgb(92 64 36 / 0.35);
+}
+:root[data-skin='heirloom'][data-theme='dark'] {
+  --surface: #29221b;
+  --shadow-paper:
+    inset 0 1px 3px rgb(0 0 0 / 0.55), inset 0 0 0 1px rgb(255 236 205 / 0.07), 0 1px 0 rgb(255 236 205 / 0.12),
+    0 6px 12px -10px rgb(0 0 0 / 0.8);
+}
