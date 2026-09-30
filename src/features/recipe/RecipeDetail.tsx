@@ -104,7 +104,8 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
       </AriaButton>
     ));
   const cls = {
-    grid: 'grid grid-cols-2 gap-2',
+    // Quiet: one card, split into four by hairlines.
+    grid: 'grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-line shadow-paper',
     // Heirloom: a contents page, between a double rule.
     list: 'flex flex-col border-y-[3px] border-double border-line-strong py-1',
     // The Tin skins: one tray, the actions in equal columns.
@@ -117,9 +118,11 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
           <AriaButton
             key={a.id}
             onPress={a.onPress}
-            className={cx('flex min-h-[3.5rem] items-center gap-2 rounded-md px-2.5 py-1.5 text-left leading-[1.15] font-bold', outlined)}
+            className="group flex min-h-[4rem] items-center gap-3 bg-surface px-3 py-2 text-left leading-[1.15] font-bold transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:bg-sunk data-[focus-visible]:-outline-offset-[6px]"
           >
-            <Icon name={a.icon} className="shrink-0" />
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text transition-transform duration-(--dur) group-data-[pressed]:scale-90">
+              <Icon name={a.icon} size="1.15rem" />
+            </span>
             {a.label}
           </AriaButton>
         ) : style === 'list' ? (
