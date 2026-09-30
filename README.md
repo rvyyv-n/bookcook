@@ -167,7 +167,7 @@ Tests sit next to the code they cover (`*.test.ts`).
 
 The app icon shows while the first script loads, and each screen's code is fetched when it's first opened. What holds mobile performance back now is the size of the libraries the first screen needs (React, React Aria and the router, about 220 KB compressed).
 
-**Tests.** 170 unit tests (Vitest) cover the parser, the database, backups, share links and the platform wrappers.
+**Tests.** 180 unit tests (Vitest) cover the parser, the database, backups, share links and the platform wrappers.
 
 ### Design
 
