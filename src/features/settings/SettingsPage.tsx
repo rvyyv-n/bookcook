@@ -41,7 +41,10 @@ function TextSizeSection() {
     <Section id="text" title={ts.textSize}>
       <div className={cx(cardClass, 'gap-4 py-4')}>
         <TextSizeSegmented label={ts.textSize} />
-        <p className="type-step rounded-md bg-sunk px-4 py-3.5 text-xl leading-[1.2] text-pretty" aria-live="polite">
+        <p
+          className="type-step rounded-[min(var(--radius-md),18px)] bg-sunk px-4 py-3.5 text-xl leading-[1.2] text-pretty"
+          aria-live="polite"
+        >
           {ts.textPreview}
         </p>
       </div>
