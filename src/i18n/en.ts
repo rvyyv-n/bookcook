@@ -725,6 +725,8 @@ export const en = {
     settings: {
       title: 'Settings',
       sections: 'Sections',
+      // The short names in the desktop index beside the page.
+      index: { text: 'Text', look: 'Look', voice: 'Voice', people: 'Names', cookbook: 'Backup', app: 'App' },
       cookbookSection: 'Your cookbook',
       appSection: 'App',
       voiceSection: 'Voice',

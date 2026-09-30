@@ -11,7 +11,7 @@ import { Segmented, Switch } from '../../ui/Controls';
 import { TextSizeSegmented } from './TextSizeSegmented';
 import { TextField } from '../../ui/Field';
 import { cx } from '../../ui/cx';
-import { Icon } from '../../ui/Icon';
+import { Icon, type IconName } from '../../ui/Icon';
 import { RowButton, SelectRow } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
 import { BackupCard } from './Backup';
@@ -250,6 +250,14 @@ function AppSection({ onShortcuts }: { onShortcuts?: () => void }) {
 }
 
 const SECTIONS: SectionId[] = ['text', 'look', 'voice', 'people', 'cookbook', 'app'];
+const SECTION_ICONS: Record<SectionId, IconName> = {
+  text: 'section',
+  look: 'tidy',
+  voice: 'read',
+  people: 'edit',
+  cookbook: 'backup',
+  app: 'settings',
+};
 
 /** Desktop: which section is in view, for the index beside the page. */
 function useSectionInView() {
@@ -276,12 +284,12 @@ function useSectionInView() {
   return [current, pick] as const;
 }
 
-/** The desktop index: jump to a section and move focus to its heading. */
-function SectionIndex({ titles }: { titles: Record<SectionId, string> }) {
+/** The desktop index: an icon and a short name per section; picking one scrolls there and focuses its heading. */
+function SectionIndex() {
   const ts = useT().ui.settings;
   const [current, pick] = useSectionInView();
   return (
-    <nav aria-label={ts.sections} className="sticky top-0 flex flex-col gap-1 self-start pt-1">
+    <nav aria-label={ts.sections} className="sticky top-0 flex flex-col gap-0.5 self-start">
       {SECTIONS.map((id) => (
         <AriaButton
           key={id}
@@ -298,9 +306,15 @@ function SectionIndex({ titles }: { titles: Record<SectionId, string> }) {
             document.getElementById(`settings-${id}-title`)?.focus({ preventScroll: true });
             pick(id);
           }}
-          className="flex min-h-[3rem] items-center rounded-md px-3.5 text-left text-ink-muted transition-colors duration-(--dur) outline-none data-[hovered]:bg-sunk data-[hovered]:text-ink data-[focus-visible]:outline-3 data-[focus-visible]:outline-focus data-[focus-visible]:outline-solid aria-[current]:bg-surface aria-[current]:font-bold aria-[current]:text-ink aria-[current]:shadow-paper"
+          className="group flex min-h-[3rem] items-center gap-3 rounded-md px-3 text-left text-ink-muted transition-colors duration-(--dur) outline-none data-[hovered]:bg-sunk data-[hovered]:text-ink data-[focus-visible]:outline-3 data-[focus-visible]:outline-focus data-[focus-visible]:outline-solid aria-[current]:bg-surface aria-[current]:font-bold aria-[current]:text-ink aria-[current]:shadow-paper"
         >
-          {titles[id]}
+          <Icon
+            name={SECTION_ICONS[id]}
+            size="1.25rem"
+            current={current === id}
+            className="shrink-0 transition-colors duration-(--dur) group-aria-[current]:text-accent-text"
+          />
+          {ts.index[id]}
         </AriaButton>
       ))}
     </nav>
@@ -330,17 +344,8 @@ export function SettingsPage() {
     <div className="flex flex-col gap-6 pt-2 pb-10 desk:gap-8">
       <h1 className="text-3xl leading-none tracking-[-0.02em]">{ts.title}</h1>
       {desktop ? (
-        <div className="grid grid-cols-[12rem_minmax(0,40rem)] items-start gap-12">
-          <SectionIndex
-            titles={{
-              text: ts.textSize,
-              look: ts.look,
-              voice: ts.voiceSection,
-              people: ts.people,
-              cookbook: ts.cookbookSection,
-              app: ts.appSection,
-            }}
-          />
+        <div className="grid grid-cols-[10rem_minmax(0,40rem)] items-start gap-12">
+          <SectionIndex />
           {sections}
         </div>
       ) : (
