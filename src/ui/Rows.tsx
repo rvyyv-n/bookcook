@@ -28,11 +28,13 @@ function RowContent({
   label,
   description,
   value,
+  chevron = true,
 }: {
   icon?: IconName;
   label: ReactNode;
   description?: ReactNode;
   value?: ReactNode;
+  chevron?: boolean;
 }) {
   return (
     <>
@@ -46,7 +48,7 @@ function RowContent({
         <span className="flex-1 font-bold">{label}</span>
       )}
       {value && <span className="min-w-0 text-right text-ink-muted">{value}</span>}
-      <Icon name="chevron" className="shrink-0 text-ink-muted" />
+      {chevron && <Icon name="chevron" className="shrink-0 text-ink-muted" />}
     </>
   );
 }
@@ -58,8 +60,10 @@ export function RowButton({
   description,
   value,
   href,
+  external,
   onPress,
   isDisabled,
+  tone,
   className,
 }: {
   icon?: IconName;
@@ -68,19 +72,29 @@ export function RowButton({
   description?: ReactNode;
   value?: ReactNode;
   href?: string;
+  /** `href` is another site: it opens in a new tab. */
+  external?: boolean;
   onPress?: ButtonProps['onPress'];
   isDisabled?: boolean;
+  /** danger: for Delete. Red, with a red tint and no chevron, since it acts at once (with Undo). */
+  tone?: 'danger';
   className?: string;
 }) {
+  const cls = cx(
+    rowClass,
+    tone === 'danger' && 'text-danger! data-[hovered]:before:bg-danger-soft! data-[pressed]:before:bg-danger-soft!',
+    className,
+  );
+  const content = <RowContent icon={icon} label={label} description={description} value={value} chevron={tone !== 'danger'} />;
   if (href)
     return (
-      <AriaLink href={href} className={cx(rowClass, className)}>
-        <RowContent icon={icon} label={label} description={description} value={value} />
+      <AriaLink href={href} className={cls} {...(external && { target: '_blank', rel: 'noreferrer noopener' })}>
+        {content}
       </AriaLink>
     );
   return (
-    <AriaButton onPress={onPress} isDisabled={isDisabled} className={cx(rowClass, className)}>
-      <RowContent icon={icon} label={label} description={description} value={value} />
+    <AriaButton onPress={onPress} isDisabled={isDisabled} className={cls}>
+      {content}
     </AriaButton>
   );
 }

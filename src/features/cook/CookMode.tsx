@@ -574,7 +574,9 @@ function Cook({ recipe }: { recipe: Recipe }) {
       {timerGroup}
       {stepBody}
       {/* Pinned to the bottom, so at Large and Huge the controls stay in reach while the step scrolls. */}
-      <div className="sticky bottom-0 -mx-3.5 mt-auto -mb-4.5 bg-paper bg-(image:--grain) px-3.5 pt-2 pb-4.5">{controls}</div>
+      <div data-cook-bar className="sticky bottom-0 -mx-3.5 mt-auto -mb-4.5 bg-paper bg-(image:--grain) px-3.5 pt-2 pb-4.5">
+        {controls}
+      </div>
       <Sheet isOpen={sheet} onOpenChange={setSheet} title={t.ui.recipe.ingredients}>
         <div className="flex flex-col gap-3.5">
           <div className="flex flex-wrap gap-2">

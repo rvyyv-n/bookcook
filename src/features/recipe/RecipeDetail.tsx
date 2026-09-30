@@ -19,6 +19,7 @@ import { Chip } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { Icon, type IconName } from '../../ui/Icon';
 import { Photo } from '../../ui/Photo';
+import { RowButton } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 import { IngredientControls, IngredientList } from './IngredientsPanel';
@@ -444,7 +445,7 @@ function CookLog({ recipe }: { recipe: Recipe }) {
   );
 }
 
-/** The quieter things at the end: other versions, collections, the source, and Delete. */
+/** The quieter things at the end, on one card: collections, other versions, the source, and Delete. */
 function More({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const navigate = useNavigate();
@@ -452,25 +453,12 @@ function More({ recipe }: { recipe: Recipe }) {
   const forks = useForks(recipe.id);
   const collections = useCollections();
   return (
-    <div className="no-print flex flex-col items-start gap-6 border-t border-line pt-6">
-      {forks && forks.length > 0 && (
-        <section aria-labelledby="versions-h" className="flex flex-col gap-2">
-          <h2 id="versions-h" className="font-text text-base font-bold">
-            {t.ui.recipe.versions}
-          </h2>
-          <ul className="flex flex-col gap-1">
-            {forks.map((f) => (
-              <li key={f.id}>
-                <AriaLink href={`/r/${f.id}`} className="text-accent-text underline underline-offset-4">
-                  {t.ui.recipe.versionBy(f.author || '…')}: {f.title}
-                </AriaLink>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+    <section
+      aria-label={t.ui.recipe.more}
+      className="no-print flex flex-col rounded-lg bg-surface px-4 shadow-paper [&>*:last-child]:border-b-0"
+    >
       {collections && collections.length > 0 && (
-        <section aria-labelledby="col-h" className="flex flex-col gap-2.5">
+        <div role="group" aria-labelledby="col-h" className="flex flex-col gap-2.5 border-b border-line pt-3.5 pb-4">
           <h2 id="col-h" className="font-text text-base font-bold">
             {t.ui.recipe.collections}
           </h2>
@@ -491,27 +479,24 @@ function More({ recipe }: { recipe: Recipe }) {
               );
             })}
           </div>
-        </section>
+        </div>
       )}
+      {forks?.map((f) => (
+        <RowButton key={f.id} href={`/r/${f.id}`} icon="myVersion" label={t.ui.recipe.versionBy(f.author || '…')} value={f.title} />
+      ))}
       {recipe.sourceUrl && (
-        <p className="text-ink-muted">
-          {t.ui.recipe.source}:{' '}
-          <a href={recipe.sourceUrl} target="_blank" rel="noreferrer noopener" className="text-accent-text underline underline-offset-4">
-            {new URL(recipe.sourceUrl).hostname}
-          </a>
-        </p>
+        <RowButton href={recipe.sourceUrl} external icon="link" label={t.ui.recipe.source} value={new URL(recipe.sourceUrl).hostname} />
       )}
-      <Button
-        variant="destructive"
+      <RowButton
+        tone="danger"
+        label={t.ui.recipe.deleteRecipe}
         onPress={async () => {
           const snap = await deleteRecipe(recipe.id);
           navigate('/');
           if (snap) toast.undo(t.ui.recipe.deleted(recipe.title), () => restoreRecipe(snap));
         }}
-      >
-        {t.ui.recipe.deleteRecipe}
-      </Button>
-    </div>
+      />
+    </section>
   );
 }
 
