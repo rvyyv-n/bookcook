@@ -145,16 +145,16 @@ function EmptyCookbook() {
       sampleLabel={tl.emptySample}
       sample={
         <>
-          {/* Where the photo goes: the pot, on the accent's soft tint. */}
-          <span aria-hidden className="grid h-28 place-items-center rounded-[min(var(--radius-md),18px)] bg-accent-soft text-accent-text">
-            <Icon name="startCooking" size="2.6rem" />
+          {/* Where the photo goes: the pot, on the accent's soft tint; then the story, in her words. */}
+          <span
+            aria-hidden
+            className="grid h-24 place-items-center rounded-[min(var(--radius-md),18px)] bg-accent-soft text-accent-text desk:h-28"
+          >
+            <Icon name="startCooking" size="2.4rem" />
           </span>
-          <p className="type-eyebrow text-ink-muted">{t.ui.common.fromKitchen(sample.author)}</p>
-          <p className="type-display text-2xl leading-[1.05]">{sample.title}</p>
-          <p className="text-ink-muted">
-            {t.ui.common.minutes(sample.minutes)} · {t.ui.common.serves(sample.serves)}
+          <p className="type-handwritten text-lg leading-[1.3]">
+            “{sample.quote}” <span className="text-ink-muted">— {sample.author}</span>
           </p>
-          <p className="type-handwritten text-lg leading-[1.3] text-ink-muted">“{sample.quote}”</p>
         </>
       }
       eyebrow={tl.emptyEyebrow}

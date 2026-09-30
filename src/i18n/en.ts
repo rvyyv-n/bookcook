@@ -238,10 +238,7 @@ export const en = {
       tryExample: 'Try an example',
       emptySample: 'For example',
       emptySampleRecipe: {
-        title: 'Mom’s Chicken Biryani',
         author: 'Mom',
-        minutes: 90,
-        serves: 6,
         quote: 'I learned by watching her hands, not measuring.',
       },
       emptySteps: [
