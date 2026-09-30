@@ -100,6 +100,7 @@ The hero screen. Needs the speech layer, so it's built here rather than with voi
 - [x] Deploy to Cloudflare Pages, which the From a link import function needs: live at https://bookcook.pages.dev/ (`wrangler.toml`, the `cloudflare` job in `.github/workflows/deploy.yml`). Pushes to `main` deploy there once the `CLOUDFLARE_API_TOKEN` repository secret is set; the account ID secret is in.
 - [x] README with screenshots and GIFs, the parser accuracy figure and Lighthouse scores; the case-study outline (`docs/case-study.md`). Lighthouse scores retaken on Cloudflare Pages.
 - [x] The product website (`website/`, live at https://getbookcook.pages.dev/): desktop first, then tuned for phones at every text size. Its demos use the app's own parser, timers and speech.
+- [x] A polish pass (1.3.0): Settings on cards with a section index on desktop and Voice folded away; empty Cookbook, Grocery and Requests pages that show a sample and how they work (`src/ui/EmptyState.tsx`); one set of motion timings, a sliding segmented pill, shared folds (`src/ui/Fold.tsx`) and collections that rise in once a session.
 
 ## Later, not in this build
 

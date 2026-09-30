@@ -56,7 +56,7 @@ Reading aloud and typing work fully. Voice input on iPhone depends on Safari and
 
 ### Computer
 
-- **The Windows app.** Download `bookcook-1.1.0-setup.exe` from the [latest release](https://github.com/rvyyv-n/bookcook/releases/latest) and run it. It isn't signed yet, so Windows may say **Windows protected your PC**: click **More info**, then **Run anyway**. It installs for your account only (no administrator needed), works offline, and tells you when a new version is out.
+- **The Windows app.** Download `bookcook-<version>-setup.exe` from the [latest release](https://github.com/rvyyv-n/bookcook/releases/latest) and run it. It isn't signed yet, so Windows may say **Windows protected your PC**: click **More info**, then **Run anyway**. It installs for your account only (no administrator needed), works offline, and tells you when a new version is out.
 - **Chrome or Edge (Windows, Mac, Linux).** Open [bookcook.pages.dev](https://bookcook.pages.dev/) and click the **Install** icon at the right end of the address bar. Or use the menu: in Chrome, **Cast, save and share → Install page as app**; in Edge, **Apps → Install this site as an app**.
 - **Safari on a Mac.** Open the site, then choose **File → Add to Dock**.
 - **Firefox.** Firefox can't install web apps; use Bookcook in a tab and bookmark it. Voice input isn't available there, but typing and reading aloud are.
