@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useMemo, useState } from 'react';
+import { Disclosure } from 'react-aria-components';
 import { useLocation, useNavigate } from 'react-router';
 import { useRecipe } from '../../db/hooks';
 import { addSharedRecipe } from '../../db/recipes';
@@ -7,7 +8,10 @@ import { addRequest, getRequest } from '../../db/requests';
 import { useT } from '../../i18n';
 import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { readRecipeLink, readRequestLink, type SharedRecipe, type SharedRequest } from '../../lib/shareLink';
+import { formatIngredient } from '../../lib/parse/ingredient';
 import { Button, ButtonLink } from '../../ui/Button';
+import { FoldPanel } from '../../ui/Fold';
+import { FoldRow } from '../../ui/Rows';
 import { useToast } from '../../ui/Toast';
 import { useTellIt } from '../library/SpecialCards';
 
@@ -52,6 +56,7 @@ function SharedRecipePage({ shared }: { shared: SharedRecipe }) {
   const have = useRecipe(shared.id);
   const request = useLiveQuery(async () => (shared.requestId ? ((await getRequest(shared.requestId)) ?? null) : null), [shared.requestId]);
   const { recipe } = shared;
+  const story = recipe.story?.find((st) => st.answer.trim())?.answer;
   const answers = request?.direction === 'outgoing' && request.fulfilledRecipeId !== shared.id;
 
   return (
@@ -62,7 +67,9 @@ function SharedRecipePage({ shared }: { shared: SharedRecipe }) {
         <h2 className="type-display text-2xl leading-[1.05]">{recipe.title}</h2>
         {recipe.description && <p>{recipe.description}</p>}
         <p className="text-ink-muted">{tr.recipeCounts(recipe.ingredients?.length ?? 0, recipe.steps?.length ?? 0)}</p>
+        {story && <p className="type-display text-lg leading-[1.3] italic">“{story}”</p>}
       </article>
+      <RecipePreview recipe={recipe} />
       {answers && <p className="font-bold">{tr.answersRequest}</p>}
       {have === undefined ? null : have ? (
         <>
@@ -98,6 +105,47 @@ function SharedRecipePage({ shared }: { shared: SharedRecipe }) {
             </Button>
           </div>
         </>
+      )}
+    </div>
+  );
+}
+
+/** What's in a shared recipe, before it's added: the ingredients under their sections, and the steps folded. */
+function RecipePreview({ recipe }: { recipe: SharedRecipe['recipe'] }) {
+  const t = useT();
+  const ingredients = recipe.ingredients ?? [];
+  const steps = (recipe.steps ?? []).filter((st) => st.text.trim());
+  if (!ingredients.length && !steps.length) return null;
+  return (
+    <div className="flex flex-col rounded-lg bg-surface px-4 shadow-paper [&>*:last-child]:border-b-0">
+      {ingredients.length > 0 && (
+        <section aria-labelledby="shared-ingredients" className="flex flex-col gap-1 border-b border-line py-3.5">
+          <h2 id="shared-ingredients" className="type-heading text-lg">
+            {t.ui.recipe.ingredients}
+          </h2>
+          <ul className="flex flex-col gap-0.5">
+            {ingredients.map((ing, i) => (
+              <li key={i} className="flex flex-col">
+                {ing.section && ing.section !== ingredients[i - 1]?.section && <b className="pt-2">{ing.section}</b>}
+                <span>{formatIngredient(ing)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {steps.length > 0 && (
+        <Disclosure className="flex flex-col">
+          <FoldRow label={t.ui.recipe.steps} value={String(steps.length)} />
+          <FoldPanel>
+            <ol className="flex list-decimal flex-col gap-2 py-3.5 pl-6 marker:font-bold marker:text-ink-muted">
+              {steps.map((st, i) => (
+                <li key={i} className="pl-1">
+                  {st.text}
+                </li>
+              ))}
+            </ol>
+          </FoldPanel>
+        </Disclosure>
       )}
     </div>
   );

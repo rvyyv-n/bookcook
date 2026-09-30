@@ -9,7 +9,7 @@ import { useT } from '../../i18n';
 import { relativeTime } from '../../lib/format';
 import { Button, ButtonLink } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
-import { useStagger } from '../../ui/motion';
+import { leave, useFlip, useStagger } from '../../ui/motion';
 import { cx } from '../../ui/cx';
 import { TextField } from '../../ui/Field';
 import { Icon, type IconName } from '../../ui/Icon';
@@ -42,12 +42,16 @@ function Who({ name, icon, children, when }: { name?: string; icon: IconName; ch
 }
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+  // Settle: when a request is removed (or put back), the cards around it glide into place.
+  const list = useFlip<HTMLUListElement>();
   return (
     <section aria-labelledby={id} className="flex flex-col gap-3">
       <h2 id={id} className="type-heading text-lg">
         {title}
       </h2>
-      <ul className={gridClass}>{children}</ul>
+      <ul ref={list} className={gridClass}>
+        {children}
+      </ul>
     </section>
   );
 }
@@ -94,7 +98,8 @@ function RemoveButton({ request }: { request: RecipeRequest }) {
     <Button
       variant="quiet"
       aria-label={t.ui.requests.removeNamed(request.title)}
-      onPress={async () => {
+      onPress={async (e) => {
+        await leave(e.target.closest('[data-flip]'));
         const snap = await deleteRequest(request.id);
         if (snap) toast.undo(t.ui.requests.removed(request.title), () => restoreRequest(snap));
       }}
@@ -111,7 +116,7 @@ function IncomingCard({ request, draft, index }: { request: RecipeRequest; draft
   const tr = t.ui.requests;
   const tellIt = useTellIt();
   return (
-    <li className={cx(cardClass, rise.className)} style={rise.style}>
+    <li data-flip={request.id} className={cx(cardClass, rise.className)} style={rise.style}>
       <Who name={request.requestedBy} icon="requests" when={relativeTime(request.createdAt)}>
         <b>{request.requestedBy || tr.someone}</b> {tr.wouldLove}
       </Who>
@@ -147,7 +152,7 @@ function OutgoingCard({ request, index }: { request: RecipeRequest; index: numbe
   const toast = useToast();
   const { myName } = useSettings();
   return (
-    <li className={cx(cardClass, rise.className)} style={rise.style}>
+    <li data-flip={request.id} className={cx(cardClass, rise.className)} style={rise.style}>
       <Who name={request.askedOf} icon="send" when={relativeTime(request.createdAt)}>
         {tr.youAsked} {request.askedOf && <b>{request.askedOf}</b>}
       </Who>
@@ -189,7 +194,7 @@ function ToldCard({ request, recipeTitle, index }: { request: RecipeRequest; rec
   const cls =
     'grid grid-cols-[3.2rem_minmax(0,1fr)] items-center gap-3.5 rounded-lg bg-success-soft px-4.5 py-4 text-ink no-underline desk:flex desk:flex-col desk:items-start desk:gap-2.5 desk:p-5';
   return (
-    <li className={rise.className} style={rise.style}>
+    <li data-flip={request.id} className={rise.className} style={rise.style}>
       {recipeTitle && request.fulfilledRecipeId ? (
         <Link href={`/r/${request.fulfilledRecipeId}`} className={cx(cls, 'h-full data-[hovered]:shadow-paper')}>
           {body}

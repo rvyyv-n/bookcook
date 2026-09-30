@@ -9,18 +9,18 @@ import { isNative } from '../../lib/platform/isNative';
 import { saveFile } from '../../lib/platform/saveFile';
 import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { Button, type ButtonVariant } from '../../ui/Button';
+import { RowButton } from '../../ui/Rows';
 import { cx } from '../../ui/cx';
-import { Icon, type IconName } from '../../ui/Icon';
+import { type IconName } from '../../ui/Icon';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 
-/** A backup older than this (or none at all) gets the accent nudge. */
+/** A backup older than this (or none at all) is overdue: the date shows in the accent colour. */
 const OVERDUE_DAYS = 30;
 
-/**
- * "Last backup: 34 days ago" with Back up now and Restore. On --accent-soft (and with the screen's
- * primary button) when a backup is overdue; a quiet card otherwise.
- */
+/** Android has no type for .bookcook, so its picker would grey the file out: the app takes any file and checks it. */
+const RESTORE_TYPES = () => (isNative() ? undefined : ['.bookcook', 'application/zip']);
+
 /** Back up now: saves the .bookcook file, and says how many recipes it holds. Resolves true once saved. */
 export function useBackUp() {
   const ts = useT().ui.settings;
@@ -47,51 +47,40 @@ export function useBackUp() {
   return { saving, backUp };
 }
 
-export function BackupCard({ layout }: { layout: 'phone' | 'desk' }) {
-  const t = useT();
-  const ts = t.ui.settings;
+/** When the last backup was, and whether it's overdue. Read once per visit; the page doesn't tick over. */
+export function useBackupStatus() {
+  const ts = useT().ui.settings;
   const { lastBackupAt } = useSettings();
-  const { saving, backUp } = useBackUp();
-  const restoring = useRestore();
-  const busy = saving || restoring.busy;
-  // Read once per visit; the page doesn't need to tick over while it's open.
   const [now] = useState(() => Date.now());
   const overdue = lastBackupAt === null || now - lastBackupAt > OVERDUE_DAYS * 86_400_000;
   const when = lastBackupAt === null ? ts.noBackup : ts.lastBackup(relativeTime(lastBackupAt));
-  const body = overdue ? (layout === 'desk' ? ts.backupNudgeShort : ts.backupNudge) : ts.backupOk;
+  return { overdue, when, hint: overdue ? ts.backupNudge : ts.backupOk };
+}
 
+/**
+ * Back up now (with when the last one was, in the accent colour once it's overdue) and Restore, as
+ * two rows of a settings card. Render them inside the card; the restore sheet comes with them.
+ */
+export function BackupRows() {
+  const ts = useT().ui.settings;
+  const { saving, backUp } = useBackUp();
+  const restoring = useRestore();
+  const { overdue, when } = useBackupStatus();
+  const busy = saving || restoring.busy;
   return (
-    <section
-      role="status"
-      aria-label={ts.backup}
-      className={cx(
-        'flex rounded-lg px-4.5 py-4',
-        overdue ? 'bg-accent-soft' : 'bg-sunk',
-        layout === 'desk' ? 'flex-wrap items-center gap-x-3.5 gap-y-2.5' : 'flex-col gap-2.5',
-      )}
-    >
-      <p className={cx('flex flex-col gap-0.5', layout === 'desk' && 'min-w-[12rem] flex-1')}>
-        <b className="flex items-center gap-2">
-          {layout === 'phone' && <Icon name="backup" className="shrink-0" />}
-          {when}
-        </b>
-        <span>{body}</span>
-      </p>
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant={overdue ? 'primary' : 'secondary'}
-          icon={layout === 'desk' ? undefined : 'backup'}
-          isDisabled={busy}
-          onPress={() => void backUp()}
-        >
-          {ts.backUpNow}
-        </Button>
-        <RestoreButton restore={restoring} variant="quiet" icon="download">
-          {ts.restore}
-        </RestoreButton>
-      </div>
+    <>
+      <RowButton
+        icon="backup"
+        label={ts.backUpNow}
+        value={<span className={cx(overdue && 'font-bold text-accent-text')}>{when}</span>}
+        isDisabled={busy}
+        onPress={() => void backUp()}
+      />
+      <FileTrigger acceptedFileTypes={RESTORE_TYPES()} onSelect={restoring.pick}>
+        <RowButton icon="download" label={ts.restore} isDisabled={restoring.busy} />
+      </FileTrigger>
       {restoring.sheet}
-    </section>
+    </>
   );
 }
 
@@ -173,8 +162,7 @@ export function RestoreButton({
   children: ReactNode;
 }) {
   return (
-    // Android has no type for .bookcook, so its picker would grey the file out: the app takes any file and checks it.
-    <FileTrigger acceptedFileTypes={isNative() ? undefined : ['.bookcook', 'application/zip']} onSelect={restore.pick}>
+    <FileTrigger acceptedFileTypes={RESTORE_TYPES()} onSelect={restore.pick}>
       <Button variant={variant} icon={icon} isDisabled={restore.busy} className={className}>
         {children}
       </Button>

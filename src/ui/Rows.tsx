@@ -14,21 +14,59 @@ import { cx } from './cx';
 import { Icon, type IconName } from './Icon';
 
 /** A ruled settings row: bold label, the current value in muted text, a chevron. The whole row is the target. */
-const rowClass =
-  'relative isolate flex min-h-[3.5rem] w-full items-center gap-3 border-b border-line px-0.5 py-1.5 text-left text-base text-ink no-underline outline-none ' +
+const rowBase =
+  'relative isolate flex min-h-[3.5rem] w-full items-center gap-3 px-0.5 py-1.5 text-left text-base text-ink no-underline outline-none ' +
   // The hover / press / open tint is a rounded pill behind the row, so it matches the rest of the app's shapes.
   "before:absolute before:-inset-x-2 before:inset-y-1 before:-z-10 before:rounded-md before:bg-transparent before:transition-colors before:duration-(--dur) before:content-[''] " +
   'data-[hovered]:before:bg-sunk data-[pressed]:before:bg-line data-[open]:before:bg-sunk ' +
-  'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus data-[focus-visible]:rounded-md';
+  'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus data-[focus-visible]:rounded-md ' +
+  'data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted';
+const rowClass = `${rowBase} border-b border-line`;
 
-function RowContent({ icon, label, value }: { icon?: IconName; label: ReactNode; value?: ReactNode }) {
+function RowContent({
+  icon,
+  label,
+  description,
+  value,
+}: {
+  icon?: IconName;
+  label: ReactNode;
+  description?: ReactNode;
+  value?: ReactNode;
+}) {
   return (
     <>
       {icon && <Icon name={icon} className="shrink-0" />}
-      <span className="flex-1 font-bold">{label}</span>
+      {description ? (
+        <span className="flex flex-1 flex-col py-1">
+          <span className="font-bold">{label}</span>
+          <span className="text-[0.9375rem] text-ink-muted">{description}</span>
+        </span>
+      ) : (
+        <span className="flex-1 font-bold">{label}</span>
+      )}
       {value && <span className="min-w-0 text-right text-ink-muted">{value}</span>}
       <Icon name="chevron" className="shrink-0 text-ink-muted" />
     </>
+  );
+}
+
+/**
+ * A destructive action on a card of its own, set apart below the cards it acts on (as Delete sits
+ * alone at the foot of a settings screen). Red, centred, no chevron: it acts at once, with Undo.
+ */
+export function DangerCard({ label, onPress }: { label: ReactNode; onPress: ButtonProps['onPress'] }) {
+  return (
+    <AriaButton
+      onPress={onPress}
+      className={cx(
+        'flex min-h-[3.5rem] w-full items-center justify-center rounded-lg bg-surface px-4 py-2 font-bold text-danger shadow-paper outline-none',
+        'transition-[background-color,scale] duration-(--dur) data-[hovered]:bg-danger-soft data-[pressed]:scale-[.98] data-[pressed]:bg-danger-soft',
+        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus',
+      )}
+    >
+      {label}
+    </AriaButton>
   );
 }
 
@@ -36,27 +74,54 @@ function RowContent({ icon, label, value }: { icon?: IconName; label: ReactNode;
 export function RowButton({
   icon,
   label,
+  description,
   value,
   href,
+  external,
   onPress,
+  isDisabled,
   className,
 }: {
   icon?: IconName;
   label: ReactNode;
+  /** A line under the label, for a choice that needs explaining. */
+  description?: ReactNode;
   value?: ReactNode;
   href?: string;
+  /** `href` is another site: it opens in a new tab. */
+  external?: boolean;
   onPress?: ButtonProps['onPress'];
+  isDisabled?: boolean;
   className?: string;
 }) {
+  const cls = cx(rowClass, className);
+  const content = <RowContent icon={icon} label={label} description={description} value={value} />;
   if (href)
     return (
-      <AriaLink href={href} className={cx(rowClass, className)}>
-        <RowContent icon={icon} label={label} value={value} />
+      <AriaLink href={href} className={cls} {...(external && { target: '_blank', rel: 'noreferrer noopener' })}>
+        {content}
       </AriaLink>
     );
   return (
-    <AriaButton onPress={onPress} className={cx(rowClass, className)}>
-      <RowContent icon={icon} label={label} value={value} />
+    <AriaButton onPress={onPress} isDisabled={isDisabled} className={cls}>
+      {content}
+    </AriaButton>
+  );
+}
+
+/**
+ * The row that opens and closes a fold (inside a React Aria Disclosure): label, a summary of what's
+ * inside, and a chevron that turns. It's ruled only while open, when rows follow it.
+ */
+export function FoldRow({ label, value }: { label: ReactNode; value?: ReactNode }) {
+  return (
+    <AriaButton slot="trigger" className={cx(rowBase, 'in-data-[expanded]:border-b in-data-[expanded]:border-line')}>
+      <span className="flex-1 font-bold">{label}</span>
+      {value && <span className="min-w-0 text-right text-ink-muted">{value}</span>}
+      <Icon
+        name="chevron"
+        className="shrink-0 rotate-90 text-ink-muted transition-transform duration-(--dur) in-data-[expanded]:-rotate-90"
+      />
     </AriaButton>
   );
 }

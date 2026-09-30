@@ -22,7 +22,7 @@ export function RecipeCard({ recipe, parentTitle, index = 0 }: { recipe: Recipe;
   const { meta, extra } = useCardLines(recipe, parentTitle);
   const rise = useStagger(`recipe:${recipe.id}`, index);
   return (
-    <li className={cx('min-w-0', rise.className)} style={rise.style}>
+    <li data-flip={recipe.id} className={cx('min-w-0', rise.className)} style={rise.style}>
       <Link
         to={`/r/${recipe.id}`}
         onClick={() => (opened = recipe.id)}
@@ -67,7 +67,7 @@ export function RecipeRow({
   const { meta, extra } = useCardLines(recipe, parentTitle);
   const rise = useStagger(`row:${recipe.id}`, index);
   return (
-    <li className={rise.className} style={rise.style}>
+    <li data-flip={recipe.id} className={rise.className} style={rise.style}>
       <Link
         to={href}
         aria-current={selected ? 'true' : undefined}

@@ -11,6 +11,7 @@ import {
 } from 'react-aria-components';
 import { cx } from './cx';
 import { Icon } from './Icon';
+import { RollScope, Rolling } from './Rolling';
 
 /**
  * Segmented control: one choice from a few (Metric / Imperial, text size, theme). A radio group.
@@ -117,7 +118,9 @@ export function Stepper({
         <Icon name="remove" />
       </AriaButton>
       <output aria-live="polite" className={cx('text-center font-bold tabular-nums', compact ? 'min-w-[2.2rem]' : 'min-w-[5.4rem]')}>
-        {format(value)}
+        <RollScope value={value}>
+          <Rolling value={value}>{format(value)}</Rolling>
+        </RollScope>
       </output>
       <AriaButton aria-label={incrementLabel} className={btn} isDisabled={value >= max} onPress={() => onChange(Math.min(max, value + 1))}>
         <Icon name="add" />
@@ -183,7 +186,13 @@ export function CheckItem({
           dense ? 'size-7' : 'size-7.5',
         )}
       >
-        <Icon name="check" size={dense ? 20 : 22} current className="opacity-0 group-data-[selected]:opacity-100" />
+        {/* Celebrate: the box pops, then the tick draws itself in. */}
+        <Icon
+          name="check"
+          size={dense ? 20 : 22}
+          current
+          className="opacity-0 group-data-[selected]:opacity-100 group-data-[selected]:[&>path]:animate-draw"
+        />
       </span>
       <span className="min-w-0 flex-1">{children}</span>
     </AriaCheckbox>

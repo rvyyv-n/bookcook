@@ -97,3 +97,10 @@ The handoff has no screens for these, so they're built from the request link pag
 - **A recipe told for a request carries that request's id.** The asker's copy of the request shares the id, so adding the recipe marks their outgoing request told.
 - **Restore asks how** after the file is picked, in a Sheet: **Add to my cookbook** (merge, the primary) or **Replace everything** (destructive). Replace keeps this device's own settings (last backup, the storage request).
 - **`storage.persist()` is asked for once on saving** (the first saved recipe or added link), as Firefox shows a prompt each time. **Each backup asks again**, as Chrome decides silently and says yes once the site is used more or installed.
+
+## The floating tab bar (1.4.0)
+
+- **The phone tab bar floats** instead of running edge to edge: inset 12px from the sides, lifted just above the home indicator (`max(12px, safe-area − 4px)` from the bottom), rounded to the skin's `--radius-xl`, on frosted `--surface` with a hairline and `--shadow-lift`. A bar glued to the bottom sat awkwardly on the iPhone home indicator in the installed app; floating clears it the way iOS's own apps do, and the page scrolls softly underneath.
+- **The current tab's icon sits on a small `--accent-soft` pill**, only as wide as the icon, which opens out from the middle when the tab is chosen (the settle move in [`MOTION.md`](MOTION.md)). A highlight the width of the whole column crowded the labels. The handoff's bold label and heavier icon stay.
+- **The bar keeps its size at Large and Huge**: the labels are already capped at 15px and the icons are 24px, so the disc, the pill and the row height are capped too rather than squeezing five columns.
+- The five columns, labels, 56px+ targets and the New disc are as the handoff has them.

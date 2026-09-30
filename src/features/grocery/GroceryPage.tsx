@@ -7,7 +7,7 @@ import { useT } from '../../i18n';
 import { formatIngredient } from '../../lib/parse/ingredient';
 import { Button, ButtonLink } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
-import { useStagger } from '../../ui/motion';
+import { prefersReducedMotion, useFlip, useStagger } from '../../ui/motion';
 import { Icon, type IconName } from '../../ui/Icon';
 import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
 import type { Aisle } from '../../lib/parse/aisles';
@@ -33,23 +33,34 @@ const AISLE_ICONS: Record<Aisle, TopicIconName> = {
 /** Fade 150ms then collapse 200ms (motion.css: --dur-exit, --dur). */
 const LEAVE_MS = 350;
 
-/** "3 onions" over "From Biryani, Karahi" (or "Added by you"). */
+/** Where an item came from: "From Biryani, Karahi", "Added by you", or nothing if its recipe is gone. */
+function useOrigin() {
+  const t = useT();
+  const recipes = useRecipes();
+  const titles = useMemo(() => new Map(recipes?.map((r) => [r.id, r.title])), [recipes]);
+  return (item: GroceryItem) => {
+    const from = item.fromRecipeIds.map((id) => titles.get(id)).filter((x): x is string => !!x);
+    return {
+      titles: from,
+      label: from.length ? t.ui.grocery.from(from) : item.fromRecipeIds.length ? undefined : t.ui.grocery.addedByYou,
+    };
+  };
+}
+
+/** "3 onions" over where it came from, unless the whole list came from the same place. */
 function Item({
   item,
-  titles,
+  origin,
   leaving,
   entering,
 }: {
   item: GroceryItem;
-  titles: Map<string, string>;
+  origin?: string;
   /** Being cleared: fades out, then the rows below close up. */
   leaving: boolean;
   /** Just put back by Undo: opens up and fades in. */
   entering: boolean;
 }) {
-  const t = useT();
-  const from = item.fromRecipeIds.map((id) => titles.get(id)).filter((x): x is string => !!x);
-  const origin = from.length ? t.ui.grocery.from(from) : item.fromRecipeIds.length ? undefined : t.ui.grocery.addedByYou;
   return (
     <li
       className={cx('grid grid-rows-[1fr]', leaving && 'grid-rows-[0fr] opacity-0', entering && 'animate-row-in')}
@@ -93,7 +104,7 @@ function AddItem() {
         onChange={setText}
         className="min-w-[min(100%,13rem)] flex-1"
       />
-      <Button type="submit" variant="primary" className="px-[1.1rem]">
+      <Button type="submit" variant="primary" className="self-stretch px-[1.1rem]">
         {t.ui.grocery.add}
       </Button>
     </Form>
@@ -104,7 +115,12 @@ function AddItem() {
 function AisleSection({ aisle, index, children }: { aisle: Aisle; index: number; children: ReactNode }) {
   const rise = useStagger(`aisle:${aisle}`, index);
   return (
-    <section aria-labelledby={`aisle-${index}`} className={cx('flex flex-col desk:pb-4.5', rise.className)} style={rise.style}>
+    <section
+      data-flip={aisle}
+      aria-labelledby={`aisle-${index}`}
+      className={cx('flex flex-col desk:pb-4.5', rise.className)}
+      style={rise.style}
+    >
       {children}
     </section>
   );
@@ -180,13 +196,17 @@ export function GroceryPage() {
   const t = useT();
   const toast = useToast();
   const items = useGrocery();
-  const recipes = useRecipes();
-  const titles = useMemo(() => new Map(recipes?.map((r) => [r.id, r.title])), [recipes]);
+  const originOf = useOrigin();
   const groups = useMemo(() => groupByAisle(items ?? []), [items]);
   const [clearing, setClearing] = useState<ReadonlySet<string>>(new Set());
   const [restored, setRestored] = useState<ReadonlySet<string>>(new Set());
+  // Settle: when an aisle empties or a new one starts, the aisles around it glide into place.
+  const aisles = useFlip<HTMLDivElement>();
   if (!items) return null;
   const inBasket = items.filter((i) => i.checked).length;
+  const origins = items.map(originOf);
+  // Everything from one recipe (or all typed in): say it once in the header, not on every row.
+  const shared = origins.every((o) => o.label === origins[0]?.label) ? origins[0] : undefined;
 
   return (
     <div className="flex flex-col gap-4.5 desk:gap-5">
@@ -196,6 +216,7 @@ export function GroceryPage() {
           <h1 className="text-3xl leading-none tracking-[-0.02em]">{t.ui.grocery.title}</h1>
           <p className="text-ink-muted" aria-live="polite">
             {t.ui.grocery.count(items.length - inBasket, inBasket)}
+            {shared?.titles.length ? ` · ${t.ui.grocery.allFrom(shared.titles)}` : ''}
           </p>
         </div>
         {inBasket > 0 && (
@@ -205,7 +226,7 @@ export function GroceryPage() {
             className="shrink-0"
             onPress={async () => {
               // The rows fade out and close up before they're removed (at once if motion is reduced).
-              if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              if (!prefersReducedMotion()) {
                 setClearing(new Set(items.filter((i) => i.checked).map((i) => i.id)));
                 await new Promise((done) => setTimeout(done, LEAVE_MS));
               }
@@ -226,7 +247,10 @@ export function GroceryPage() {
       {!items.length ? (
         <EmptyGrocery />
       ) : (
-        <div className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1">
+        <div
+          ref={aisles}
+          className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1"
+        >
           {groups.map((g, gi) => (
             <AisleSection key={g.aisle} aisle={g.aisle} index={gi}>
               <h2 id={`aisle-${gi}`} className="type-heading mb-1 flex items-center gap-2 text-lg">
@@ -235,7 +259,13 @@ export function GroceryPage() {
               </h2>
               <ul className="flex flex-col">
                 {g.items.map((item) => (
-                  <Item key={item.id} item={item} titles={titles} leaving={clearing.has(item.id)} entering={restored.has(item.id)} />
+                  <Item
+                    key={item.id}
+                    item={item}
+                    origin={shared ? undefined : originOf(item).label}
+                    leaving={clearing.has(item.id)}
+                    entering={restored.has(item.id)}
+                  />
                 ))}
               </ul>
             </AisleSection>

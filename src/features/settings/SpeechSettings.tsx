@@ -11,7 +11,8 @@ import { SelectRow } from '../../ui/Rows';
 const RATES = { slow: 0.75, normal: 0.9, fast: 1.1 } as const;
 type RateKey = keyof typeof RATES;
 
-function nearest(rate: number): RateKey {
+/** The speed setting nearest a stored rate. */
+export function nearest(rate: number): RateKey {
   return (Object.entries(RATES) as [RateKey, number][]).reduce(
     (best, cur) => (Math.abs(cur[1] - rate) < Math.abs(RATES[best] - rate) ? cur[0] : best),
     'normal' as RateKey,

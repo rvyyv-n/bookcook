@@ -177,8 +177,9 @@ export function TextField({
             className={cx(inputBase, 'resize-y self-stretch py-3', inputClassName)}
           />
         ) : prefix || suffix ? (
-          <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-1.5 self-center px-[0.7778rem] py-2.5">
-            {prefix && <span className="text-ink-muted">{prefix}</span>}
+          // No gap before the suffix, so "’s kitchen" hugs the name.
+          <span className="flex min-w-0 flex-1 flex-wrap items-baseline self-center px-[0.7778rem] py-2.5">
+            {prefix && <span className="pr-1.5 text-ink-muted">{prefix}</span>}
             <AutoSizeInput
               value={rest.value ?? ''}
               placeholder={placeholder}

@@ -19,10 +19,12 @@ import { Chip } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { Icon, type IconName } from '../../ui/Icon';
 import { Photo } from '../../ui/Photo';
+import { RollScope } from '../../ui/Rolling';
+import { DangerCard, RowButton } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 import { IngredientControls, IngredientList } from './IngredientsPanel';
-import { shareRecipe } from './share';
+import { ShareSheet } from './ShareSheet';
 import { useAdjustedIngredients } from './useAdjusted';
 
 /**
@@ -41,14 +43,17 @@ interface Action {
   onPress: () => void;
 }
 
-function useActions(recipe: Recipe, adj: Adjusted): Action[] {
+/** The recipe's secondary actions, and the Share sheet they open (render it beside them). */
+function useActions(recipe: Recipe, adj: Adjusted): { actions: Action[]; shareSheet: ReactNode } {
   const t = useT();
   const navigate = useNavigate();
   const toast = useToast();
   const settings = useSettings();
   const answered = useRequestAnsweredBy(recipe.id);
+  const [sharing, setSharing] = useState(false);
   const s = t.ui.recipe.short;
-  return [
+  const shareSheet = <ShareSheet recipe={recipe} requestId={answered?.id} isOpen={sharing} onOpenChange={setSharing} />;
+  const actions: Action[] = [
     { id: 'edit', icon: 'edit', label: t.ui.common.edit, short: s.edit, onPress: () => navigate(`/r/${recipe.id}/edit`) },
     {
       id: 'fork',
@@ -64,7 +69,7 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
     {
       id: 'grocery',
       icon: 'addToGrocery',
-      label: t.ui.recipe.addToGrocery,
+      label: s.grocery,
       short: s.grocery,
       onPress: async () => {
         await addToGrocery(adj.ingredients, recipe.id);
@@ -76,12 +81,11 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
       icon: 'share',
       label: t.ui.recipe.share,
       short: s.share,
-      onPress: async () => {
-        if ((await shareRecipe(recipe, answered?.id, t)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
-      },
+      onPress: () => setSharing(true),
     },
     { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => printPage(recipe.title) },
   ];
+  return { actions, shareSheet };
 }
 
 const outlined =
@@ -102,9 +106,12 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
       </AriaButton>
     ));
   const cls = {
-    grid: 'grid grid-cols-2 gap-2',
-    list: 'flex flex-col border-t border-line-strong',
-    iconRow: 'grid grid-cols-[repeat(auto-fit,minmax(3.6rem,1fr))] gap-x-1 gap-y-2',
+    // Quiet: one card, split into four by hairlines.
+    grid: 'grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-line shadow-paper',
+    // Heirloom: a contents page, between a double rule.
+    list: 'flex flex-col border-y-[3px] border-double border-line-strong py-1',
+    // The Tin skins: one tray, the actions in equal columns.
+    iconRow: 'grid auto-cols-fr grid-flow-col gap-1 rounded-lg bg-sunk p-1.5',
   }[style];
   return (
     <div role="group" aria-label={t.ui.recipe.actions} className={cls}>
@@ -113,30 +120,38 @@ function Actions({ actions, style }: { actions: Action[]; style: 'grid' | 'list'
           <AriaButton
             key={a.id}
             onPress={a.onPress}
-            className={cx('flex min-h-[3.5rem] items-center gap-2 rounded-md px-2.5 py-1.5 text-left leading-[1.15] font-bold', outlined)}
+            className="group flex min-h-[4rem] items-center gap-3 bg-surface px-3 py-2 text-left leading-[1.15] font-bold transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:bg-sunk data-[focus-visible]:-outline-offset-[6px]"
           >
-            <Icon name={a.icon} className="shrink-0" />
+            <span className="grid size-9 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-text transition-transform duration-(--dur) group-data-[pressed]:scale-90">
+              <Icon name={a.icon} size="1.15rem" />
+            </span>
             {a.label}
           </AriaButton>
         ) : style === 'list' ? (
           <AriaButton
             key={a.id}
             onPress={a.onPress}
-            className="flex min-h-[3.5rem] items-center gap-3 border-b border-line px-1 text-left data-[hovered]:bg-sunk"
+            className="group flex min-h-[3.5rem] items-center gap-3 rounded-md px-2 text-left transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[pressed]:bg-line"
           >
-            <Icon name={a.icon} className="shrink-0 text-accent-text" />
-            <span className="flex-1 font-semibold">{a.label}</span>
-            <Icon name="chevron" className="shrink-0 text-ink-muted" />
+            <Icon name={a.icon} size="1.2rem" className="shrink-0 text-accent-text" />
+            <span className="type-display text-lg leading-none">{a.label}</span>
+            {/* A dotted leader to the arrow, as in a book's contents. */}
+            <span aria-hidden className="mx-1 flex-1 self-center border-b-2 border-dotted border-line-strong" />
+            <Icon
+              name="chevron"
+              size="1.2rem"
+              className="shrink-0 text-ink-muted transition-transform duration-(--dur) group-data-[hovered]:translate-x-0.5"
+            />
           </AriaButton>
         ) : (
           <AriaButton
             key={a.id}
             onPress={a.onPress}
             aria-label={a.label}
-            className="group flex min-h-20 flex-col items-center gap-1.5 text-center text-[min(0.875rem,16px)] leading-[1.15] font-bold"
+            className="group flex min-h-24 min-w-0 flex-col items-center justify-center gap-2 rounded-md px-1 py-2.5 text-center text-[min(0.875rem,16px)] leading-[1.15] font-bold transition-colors duration-(--dur) data-[hovered]:bg-(--control-fill-hover) data-[pressed]:bg-line"
           >
-            <span className="grid size-[3.5rem] place-items-center rounded-full bg-(--control-fill) transition-colors group-data-[hovered]:bg-(--control-fill-hover)">
-              <Icon name={a.icon} />
+            <span className="grid size-12 place-items-center rounded-full bg-surface shadow-paper transition-transform duration-(--dur) group-data-[pressed]:scale-90">
+              <Icon name={a.icon} size="1.35rem" />
             </span>
             {a.short}
           </AriaButton>
@@ -287,7 +302,10 @@ function Ingredients({ adj, desk }: { adj: Adjusted; desk?: boolean }) {
           {adj.canScale && <IngredientControls {...adj} showUnits={false} className="no-print" />}
         </>
       )}
-      <IngredientList ingredients={adj.ingredients} dense={desk} />
+      {/* More servings, the amounts roll up; fewer, they roll down. */}
+      <RollScope value={adj.servings}>
+        <IngredientList ingredients={adj.ingredients} dense={desk} />
+      </RollScope>
       {desk && <IngredientControls {...adj} canScale={false} className="no-print pt-3" />}
     </section>
   );
@@ -431,73 +449,64 @@ function CookLog({ recipe }: { recipe: Recipe }) {
   );
 }
 
-/** The quieter things at the end: other versions, collections, the source, and Delete. */
+/** The quieter things at the end: collections, other versions and the source on a card, then Delete on its own. */
 function More({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const navigate = useNavigate();
   const toast = useToast();
   const forks = useForks(recipe.id);
   const collections = useCollections();
+  const hasCollections = !!collections?.length;
   return (
-    <div className="no-print flex flex-col items-start gap-6 border-t border-line pt-6">
-      {forks && forks.length > 0 && (
-        <section aria-labelledby="versions-h" className="flex flex-col gap-2">
-          <h2 id="versions-h" className="font-text text-base font-bold">
-            {t.ui.recipe.versions}
-          </h2>
-          <ul className="flex flex-col gap-1">
-            {forks.map((f) => (
-              <li key={f.id}>
-                <AriaLink href={`/r/${f.id}`} className="text-accent-text underline underline-offset-4">
-                  {t.ui.recipe.versionBy(f.author || '…')}: {f.title}
-                </AriaLink>
-              </li>
-            ))}
-          </ul>
+    <div className="no-print flex flex-col gap-4">
+      {(hasCollections || !!forks?.length || recipe.sourceUrl) && (
+        <section
+          aria-label={t.ui.recipe.more}
+          className="flex flex-col rounded-lg bg-surface px-4 shadow-paper [&>*:last-child]:border-b-0"
+        >
+          {hasCollections && (
+            <div role="group" aria-labelledby="col-h" className="flex flex-col gap-2.5 border-b border-line pt-3.5 pb-4">
+              <h2 id="col-h" className="font-text text-base font-bold">
+                {t.ui.recipe.collections}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {collections!.map((c) => {
+                  const on = recipe.collectionIds.includes(c.id);
+                  return (
+                    <Chip
+                      key={c.id}
+                      isSelected={on}
+                      onPress={() =>
+                        setRecipeCollections(
+                          recipe.id,
+                          on ? recipe.collectionIds.filter((x) => x !== c.id) : [...recipe.collectionIds, c.id],
+                        )
+                      }
+                    >
+                      {on && <Icon name="check" size="1.1rem" />}
+                      {c.name}
+                    </Chip>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {forks?.map((f) => (
+            <RowButton key={f.id} href={`/r/${f.id}`} icon="myVersion" label={t.ui.recipe.versionBy(f.author || '…')} value={f.title} />
+          ))}
+          {recipe.sourceUrl && (
+            <RowButton href={recipe.sourceUrl} external icon="link" label={t.ui.recipe.source} value={new URL(recipe.sourceUrl).hostname} />
+          )}
         </section>
       )}
-      {collections && collections.length > 0 && (
-        <section aria-labelledby="col-h" className="flex flex-col gap-2.5">
-          <h2 id="col-h" className="font-text text-base font-bold">
-            {t.ui.recipe.collections}
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {collections.map((c) => {
-              const on = recipe.collectionIds.includes(c.id);
-              return (
-                <Chip
-                  key={c.id}
-                  isSelected={on}
-                  onPress={() =>
-                    setRecipeCollections(recipe.id, on ? recipe.collectionIds.filter((x) => x !== c.id) : [...recipe.collectionIds, c.id])
-                  }
-                >
-                  {on && <Icon name="check" size="1.1rem" />}
-                  {c.name}
-                </Chip>
-              );
-            })}
-          </div>
-        </section>
-      )}
-      {recipe.sourceUrl && (
-        <p className="text-ink-muted">
-          {t.ui.recipe.source}:{' '}
-          <a href={recipe.sourceUrl} target="_blank" rel="noreferrer noopener" className="text-accent-text underline underline-offset-4">
-            {new URL(recipe.sourceUrl).hostname}
-          </a>
-        </p>
-      )}
-      <Button
-        variant="destructive"
+      <DangerCard
+        label={t.ui.recipe.deleteRecipe}
         onPress={async () => {
           const snap = await deleteRecipe(recipe.id);
           navigate('/');
           if (snap) toast.undo(t.ui.recipe.deleted(recipe.title), () => restoreRecipe(snap));
         }}
-      >
-        {t.ui.recipe.deleteRecipe}
-      </Button>
+      />
     </div>
   );
 }
@@ -506,7 +515,9 @@ function More({ recipe }: { recipe: Recipe }) {
 function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane: boolean }) {
   const t = useT();
   const settings = useSettings();
-  const actions = useActions(recipe, adj);
+  // Print stays on desktop (the pane beside the list, and the full page); on a phone it's one button too many.
+  const { actions: all, shareSheet } = useActions(recipe, adj);
+  const actions = all.filter((a) => pane || a.id !== 'print');
   const cfg = skinConfig[settings.skin];
   const photo = recipe.photoIds[0];
   const center = !pane && cfg.detailAlign === 'center';
@@ -548,6 +559,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
 
       <div className={cx('no-print flex flex-col gap-3.5 pt-5.5', pane ? 'px-8' : 'px-5')}>
         <BasedOn recipe={recipe} />
+        {shareSheet}
         {pane ? (
           <div className="flex flex-wrap gap-2">
             <StartCooking recipe={recipe} />
@@ -575,7 +587,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
 /** Desktop page: title block and actions beside the photo, then ingredients beside the story and steps. */
 function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
   const t = useT();
-  const actions = useActions(recipe, adj);
+  const { actions, shareSheet } = useActions(recipe, adj);
   const photo = recipe.photoIds[0];
   const meta = metaLine(recipe, t);
   return (
@@ -596,6 +608,7 @@ function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
               <StartCooking recipe={recipe} />
               <Actions actions={actions} style="row" />
             </div>
+            {shareSheet}
           </div>
         </div>
         {photo && <Photo id={photo} alt={recipe.title} className="h-full min-h-75 w-full" />}

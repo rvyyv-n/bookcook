@@ -1,4 +1,4 @@
-import { useRef, type PointerEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react';
 import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components';
 import { useT } from '../i18n';
 import { Button } from './Button';
@@ -86,6 +86,37 @@ function SheetTop({
 }
 
 /**
+ * Whether the on-screen keyboard is up, from the visible screen shrinking well below the tallest it
+ * has been at this width. Works whether the browser shrinks the page for the keyboard (Android) or
+ * slides the keyboard over it (iPhone).
+ */
+function useKeyboardOpen(active: boolean): boolean {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!active || !vv) return;
+    let width = vv.width;
+    let tallest = vv.height;
+    const check = () => {
+      // Turning the phone changes the shape: start measuring again.
+      if (Math.abs(vv.width - width) > 1) {
+        width = vv.width;
+        tallest = vv.height;
+      }
+      tallest = Math.max(tallest, vv.height);
+      setOpen(vv.height < tallest * 0.75);
+    };
+    check();
+    vv.addEventListener('resize', check);
+    return () => {
+      vv.removeEventListener('resize', check);
+      setOpen(false);
+    };
+  }, [active]);
+  return active && open;
+}
+
+/**
  * A sheet: rises from the bottom on phones, a centred panel on desktop (or pinned to the
  * bottom-right corner with `placement="corner"`). Focus is trapped, Esc closes it, and it always
  * has a visible Close button (no swipe-only dismissal).
@@ -116,6 +147,9 @@ export function Sheet({
   besideSidebar?: boolean;
 }) {
   const t = useT();
+  // With the keyboard up there's room for little: the description goes, and the footer scrolls with
+  // the form instead of holding space at the bottom.
+  const keyboard = useKeyboardOpen(isOpen);
   return (
     <ModalOverlay
       isOpen={isOpen}
@@ -132,7 +166,9 @@ export function Sheet({
       <Modal
         data-sheet
         className={cx(
-          'no-print flex max-h-[calc(var(--visual-viewport-height)*.92)] w-full flex-col rounded-t-xl bg-surface bg-(image:--grain) text-ink shadow-lift desk:rounded-xl',
+          'no-print relative flex max-h-[calc(var(--visual-viewport-height)*.92)] w-full flex-col rounded-t-xl bg-surface bg-(image:--grain) text-ink shadow-lift desk:rounded-xl',
+          // The sheet carries on below the screen's edge, so a see-through keyboard shows the sheet, not the page.
+          "after:absolute after:inset-x-0 after:top-full after:h-dvh after:bg-surface after:content-[''] desk:after:hidden",
           'data-[entering]:animate-rise data-[exiting]:animate-drop-out',
           placement === 'corner' ? 'desk:max-w-[23.3333rem]' : widths[size],
         )}
@@ -154,7 +190,7 @@ export function Sheet({
                     >
                       {title}
                     </Heading>
-                    {description && <p className="text-ink-muted">{description}</p>}
+                    {description && !keyboard && <p className="text-ink-muted">{description}</p>}
                   </div>
                   <Button variant="quiet" icon="close" onPress={close} className="px-3">
                     {t.ui.common.close}
@@ -163,8 +199,9 @@ export function Sheet({
               </SheetTop>
               <div className={cx('flex-1 overflow-y-auto px-4 pt-3.5 pb-[max(1.5556rem,env(safe-area-inset-bottom))]', pad(size))}>
                 {children}
+                {footer && keyboard && <div className="pt-5">{footer}</div>}
               </div>
-              {footer && <div className="safe-bottom border-t border-line px-4 py-3 desk:px-5">{footer}</div>}
+              {footer && !keyboard && <div className="safe-bottom border-t border-line px-4 py-3 desk:px-5">{footer}</div>}
             </>
           )}
         </Dialog>

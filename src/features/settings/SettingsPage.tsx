@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button as AriaButton, Disclosure, Heading, Link } from 'react-aria-components';
+import { Button as AriaButton, Disclosure, Link } from 'react-aria-components';
 import { ShortcutList } from '../../app/shortcuts';
 import { useAppUpdate } from '../../app/update';
 import { useIsDesktop } from '../../app/useMediaQuery';
@@ -13,10 +13,11 @@ import { TextField } from '../../ui/Field';
 import { cx } from '../../ui/cx';
 import { FoldPanel } from '../../ui/Fold';
 import { Icon, type IconName } from '../../ui/Icon';
-import { RowButton, SelectRow } from '../../ui/Rows';
+import { FoldRow, RowButton, SelectRow } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
-import { BackupCard } from './Backup';
-import { SpeechSettings } from './SpeechSettings';
+import { prefersReducedMotion } from '../../ui/motion';
+import { BackupRows, useBackupStatus } from './Backup';
+import { nearest, SpeechSettings } from './SpeechSettings';
 
 type SectionId = 'text' | 'look' | 'voice' | 'people' | 'cookbook' | 'app';
 
@@ -188,54 +189,43 @@ function VoiceCommandsSheet({ isOpen, onOpenChange }: { isOpen: boolean; onOpenC
   );
 }
 
-/** Voice folds open and shut on its heading, so the page stays short until it's wanted. */
+/** Voice is a card whose first row folds the rest open, with what's set in brief beside it. */
 function VoiceSection({ onCommands }: { onCommands: () => void }) {
   const t = useT();
   const ts = t.ui.settings;
   const s = useSettings();
   return (
-    <section id="settings-voice" aria-labelledby="settings-voice-title" className="scroll-mt-6">
-      <Disclosure className="group flex flex-col">
-        <Heading level={2} id="settings-voice-title" tabIndex={-1} className="type-heading text-lg outline-none">
-          <AriaButton
-            slot="trigger"
-            className="-mb-1 flex min-h-[3rem] w-full items-center justify-between gap-3 rounded-md px-1 text-left outline-none transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus data-[focus-visible]:outline-solid"
-          >
-            {ts.voiceSection}
-            <Icon
-              name="chevron"
-              className="shrink-0 rotate-90 text-ink-muted transition-transform duration-(--dur) group-data-[expanded]:-rotate-90"
-            />
-          </AriaButton>
-        </Heading>
-        <FoldPanel>
-          {/* Room at the edges so the card's shadow isn't clipped while the panel opens. */}
-          <div className="-mx-2 px-2 pt-3.5 pb-2">
-            <div className={cardClass}>
-              <Switch isSelected={s.readAloud} onChange={(v) => setSetting('readAloud', v)} description={ts.readAloudHint}>
-                {ts.readAloud}
-              </Switch>
-              <Switch isSelected={s.speakQuestions} onChange={(v) => setSetting('speakQuestions', v)} description={ts.speakQuestionsHint}>
-                {ts.speakQuestions}
-              </Switch>
-              <SpeechSettings />
-              <RowButton label={ts.voiceCommands} value={ts.voiceCommandsHint} onPress={onCommands} />
-            </div>
-          </div>
-        </FoldPanel>
-      </Disclosure>
-    </section>
+    <Section id="voice" title={ts.voiceSection}>
+      <div className={cardClass}>
+        <Disclosure className="flex flex-col">
+          <FoldRow label={ts.voiceFold} value={ts.voiceSummary(s.readAloud, ts.speechRates[nearest(s.speechRate)])} />
+          <FoldPanel className="flex flex-col [&>*:last-child]:border-b-0">
+            <Switch isSelected={s.readAloud} onChange={(v) => setSetting('readAloud', v)} description={ts.readAloudHint}>
+              {ts.readAloud}
+            </Switch>
+            <Switch isSelected={s.speakQuestions} onChange={(v) => setSetting('speakQuestions', v)} description={ts.speakQuestionsHint}>
+              {ts.speakQuestions}
+            </Switch>
+            <SpeechSettings />
+            <RowButton label={ts.voiceCommands} value={ts.voiceCommandsHint} onPress={onCommands} />
+          </FoldPanel>
+        </Disclosure>
+      </div>
+    </Section>
   );
 }
 
+/** Backing up and restoring sit with printing, as rows; a line under the card says why a backup matters. */
 function CookbookSection() {
   const ts = useT().ui.settings;
+  const { hint } = useBackupStatus();
   return (
     <Section id="cookbook" title={ts.cookbookSection}>
-      <BackupCard layout="phone" />
       <div className={cardClass}>
+        <BackupRows />
         <RowButton icon="print" label={ts.printCookbook} href="/print" />
       </div>
+      <p className="px-1 text-[0.9375rem] text-ink-muted">{hint}</p>
     </Section>
   );
 }
@@ -299,7 +289,7 @@ function SectionIndex() {
           key={id}
           aria-current={current === id ? 'true' : undefined}
           onPress={() => {
-            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const reduce = prefersReducedMotion();
             // Scroll only the page's own scroller: scrollIntoView would also shift the shell around it.
             const main = document.getElementById('main');
             const el = document.getElementById(`settings-${id}`);

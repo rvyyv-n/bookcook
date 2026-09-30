@@ -6,6 +6,7 @@ import { ingredientParts } from '../../lib/parse/ingredient';
 import { getUnit } from '../../lib/parse/units';
 import { CheckItem, Segmented, Stepper } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
+import { Rolling } from '../../ui/Rolling';
 
 /** "1 kg", "a pinch of", "to taste". Empty when there's no amount. */
 function amountOf(ingredient: Ingredient): string {
@@ -19,7 +20,11 @@ export function IngredientLine({ ingredient }: { ingredient: Ingredient }) {
   const amount = amountOf(ingredient);
   return (
     <span>
-      {amount && <strong className="font-bold">{amount} </strong>}
+      {amount && (
+        <strong className="font-bold">
+          <Rolling value={amount}>{amount}</Rolling>{' '}
+        </strong>
+      )}
       {p.name}
       {p.note && <span className="text-ink-muted">, {p.note}</span>}
     </span>
@@ -37,7 +42,9 @@ function IngredientRow({ ingredient, dense }: { ingredient: Ingredient; dense: b
   const note = unit?.trailing ? ingredient.note : p.note;
   return (
     <li className={cx('grid grid-cols-[minmax(0,5.2rem)_minmax(0,1fr)] gap-3 border-b border-line', dense ? 'py-1.5' : 'py-2.25')}>
-      <b>{amount}</b>
+      <b>
+        <Rolling value={amount}>{amount}</Rolling>
+      </b>
       <span>
         {p.name}
         {note && <span className="text-ink-muted">, {note}</span>}

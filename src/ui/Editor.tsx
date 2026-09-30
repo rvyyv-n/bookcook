@@ -26,6 +26,7 @@ import { mentionClass } from './Cook';
 import { cx } from './cx';
 import { AutoSizeInput } from './Field';
 import { Icon, type IconName } from './Icon';
+import { prefersReducedMotion } from './motion';
 import { Photo } from './Photo';
 
 export { TabPanel, Tabs } from 'react-aria-components';
@@ -48,10 +49,71 @@ export function SavedIndicator({ saving, label }: { saving: boolean; label: stri
   );
 }
 
+/**
+ * A row that scrolls sideways when it doesn't fit: the side with more fades out, and the selected
+ * item (data-selected) is scrolled into view whenever it changes.
+ */
+function useSideScroll() {
+  const ref = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const row = ref.current;
+    if (!row) return;
+    const edges = () => {
+      row.toggleAttribute('data-more-start', row.scrollLeft > 1);
+      row.toggleAttribute('data-more-end', row.scrollLeft + row.clientWidth < row.scrollWidth - 1);
+    };
+    const reveal = () => {
+      const picked = row.querySelector<HTMLElement>('[data-selected]');
+      if (!picked) return;
+      const pad = 32;
+      const left = picked.getBoundingClientRect().left - row.getBoundingClientRect().left + row.scrollLeft;
+      const right = left + picked.offsetWidth;
+      const smooth = !prefersReducedMotion();
+      if (left - pad < row.scrollLeft) row.scrollTo({ left: left - pad, behavior: smooth ? 'smooth' : 'auto' });
+      else if (right + pad > row.scrollLeft + row.clientWidth)
+        row.scrollTo({ left: right + pad - row.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+    };
+    edges();
+    reveal();
+    row.addEventListener('scroll', edges, { passive: true });
+    const resize = new ResizeObserver(edges);
+    resize.observe(row);
+    // A frame later, after React Aria's own scroll to the focused tab, which can undo ours.
+    let frame = 0;
+    const picks = new MutationObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        edges();
+        reveal();
+      });
+    });
+    // The tabs may arrive after the row (React Aria builds its collection in a second pass).
+    picks.observe(row, { subtree: true, childList: true, attributeFilter: ['data-selected'] });
+    return () => {
+      row.removeEventListener('scroll', edges);
+      resize.disconnect();
+      picks.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+  return ref;
+}
+
 /** The editor's numbered section pills: 1 Details · 2 Ingredients · 3 Steps · 4 Story. Use inside <Tabs>. */
 export function SectionTabs({ label, items }: { label: string; items: { id: string; label: string }[] }) {
+  const ref = useSideScroll();
   return (
-    <TabList aria-label={label} className="flex gap-1.5 overflow-x-auto px-4 pt-3.5 pb-1 [scrollbar-width:none]">
+    <TabList
+      ref={ref}
+      aria-label={label}
+      className={cx(
+        'flex gap-1.5 overflow-x-auto px-4 pt-3.5 pb-1 [scrollbar-width:none]',
+        // The pills that don't fit fade into the edge, so it's clear there are more.
+        'data-[more-start]:[mask-image:linear-gradient(to_right,transparent,black_2.5rem)]',
+        'data-[more-end]:[mask-image:linear-gradient(to_left,transparent,black_2.5rem)]',
+        'data-[more-start]:data-[more-end]:[mask-image:linear-gradient(to_right,transparent,black_2.5rem,black_calc(100%-2.5rem),transparent)]',
+      )}
+    >
       {items.map((it, i) => (
         <Tab
           key={it.id}
@@ -703,13 +765,14 @@ export function MetaPill({
     >
       <Label
         className={cx(
-          'flex min-h-[3.5rem] cursor-text items-center gap-1.5 bg-surface px-3.5 shadow-[inset_0_0_0_1.5px_var(--line-control)] focus-within:shadow-[inset_0_0_0_2px_var(--ink)]',
+          'flex min-h-[3.5rem] cursor-text items-center bg-surface px-3.5 shadow-[inset_0_0_0_1.5px_var(--line-control)] focus-within:shadow-[inset_0_0_0_2px_var(--ink)]',
           'has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-3 has-[:focus-visible]:outline-focus',
           isInvalid && 'shadow-[inset_0_0_0_2px_var(--danger)]!',
           fieldRadius,
         )}
       >
-        <span className="text-ink-muted">{before}</span>
+        {/* No gap before `after`, so "’s kitchen" hugs the name. */}
+        <span className="pr-1.5 text-ink-muted">{before}</span>
         <AutoSizeInput value={value} placeholder={placeholder} className="font-bold" />
         {after && <span className="text-ink-muted">{after}</span>}
       </Label>

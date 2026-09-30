@@ -52,13 +52,34 @@ interface Common {
   className?: string;
 }
 
-function Content({ icon, iconEnd, size = 'L', children }: Pick<Common, 'icon' | 'iconEnd' | 'size' | 'children'>) {
-  return (
+function Content({
+  icon,
+  iconEnd,
+  size = 'L',
+  children,
+  done,
+}: Pick<Common, 'icon' | 'iconEnd' | 'size' | 'children'> & { done?: boolean }) {
+  const content = (
     <>
       {icon && <Icon name={icon} size={iconSize[size]} className="shrink-0" />}
       <span>{children}</span>
       {iconEnd && <Icon name={iconEnd} size={iconSize[size]} className="shrink-0" />}
     </>
+  );
+  if (done === undefined) return content;
+  // Morph: the label fades while a tick settles in its place; the label keeps the button's width.
+  return (
+    <span className="relative inline-grid place-items-center">
+      <span
+        className={cx(
+          'col-start-1 row-start-1 inline-flex items-center gap-[inherit] transition-opacity duration-(--dur-exit) ease-(--ease-in)',
+          done && 'opacity-0',
+        )}
+      >
+        {content}
+      </span>
+      {done && <Icon name="check" size={iconSize[size]} current className="col-start-1 row-start-1 animate-morph-in" />}
+    </span>
   );
 }
 
@@ -70,11 +91,15 @@ export function Button({
   iconEnd,
   children,
   className,
+  done,
   ...rest
-}: Common & Omit<AriaButtonProps, 'children' | 'className'>) {
+}: Common & {
+  /** For an action that finishes something (Save recipe): true turns the label into a tick. See useDone. */
+  done?: boolean;
+} & Omit<AriaButtonProps, 'children' | 'className'>) {
   return (
     <AriaButton {...rest} className={buttonClass(variant, size, className)}>
-      <Content icon={icon} iconEnd={iconEnd} size={size}>
+      <Content icon={icon} iconEnd={iconEnd} size={size} done={done}>
         {children}
       </Content>
     </AriaButton>
