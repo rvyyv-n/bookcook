@@ -17,7 +17,7 @@ import { Icon, type IconName } from './Icon';
 const rowClass =
   'relative isolate flex min-h-[3.5rem] w-full items-center gap-3 border-b border-line px-0.5 py-1.5 text-left text-base text-ink no-underline outline-none ' +
   // The hover / press / open tint is a rounded pill behind the row, so it matches the rest of the app's shapes.
-  "before:absolute before:inset-x-0 before:inset-y-1 before:-z-10 before:rounded-md before:bg-transparent before:transition-colors before:duration-(--dur) before:content-[''] " +
+  "before:absolute before:-inset-x-2 before:inset-y-1 before:-z-10 before:rounded-md before:bg-transparent before:transition-colors before:duration-(--dur) before:content-[''] " +
   'data-[hovered]:before:bg-sunk data-[pressed]:before:bg-line data-[open]:before:bg-sunk ' +
   'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus data-[focus-visible]:rounded-md';
 

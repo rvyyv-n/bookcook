@@ -5,7 +5,9 @@ import { useGrocery, useRecipes } from '../../db/hooks';
 import type { GroceryItem } from '../../db/types';
 import { useT } from '../../i18n';
 import { formatIngredient } from '../../lib/parse/ingredient';
-import { Button } from '../../ui/Button';
+import { Button, ButtonLink } from '../../ui/Button';
+import { EmptyState } from '../../ui/EmptyState';
+import { Icon, type IconName } from '../../ui/Icon';
 import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
 import type { Aisle } from '../../lib/parse/aisles';
 import { CheckItem, Struck } from '../../ui/Controls';
@@ -97,6 +99,72 @@ function AddItem() {
   );
 }
 
+/** One line of the sample list: a box (ticked or not), the item, and where it came from. */
+function SampleItem({ ticked, children, from }: { ticked?: boolean; children: string; from?: string }) {
+  return (
+    <li className="flex items-center gap-3 border-b border-line py-2 last:border-b-0">
+      <span
+        className={cx(
+          'grid size-6 shrink-0 place-items-center rounded-[7px]',
+          ticked ? 'bg-success text-paper' : 'shadow-[inset_0_0_0_2px_var(--line-control)]',
+        )}
+      >
+        {ticked && <Icon name="check" size={18} current />}
+      </span>
+      <span className="flex min-w-0 flex-col leading-[1.25]">
+        <b className={cx(ticked && 'text-ink-muted line-through decoration-2')}>{children}</b>
+        {from && <span className="text-[0.875rem] text-ink-muted">{from}</span>}
+      </span>
+    </li>
+  );
+}
+
+const EMPTY_ICONS: IconName[] = ['cookbook', 'addToGrocery', 'check'];
+
+/** Nothing on the list: a sample list by aisle, the question, how it fills, and a way to the cookbook. */
+function EmptyGrocery() {
+  const tg = useT().ui.grocery;
+  const items = tg.emptySampleItems;
+  return (
+    <EmptyState
+      id="grocery-empty"
+      sampleLabel={tg.emptySample}
+      sample={
+        <div className="flex flex-col gap-3">
+          {(
+            [
+              ['Produce', [items.onions, items.coriander]],
+              ['Dairy & eggs', [items.yogurt]],
+            ] as const
+          ).map(([aisle, list]) => (
+            <div key={aisle} className="flex flex-col">
+              <p className="type-heading flex items-center gap-2 text-lg">
+                <TopicIcon name={AISLE_ICONS[aisle]} size="1.1rem" className="shrink-0 text-ink-muted" />
+                {tg.aisles[aisle]}
+              </p>
+              <ul className="flex flex-col">
+                {list.map((item, i) => (
+                  <SampleItem key={item} ticked={aisle === 'Produce' && i === 0} from={tg.emptySampleFrom}>
+                    {item}
+                  </SampleItem>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      }
+      eyebrow={tg.emptyEyebrow}
+      title={tg.emptyTitle}
+      steps={tg.emptySteps.map((step, i) => ({ icon: EMPTY_ICONS[i]!, ...step }))}
+      action={
+        <ButtonLink href="/" variant="secondary" icon="cookbook" className="w-full desk:w-auto desk:self-start">
+          {tg.browse}
+        </ButtonLink>
+      }
+    />
+  );
+}
+
 export function GroceryPage() {
   const t = useT();
   const toast = useToast();
@@ -145,10 +213,7 @@ export function GroceryPage() {
       </header>
       <AddItem />
       {!items.length ? (
-        <div className="flex flex-col gap-3 px-2 py-12">
-          <h2 className="text-2xl leading-[1.1]">{t.ui.grocery.emptyTitle}</h2>
-          <p className="text-ink-muted">{t.ui.grocery.emptyBody}</p>
-        </div>
+        <EmptyGrocery />
       ) : (
         <div className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1">
           {groups.map((g, gi) => (

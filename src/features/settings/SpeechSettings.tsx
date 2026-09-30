@@ -39,12 +39,13 @@ export function SpeechSettings() {
     <>
       <Segmented<RateKey>
         label={ts.speechRate}
+        className="border-b border-line py-3.5"
         value={nearest(s.speechRate)}
         onChange={(k) => setSetting('speechRate', RATES[k])}
         options={(Object.keys(RATES) as RateKey[]).map((id) => ({ id, label: ts.speechRates[id] }))}
       />
       {speaker.canSpeak && (
-        <div className="flex flex-col">
+        <div className="flex flex-col border-b border-line pb-2">
           {voices.length > 0 && (
             <SelectRow
               label={ts.voice}
@@ -57,7 +58,7 @@ export function SpeechSettings() {
             variant="quiet"
             icon={speaker.speaking ? 'stop' : 'read'}
             aria-pressed={speaker.speaking}
-            className="self-start"
+            className="-ml-2 self-start"
             onPress={() => (speaker.speaking ? speaker.cancel() : void speaker.speak(ts.textPreview))}
           >
             {speaker.speaking ? t.ui.common.stop : ts.testVoice}

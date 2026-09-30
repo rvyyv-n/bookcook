@@ -567,8 +567,17 @@ export const en = {
       add: 'Add',
       from: (titles: string[]) => `From ${titles.join(', ')}`,
       addedByYou: 'Added by you',
-      emptyTitle: 'Nothing to buy',
-      emptyBody: 'Tap Add to grocery on any recipe, or add things here yourself.',
+      emptyEyebrow: 'Nothing to buy yet',
+      emptyTitle: 'What’s cooking this week?',
+      emptySample: 'For example',
+      emptySampleItems: { onions: '2 onions', coriander: '1 bunch coriander', yogurt: '1 cup yogurt' },
+      emptySampleFrom: 'From Nihari',
+      emptySteps: [
+        { title: 'Pick a recipe', body: 'Open one in your cookbook.' },
+        { title: 'Add to grocery', body: 'Its ingredients land here.' },
+        { title: 'Shop by aisle', body: 'Tick things off as you go.' },
+      ] as const,
+      browse: 'Browse the cookbook',
       aisles: {
         Produce: 'Produce',
         'Meat & fish': 'Meat and fish',
@@ -605,9 +614,9 @@ export const en = {
       emptyExample: 'For example',
       emptyExampleWhen: 'Just now',
       emptySteps: [
-        ['You ask', 'Send a link by message.'],
-        ['They tell it', 'Out loud, in their words.'],
-        ['You keep it', 'It lands in your cookbook.'],
+        { title: 'You ask', body: 'Send a link by message.' },
+        { title: 'They tell it', body: 'Out loud, in their words.' },
+        { title: 'You keep it', body: 'It lands in your cookbook.' },
       ] as const,
       // The Send request sheet.
       sheetTitle: 'Ask for a recipe',
@@ -715,6 +724,9 @@ export const en = {
     },
     settings: {
       title: 'Settings',
+      sections: 'Sections',
+      cookbookSection: 'Your cookbook',
+      appSection: 'App',
       voiceSection: 'Voice',
       people: 'About you',
       textSize: 'Text size',
