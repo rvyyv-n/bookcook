@@ -212,7 +212,7 @@ export const en = {
       shortcutsHint: ['Press', 'for shortcuts'],
     },
     library: {
-      greeting: (hour: number) => (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'),
+      greeting: (hour: number) => (hour < 12 ? 'Good Morning' : hour < 18 ? 'Good Afternoon' : 'Good Evening'),
       search: 'Search recipes',
       searchPlaceholder: 'Search recipes',
       all: 'All',
@@ -602,6 +602,12 @@ export const en = {
       youTold: 'You told it. It’s in your cookbook.',
       emptyEyebrow: 'No requests yet',
       emptyTitle: 'Which dish do you wish you could make like they do?',
+      emptySteps: [
+        ['Pick a dish', 'Name the recipe you miss and who to ask.'],
+        ['Send the link', 'It opens in Bookcook on their phone.'],
+        ['They tell it', 'They talk it through out loud. No typing.'],
+        ['It’s in your cookbook', 'The recipe lands here, in their words.'],
+      ] as const,
       // The Send request sheet.
       sheetTitle: 'Ask for a recipe',
       sheetDescription: 'They’ll get a link. When they open it, the request waits for them in Bookcook.',

@@ -11,6 +11,8 @@
 }
 
 @theme {
+  /* Anything that says `transition-*` without an easing gets the app's curve, not the browser's. */
+  --default-transition-timing-function: var(--ease-out);
   /* Cook steps and onboarding steps slide 24px with a cross-fade, from the side they come from. */
   --animate-step-next: cook-step-next var(--dur) var(--ease-out) both;
   --animate-step-back: cook-step-back var(--dur) var(--ease-out) both;
@@ -130,4 +132,12 @@
     transform: translateX(-25%);
     opacity: 0.7;
   }
+}
+
+/*
+ * Press feedback lands almost at once (the button gives under the finger), then eases back at the
+ * normal speed on release: the transition that runs is the one of the state being entered.
+ */
+[data-pressed] {
+  transition-duration: 90ms;
 }

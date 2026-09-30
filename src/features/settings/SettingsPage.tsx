@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Link } from 'react-aria-components';
+import { Button as AriaButton, Disclosure, DisclosurePanel, Heading, Link } from 'react-aria-components';
 import { ShortcutList } from '../../app/shortcuts';
 import { useAppUpdate } from '../../app/update';
 import { useIsDesktop } from '../../app/useMediaQuery';
@@ -10,6 +10,7 @@ import { useT } from '../../i18n';
 import { Segmented, Switch } from '../../ui/Controls';
 import { TextSizeSegmented } from './TextSizeSegmented';
 import { TextField } from '../../ui/Field';
+import { Icon } from '../../ui/Icon';
 import { RowButton, SelectRow } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
 import { BackupCard } from './Backup';
@@ -174,23 +175,40 @@ function VoiceCommandsSheet({ isOpen, onOpenChange }: { isOpen: boolean; onOpenC
   );
 }
 
+/** Voice folds open and shut on its own header, so the page stays short until it's wanted. */
 function VoiceSection({ onCommands }: { onCommands: () => void }) {
   const t = useT();
   const ts = t.ui.settings;
   const s = useSettings();
   return (
-    <Section title={ts.voiceSection}>
-      <div className="flex flex-col">
-        <Switch isSelected={s.readAloud} onChange={(v) => setSetting('readAloud', v)} description={ts.readAloudHint}>
-          {ts.readAloud}
-        </Switch>
-        <Switch isSelected={s.speakQuestions} onChange={(v) => setSetting('speakQuestions', v)} description={ts.speakQuestionsHint}>
-          {ts.speakQuestions}
-        </Switch>
-      </div>
-      <SpeechSettings />
-      <RowButton label={ts.voiceCommands} value={ts.voiceCommandsHint} onPress={onCommands} />
-    </Section>
+    <Disclosure className="group flex flex-col">
+      <Heading className="type-heading text-lg">
+        <AriaButton
+          slot="trigger"
+          className="flex min-h-[3.5rem] w-full items-center justify-between gap-3 rounded-md px-0.5 text-left outline-none transition-colors duration-(--dur) data-[hovered]:bg-sunk data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus"
+        >
+          {ts.voiceSection}
+          <Icon
+            name="chevron"
+            className="shrink-0 rotate-90 text-ink-muted transition-transform duration-(--dur) group-data-[expanded]:-rotate-90"
+          />
+        </AriaButton>
+      </Heading>
+      <DisclosurePanel className="h-(--disclosure-panel-height) overflow-clip transition-[height] duration-(--dur) ease-(--ease-out)">
+        <div className="flex flex-col gap-3 pt-3">
+          <div className="flex flex-col">
+            <Switch isSelected={s.readAloud} onChange={(v) => setSetting('readAloud', v)} description={ts.readAloudHint}>
+              {ts.readAloud}
+            </Switch>
+            <Switch isSelected={s.speakQuestions} onChange={(v) => setSetting('speakQuestions', v)} description={ts.speakQuestionsHint}>
+              {ts.speakQuestions}
+            </Switch>
+          </div>
+          <SpeechSettings />
+          <RowButton label={ts.voiceCommands} value={ts.voiceCommandsHint} onPress={onCommands} />
+        </div>
+      </DisclosurePanel>
+    </Disclosure>
   );
 }
 
@@ -220,20 +238,20 @@ export function SettingsPage() {
             <PeopleSection />
           </div>
           <div className="flex flex-col gap-8">
-            <BackupCard layout="desk" />
             <VoiceSection onCommands={() => setSheet('commands')} />
             <LookSection />
+            <BackupCard layout="desk" />
             {more}
             <AboutApp />
           </div>
         </div>
       ) : (
         <>
-          <BackupCard layout="phone" />
           <TextSizeSection />
           <LookSection />
           <PeopleSection />
           <VoiceSection onCommands={() => setSheet('commands')} />
+          <BackupCard layout="phone" />
           {more}
           <AboutApp />
         </>

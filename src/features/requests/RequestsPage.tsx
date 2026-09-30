@@ -50,6 +50,48 @@ function Section({ id, title, children }: { id: string; title: string; children:
   );
 }
 
+/** Nothing asked yet: how it works in four steps, with the one Send request button below them. */
+function EmptyRequests({ onSend }: { onSend: () => void }) {
+  const tr = useT().ui.requests;
+  return (
+    <section
+      aria-labelledby="req-empty"
+      className="flex animate-rise flex-col gap-5 rounded-lg bg-surface p-5 shadow-paper desk:max-w-2xl desk:gap-6 desk:p-7"
+    >
+      <div className="flex flex-col gap-2">
+        <p className="type-eyebrow text-lg text-accent-text">{tr.emptyEyebrow}</p>
+        <h2 id="req-empty" className="type-display text-2xl leading-[1.1] text-balance">
+          {tr.emptyTitle}
+        </h2>
+      </div>
+      <ol className="flex flex-col gap-4">
+        {tr.emptySteps.map(([title, body], i) => (
+          <li key={title} className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-3.5">
+            <span
+              aria-hidden
+              className="type-display grid size-10 place-items-center rounded-full bg-accent-soft text-lg leading-none text-accent-text"
+            >
+              {i + 1}
+            </span>
+            <p className="flex flex-col leading-[1.3]">
+              <b>{title}</b>
+              <span className="text-ink-muted">{body}</span>
+            </p>
+          </li>
+        ))}
+      </ol>
+      <Button
+        variant="primary"
+        icon="send"
+        className="w-full desk:w-auto desk:self-start desk:pr-[1.4rem] desk:pl-[1.1rem]"
+        onPress={onSend}
+      >
+        {tr.sendRequest}
+      </Button>
+    </section>
+  );
+}
+
 function RemoveButton({ request }: { request: RecipeRequest }) {
   const t = useT();
   const toast = useToast();
@@ -277,22 +319,19 @@ export function RequestsPage() {
           <p className="text-ink-muted desk:hidden">{tr.intro}</p>
           <p className="hidden text-ink-muted desk:block">{tr.introShort}</p>
         </div>
-        <Button
-          variant="primary"
-          icon="send"
-          className="w-full desk:ml-auto desk:w-auto desk:pr-[1.4rem] desk:pl-[1.1rem]"
-          onPress={openSheet}
-        >
-          {tr.sendRequest}
-        </Button>
+        {requests.length > 0 && (
+          <Button
+            variant="primary"
+            icon="send"
+            className="w-full desk:ml-auto desk:w-auto desk:pr-[1.4rem] desk:pl-[1.1rem]"
+            onPress={openSheet}
+          >
+            {tr.sendRequest}
+          </Button>
+        )}
       </header>
 
-      {!requests.length && (
-        <div className="flex flex-col gap-3 px-2 py-10">
-          <p className="type-eyebrow text-lg text-accent-text">{tr.emptyEyebrow}</p>
-          <p className="type-display text-2xl leading-[1.1] text-balance">{tr.emptyTitle}</p>
-        </div>
-      )}
+      {!requests.length && <EmptyRequests onSend={openSheet} />}
       {incoming.length > 0 && (
         <Section id="req-waiting" title={tr.waiting}>
           {incoming.map((r) => (

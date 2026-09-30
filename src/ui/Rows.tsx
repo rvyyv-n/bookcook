@@ -15,8 +15,11 @@ import { Icon, type IconName } from './Icon';
 
 /** A ruled settings row: bold label, the current value in muted text, a chevron. The whole row is the target. */
 const rowClass =
-  'flex min-h-[3.5rem] w-full items-center gap-3 border-b border-line px-0.5 py-1.5 text-left text-base text-ink no-underline outline-none ' +
-  'data-[hovered]:bg-sunk data-[pressed]:bg-line data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus';
+  'relative isolate flex min-h-[3.5rem] w-full items-center gap-3 border-b border-line px-0.5 py-1.5 text-left text-base text-ink no-underline outline-none ' +
+  // The hover / press / open tint is a rounded pill behind the row, so it matches the rest of the app's shapes.
+  "before:absolute before:inset-x-0 before:inset-y-1 before:-z-10 before:rounded-md before:bg-transparent before:transition-colors before:duration-(--dur) before:content-[''] " +
+  'data-[hovered]:before:bg-sunk data-[pressed]:before:bg-line data-[open]:before:bg-sunk ' +
+  'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus data-[focus-visible]:rounded-md';
 
 function RowContent({ icon, label, value }: { icon?: IconName; label: ReactNode; value?: ReactNode }) {
   return (
@@ -75,7 +78,10 @@ export function SelectRow<K extends string>({
       <AriaButton className={rowClass}>
         <span className="flex-1 font-bold">{label}</span>
         <SelectValue className="min-w-0 text-right text-ink-muted" />
-        <Icon name="chevron" className="shrink-0 rotate-90 text-ink-muted" />
+        <Icon
+          name="chevron"
+          className="shrink-0 rotate-90 text-ink-muted transition-transform duration-(--dur) in-data-[open]:-rotate-90"
+        />
       </AriaButton>
       <Popover className="max-h-[60dvh] min-w-(--trigger-width) overflow-y-auto rounded-lg bg-surface p-1.5 shadow-lift data-[entering]:animate-rise data-[exiting]:animate-fade-out">
         <ListBox className="outline-none">
