@@ -28,13 +28,11 @@ function RowContent({
   label,
   description,
   value,
-  chevron = true,
 }: {
   icon?: IconName;
   label: ReactNode;
   description?: ReactNode;
   value?: ReactNode;
-  chevron?: boolean;
 }) {
   return (
     <>
@@ -48,8 +46,27 @@ function RowContent({
         <span className="flex-1 font-bold">{label}</span>
       )}
       {value && <span className="min-w-0 text-right text-ink-muted">{value}</span>}
-      {chevron && <Icon name="chevron" className="shrink-0 text-ink-muted" />}
+      <Icon name="chevron" className="shrink-0 text-ink-muted" />
     </>
+  );
+}
+
+/**
+ * A destructive action on a card of its own, set apart below the cards it acts on (as Delete sits
+ * alone at the foot of a settings screen). Red, centred, no chevron: it acts at once, with Undo.
+ */
+export function DangerCard({ label, onPress }: { label: ReactNode; onPress: ButtonProps['onPress'] }) {
+  return (
+    <AriaButton
+      onPress={onPress}
+      className={cx(
+        'flex min-h-[3.5rem] w-full items-center justify-center rounded-lg bg-surface px-4 py-2 font-bold text-danger shadow-paper outline-none',
+        'transition-[background-color,scale] duration-(--dur) data-[hovered]:bg-danger-soft data-[pressed]:scale-[.98] data-[pressed]:bg-danger-soft',
+        'data-[focus-visible]:outline-3 data-[focus-visible]:outline-solid data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-focus',
+      )}
+    >
+      {label}
+    </AriaButton>
   );
 }
 
@@ -63,7 +80,6 @@ export function RowButton({
   external,
   onPress,
   isDisabled,
-  tone,
   className,
 }: {
   icon?: IconName;
@@ -76,16 +92,10 @@ export function RowButton({
   external?: boolean;
   onPress?: ButtonProps['onPress'];
   isDisabled?: boolean;
-  /** danger: for Delete. Red, with a red tint and no chevron, since it acts at once (with Undo). */
-  tone?: 'danger';
   className?: string;
 }) {
-  const cls = cx(
-    rowClass,
-    tone === 'danger' && 'text-danger! data-[hovered]:before:bg-danger-soft! data-[pressed]:before:bg-danger-soft!',
-    className,
-  );
-  const content = <RowContent icon={icon} label={label} description={description} value={value} chevron={tone !== 'danger'} />;
+  const cls = cx(rowClass, className);
+  const content = <RowContent icon={icon} label={label} description={description} value={value} />;
   if (href)
     return (
       <AriaLink href={href} className={cls} {...(external && { target: '_blank', rel: 'noreferrer noopener' })}>

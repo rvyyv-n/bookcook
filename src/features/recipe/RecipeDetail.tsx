@@ -19,7 +19,7 @@ import { Chip } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { Icon, type IconName } from '../../ui/Icon';
 import { Photo } from '../../ui/Photo';
-import { RowButton } from '../../ui/Rows';
+import { DangerCard, RowButton } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 import { IngredientControls, IngredientList } from './IngredientsPanel';
@@ -445,50 +445,57 @@ function CookLog({ recipe }: { recipe: Recipe }) {
   );
 }
 
-/** The quieter things at the end, on one card: collections, other versions, the source, and Delete. */
+/** The quieter things at the end: collections, other versions and the source on a card, then Delete on its own. */
 function More({ recipe }: { recipe: Recipe }) {
   const t = useT();
   const navigate = useNavigate();
   const toast = useToast();
   const forks = useForks(recipe.id);
   const collections = useCollections();
+  const hasCollections = !!collections?.length;
   return (
-    <section
-      aria-label={t.ui.recipe.more}
-      className="no-print flex flex-col rounded-lg bg-surface px-4 shadow-paper [&>*:last-child]:border-b-0"
-    >
-      {collections && collections.length > 0 && (
-        <div role="group" aria-labelledby="col-h" className="flex flex-col gap-2.5 border-b border-line pt-3.5 pb-4">
-          <h2 id="col-h" className="font-text text-base font-bold">
-            {t.ui.recipe.collections}
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {collections.map((c) => {
-              const on = recipe.collectionIds.includes(c.id);
-              return (
-                <Chip
-                  key={c.id}
-                  isSelected={on}
-                  onPress={() =>
-                    setRecipeCollections(recipe.id, on ? recipe.collectionIds.filter((x) => x !== c.id) : [...recipe.collectionIds, c.id])
-                  }
-                >
-                  {on && <Icon name="check" size="1.1rem" />}
-                  {c.name}
-                </Chip>
-              );
-            })}
-          </div>
-        </div>
+    <div className="no-print flex flex-col gap-4">
+      {(hasCollections || !!forks?.length || recipe.sourceUrl) && (
+        <section
+          aria-label={t.ui.recipe.more}
+          className="flex flex-col rounded-lg bg-surface px-4 shadow-paper [&>*:last-child]:border-b-0"
+        >
+          {hasCollections && (
+            <div role="group" aria-labelledby="col-h" className="flex flex-col gap-2.5 border-b border-line pt-3.5 pb-4">
+              <h2 id="col-h" className="font-text text-base font-bold">
+                {t.ui.recipe.collections}
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {collections!.map((c) => {
+                  const on = recipe.collectionIds.includes(c.id);
+                  return (
+                    <Chip
+                      key={c.id}
+                      isSelected={on}
+                      onPress={() =>
+                        setRecipeCollections(
+                          recipe.id,
+                          on ? recipe.collectionIds.filter((x) => x !== c.id) : [...recipe.collectionIds, c.id],
+                        )
+                      }
+                    >
+                      {on && <Icon name="check" size="1.1rem" />}
+                      {c.name}
+                    </Chip>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+          {forks?.map((f) => (
+            <RowButton key={f.id} href={`/r/${f.id}`} icon="myVersion" label={t.ui.recipe.versionBy(f.author || '…')} value={f.title} />
+          ))}
+          {recipe.sourceUrl && (
+            <RowButton href={recipe.sourceUrl} external icon="link" label={t.ui.recipe.source} value={new URL(recipe.sourceUrl).hostname} />
+          )}
+        </section>
       )}
-      {forks?.map((f) => (
-        <RowButton key={f.id} href={`/r/${f.id}`} icon="myVersion" label={t.ui.recipe.versionBy(f.author || '…')} value={f.title} />
-      ))}
-      {recipe.sourceUrl && (
-        <RowButton href={recipe.sourceUrl} external icon="link" label={t.ui.recipe.source} value={new URL(recipe.sourceUrl).hostname} />
-      )}
-      <RowButton
-        tone="danger"
+      <DangerCard
         label={t.ui.recipe.deleteRecipe}
         onPress={async () => {
           const snap = await deleteRecipe(recipe.id);
@@ -496,7 +503,7 @@ function More({ recipe }: { recipe: Recipe }) {
           if (snap) toast.undo(t.ui.recipe.deleted(recipe.title), () => restoreRecipe(snap));
         }}
       />
-    </section>
+    </div>
   );
 }
 
