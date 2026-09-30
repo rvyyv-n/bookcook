@@ -50,44 +50,66 @@ function Section({ id, title, children }: { id: string; title: string; children:
   );
 }
 
-/** Nothing asked yet: how it works in four steps, with the one Send request button below them. */
+const EMPTY_ICONS: IconName[] = ['send', 'mic', 'cookbook'];
+
+/**
+ * Nothing asked yet: a sample request on a slightly tilted card (what the other person receives),
+ * the question, how it goes in three steps, and the one Send request button.
+ */
 function EmptyRequests({ onSend }: { onSend: () => void }) {
   const tr = useT().ui.requests;
   return (
     <section
       aria-labelledby="req-empty"
-      className="flex animate-rise flex-col gap-5 rounded-lg bg-surface p-5 shadow-paper desk:max-w-2xl desk:gap-6 desk:p-7"
+      className="flex animate-rise flex-col gap-7 pt-2 desk:grid desk:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] desk:items-center desk:gap-12"
     >
-      <div className="flex flex-col gap-2">
-        <p className="type-eyebrow text-lg text-accent-text">{tr.emptyEyebrow}</p>
-        <h2 id="req-empty" className="type-display text-2xl leading-[1.1] text-balance">
-          {tr.emptyTitle}
-        </h2>
+      {/* The sample: two sheets of paper, the front one turned a little, like a note left on the counter. */}
+      <figure aria-label={tr.emptyExample} className="relative mx-3 mt-2 desk:mx-0">
+        <div aria-hidden className="absolute inset-0 rotate-[2.5deg] rounded-lg bg-sunk shadow-paper" />
+        <div className="relative flex -rotate-[1.5deg] flex-col gap-3 rounded-lg bg-surface p-5 shadow-lift">
+          <figcaption className="type-eyebrow text-accent-text">{tr.emptyExample}</figcaption>
+          <Who name={tr.askWhoPlaceholder} icon="send" when={tr.emptyExampleWhen}>
+            {tr.youAsked} <b>{tr.askWhoPlaceholder}</b>
+          </Who>
+          <p className={titleClass}>{tr.dishPlaceholder}</p>
+          <p className="type-handwritten text-lg leading-[1.3] text-ink-muted">“{tr.notePlaceholder}”</p>
+        </div>
+      </figure>
+
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <p className="type-eyebrow text-lg text-accent-text">{tr.emptyEyebrow}</p>
+          <h2 id="req-empty" className="type-display text-2xl leading-[1.1] text-balance">
+            {tr.emptyTitle}
+          </h2>
+        </div>
+        <ol className="grid grid-cols-3 gap-2">
+          {tr.emptySteps.map(([title, body], i) => (
+            <li key={title} className="relative flex flex-col items-center gap-2 text-center">
+              {/* A dotted thread from each step to the next. */}
+              {i < tr.emptySteps.length - 1 && (
+                <span
+                  aria-hidden
+                  className="absolute top-6 left-[calc(50%+1.75rem)] w-[calc(100%-3.5rem+0.5rem)] border-t-2 border-dotted border-line-strong"
+                />
+              )}
+              <span aria-hidden className="grid size-12 place-items-center rounded-full bg-accent-soft text-accent-text">
+                <Icon name={EMPTY_ICONS[i]!} size="1.4rem" />
+              </span>
+              <b className="leading-[1.2]">{title}</b>
+              <span className="text-[0.875rem] leading-[1.3] text-ink-muted">{body}</span>
+            </li>
+          ))}
+        </ol>
+        <Button
+          variant="primary"
+          icon="send"
+          className="w-full desk:w-auto desk:self-start desk:pr-[1.4rem] desk:pl-[1.1rem]"
+          onPress={onSend}
+        >
+          {tr.sendRequest}
+        </Button>
       </div>
-      <ol className="flex flex-col gap-4">
-        {tr.emptySteps.map(([title, body], i) => (
-          <li key={title} className="grid grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-3.5">
-            <span
-              aria-hidden
-              className="type-display grid size-10 place-items-center rounded-full bg-accent-soft text-lg leading-none text-accent-text"
-            >
-              {i + 1}
-            </span>
-            <p className="flex flex-col leading-[1.3]">
-              <b>{title}</b>
-              <span className="text-ink-muted">{body}</span>
-            </p>
-          </li>
-        ))}
-      </ol>
-      <Button
-        variant="primary"
-        icon="send"
-        className="w-full desk:w-auto desk:self-start desk:pr-[1.4rem] desk:pl-[1.1rem]"
-        onPress={onSend}
-      >
-        {tr.sendRequest}
-      </Button>
     </section>
   );
 }

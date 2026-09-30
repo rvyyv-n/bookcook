@@ -602,11 +602,12 @@ export const en = {
       youTold: 'You told it. It’s in your cookbook.',
       emptyEyebrow: 'No requests yet',
       emptyTitle: 'Which dish do you wish you could make like they do?',
+      emptyExample: 'For example',
+      emptyExampleWhen: 'Just now',
       emptySteps: [
-        ['Pick a dish', 'Name the recipe you miss and who to ask.'],
-        ['Send the link', 'It opens in Bookcook on their phone.'],
-        ['They tell it', 'They talk it through out loud. No typing.'],
-        ['It’s in your cookbook', 'The recipe lands here, in their words.'],
+        ['You ask', 'Send a link by message.'],
+        ['They tell it', 'Out loud, in their words.'],
+        ['You keep it', 'It lands in your cookbook.'],
       ] as const,
       // The Send request sheet.
       sheetTitle: 'Ask for a recipe',
