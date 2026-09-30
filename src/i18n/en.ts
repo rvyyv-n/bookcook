@@ -156,7 +156,6 @@ export const en = {
   speak: {
     timerDone: (label: string) => `Your ${label} timer is done.`,
     stepOf: (n: number, total: number) => `Step ${n} of ${total}.`,
-    lastStep: 'That was the last step. Well done!',
     noTimer: 'This step has no timer. Say “set a timer for 5 minutes”.',
     timerStarted: (label: string) => `${label} timer started.`,
     ingredientsIntro: 'You will need:',
@@ -164,10 +163,8 @@ export const en = {
 
   ui: {
     appName: 'Bookcook',
-    tagline: 'Recipes in their own words.',
     common: {
       undo: 'Undo',
-      dismiss: 'Dismiss',
       notifications: 'Notifications',
       cancel: 'Cancel',
       close: 'Close',
@@ -181,7 +178,6 @@ export const en = {
       done: 'Done',
       add: 'Add',
       remove: 'Remove',
-      loading: 'Loading…',
       minutes: (n: number) => `${n} min`,
       serves: (n: number) => `Serves ${n}`,
       fromKitchen: (author: string) => `From ${author}’s kitchen`,
@@ -249,7 +245,6 @@ export const en = {
       examplesAdded: 'Three example recipes added.',
       basedOnTitle: (title: string) => `Based on ${title}`,
       newCollection: 'New collection',
-      collectionName: 'Collection name',
       collectionAdded: (n: string) => `Added “${n}”.`,
       collectionDeleted: (n: string) => `Deleted “${n}”.`,
       deleteCollection: 'Delete collection',
@@ -580,7 +575,7 @@ export const en = {
       emptyTitle: 'What’s cooking this week?',
       emptySample: 'For example',
       emptySampleItems: { onions: '2 onions', coriander: '1 bunch coriander', yogurt: '1 cup yogurt' },
-      emptySampleFrom: 'From Nihari',
+      emptySampleFrom: 'From Biryani',
       emptySteps: [
         { title: 'Pick a recipe', body: 'Any one you like' },
         { title: 'Add to grocery', body: 'One tap' },
@@ -631,7 +626,7 @@ export const en = {
       sheetTitle: 'Ask for a recipe',
       sheetDescription: 'They’ll get a link. When they open it, the request waits for them in Bookcook.',
       dish: 'Which dish?',
-      dishPlaceholder: 'Nihari',
+      dishPlaceholder: 'Biryani',
       askWho: 'Who are you asking?',
       askWhoPlaceholder: 'Mom',
       note: 'A note (optional)',
@@ -647,7 +642,6 @@ export const en = {
       linkCopied: 'Link copied. Paste it into a message.',
       // Opening a request link.
       incomingTitle: 'A recipe request',
-      incomingFrom: (from: string) => `${from} would love to learn`,
       incomingSomeone: 'Someone would love to learn',
       incomingBody: 'Tell it in your own words, now or later. It waits on your Requests page until you do.',
       addToRequests: 'Add to my requests',
