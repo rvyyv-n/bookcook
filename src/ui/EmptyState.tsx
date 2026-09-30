@@ -71,9 +71,9 @@ export function EmptyState({
             {title}
           </Heading>
         </div>
-        <ol className={cx('grid grid-cols-3 gap-2', stepsRise.className)} style={stepsRise.style}>
+        <ol className={cx('grid grid-cols-3 gap-x-2', stepsRise.className)} style={stepsRise.style}>
           {steps.map((step, i) => (
-            <li key={step.title} className="relative flex flex-col items-center gap-2 text-center">
+            <li key={step.title} className="relative flex flex-col items-center gap-2.5 text-center">
               {/* A dotted thread from each step to the next. */}
               {i < steps.length - 1 && (
                 <span
@@ -84,8 +84,10 @@ export function EmptyState({
               <span aria-hidden className="grid size-12 place-items-center rounded-full bg-accent-soft text-accent-text">
                 <Icon name={step.icon} size="1.4rem" />
               </span>
-              <b className="leading-[1.2]">{step.title}</b>
-              <span className="text-[0.875rem] leading-[1.3] text-ink-muted">{step.body}</span>
+              <span className="flex flex-col gap-0.5">
+                <b className="leading-[1.2] text-balance">{step.title}</b>
+                <span className="text-[0.875rem] leading-[1.3] text-balance text-ink-muted">{step.body}</span>
+              </span>
             </li>
           ))}
         </ol>

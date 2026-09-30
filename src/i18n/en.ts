@@ -242,9 +242,9 @@ export const en = {
         quote: 'I learned by watching her hands, not measuring.',
       },
       emptySteps: [
-        { title: 'Say it', body: 'Out loud, or type it.' },
-        { title: 'We write it', body: 'Ingredients and steps, tidied.' },
-        { title: 'Cook from it', body: 'Step by step, hands free.' },
+        { title: 'Say it', body: 'Out loud or typed' },
+        { title: 'We write it', body: 'Tidied into steps' },
+        { title: 'Cook from it', body: 'Hands free' },
       ] as const,
       examplesAdded: 'Three example recipes added.',
       basedOnTitle: (title: string) => `Based on ${title}`,
@@ -582,9 +582,9 @@ export const en = {
       emptySampleItems: { onions: '2 onions', coriander: '1 bunch coriander', yogurt: '1 cup yogurt' },
       emptySampleFrom: 'From Nihari',
       emptySteps: [
-        { title: 'Pick a recipe', body: 'Open one in your cookbook.' },
-        { title: 'Add to grocery', body: 'Its ingredients land here.' },
-        { title: 'Shop by aisle', body: 'Tick things off as you go.' },
+        { title: 'Pick a recipe', body: 'Any one you like' },
+        { title: 'Add to grocery', body: 'One tap' },
+        { title: 'Shop by aisle', body: 'Tick as you go' },
       ] as const,
       browse: 'Browse the cookbook',
       aisles: {
@@ -623,9 +623,9 @@ export const en = {
       emptyExample: 'For example',
       emptyExampleWhen: 'Just now',
       emptySteps: [
-        { title: 'You ask', body: 'Send a link by message.' },
-        { title: 'They tell it', body: 'Out loud, in their words.' },
-        { title: 'You keep it', body: 'It lands in your cookbook.' },
+        { title: 'You ask', body: 'They get a link' },
+        { title: 'They tell it', body: 'In their words' },
+        { title: 'You keep it', body: 'In your cookbook' },
       ] as const,
       // The Send request sheet.
       sheetTitle: 'Ask for a recipe',
