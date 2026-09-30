@@ -23,11 +23,28 @@ const rowBase =
   'data-[disabled]:cursor-not-allowed data-[disabled]:text-ink-muted';
 const rowClass = `${rowBase} border-b border-line`;
 
-function RowContent({ icon, label, value }: { icon?: IconName; label: ReactNode; value?: ReactNode }) {
+function RowContent({
+  icon,
+  label,
+  description,
+  value,
+}: {
+  icon?: IconName;
+  label: ReactNode;
+  description?: ReactNode;
+  value?: ReactNode;
+}) {
   return (
     <>
       {icon && <Icon name={icon} className="shrink-0" />}
-      <span className="flex-1 font-bold">{label}</span>
+      {description ? (
+        <span className="flex flex-1 flex-col py-1">
+          <span className="font-bold">{label}</span>
+          <span className="text-[0.9375rem] text-ink-muted">{description}</span>
+        </span>
+      ) : (
+        <span className="flex-1 font-bold">{label}</span>
+      )}
       {value && <span className="min-w-0 text-right text-ink-muted">{value}</span>}
       <Icon name="chevron" className="shrink-0 text-ink-muted" />
     </>
@@ -38,6 +55,7 @@ function RowContent({ icon, label, value }: { icon?: IconName; label: ReactNode;
 export function RowButton({
   icon,
   label,
+  description,
   value,
   href,
   onPress,
@@ -46,6 +64,8 @@ export function RowButton({
 }: {
   icon?: IconName;
   label: ReactNode;
+  /** A line under the label, for a choice that needs explaining. */
+  description?: ReactNode;
   value?: ReactNode;
   href?: string;
   onPress?: ButtonProps['onPress'];
@@ -55,12 +75,12 @@ export function RowButton({
   if (href)
     return (
       <AriaLink href={href} className={cx(rowClass, className)}>
-        <RowContent icon={icon} label={label} value={value} />
+        <RowContent icon={icon} label={label} description={description} value={value} />
       </AriaLink>
     );
   return (
     <AriaButton onPress={onPress} isDisabled={isDisabled} className={cx(rowClass, className)}>
-      <RowContent icon={icon} label={label} value={value} />
+      <RowContent icon={icon} label={label} description={description} value={value} />
     </AriaButton>
   );
 }

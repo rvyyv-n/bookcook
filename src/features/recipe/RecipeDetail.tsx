@@ -22,7 +22,7 @@ import { Photo } from '../../ui/Photo';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
 import { IngredientControls, IngredientList } from './IngredientsPanel';
-import { shareRecipe } from './share';
+import { ShareSheet } from './ShareSheet';
 import { useAdjustedIngredients } from './useAdjusted';
 
 /**
@@ -41,14 +41,17 @@ interface Action {
   onPress: () => void;
 }
 
-function useActions(recipe: Recipe, adj: Adjusted): Action[] {
+/** The recipe's secondary actions, and the Share sheet they open (render it beside them). */
+function useActions(recipe: Recipe, adj: Adjusted): { actions: Action[]; shareSheet: ReactNode } {
   const t = useT();
   const navigate = useNavigate();
   const toast = useToast();
   const settings = useSettings();
   const answered = useRequestAnsweredBy(recipe.id);
+  const [sharing, setSharing] = useState(false);
   const s = t.ui.recipe.short;
-  return [
+  const shareSheet = <ShareSheet recipe={recipe} requestId={answered?.id} isOpen={sharing} onOpenChange={setSharing} />;
+  const actions: Action[] = [
     { id: 'edit', icon: 'edit', label: t.ui.common.edit, short: s.edit, onPress: () => navigate(`/r/${recipe.id}/edit`) },
     {
       id: 'fork',
@@ -76,12 +79,11 @@ function useActions(recipe: Recipe, adj: Adjusted): Action[] {
       icon: 'share',
       label: t.ui.recipe.share,
       short: s.share,
-      onPress: async () => {
-        if ((await shareRecipe(recipe, answered?.id, t)) === 'copied') toast.show({ message: t.ui.recipe.copied, tone: 'success' });
-      },
+      onPress: () => setSharing(true),
     },
     { id: 'print', icon: 'print', label: t.ui.recipe.print, short: s.print, onPress: () => printPage(recipe.title) },
   ];
+  return { actions, shareSheet };
 }
 
 const outlined =
@@ -507,7 +509,8 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
   const t = useT();
   const settings = useSettings();
   // Print stays on desktop (the pane beside the list, and the full page); on a phone it's one button too many.
-  const actions = useActions(recipe, adj).filter((a) => pane || a.id !== 'print');
+  const { actions: all, shareSheet } = useActions(recipe, adj);
+  const actions = all.filter((a) => pane || a.id !== 'print');
   const cfg = skinConfig[settings.skin];
   const photo = recipe.photoIds[0];
   const center = !pane && cfg.detailAlign === 'center';
@@ -549,6 +552,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
 
       <div className={cx('no-print flex flex-col gap-3.5 pt-5.5', pane ? 'px-8' : 'px-5')}>
         <BasedOn recipe={recipe} />
+        {shareSheet}
         {pane ? (
           <div className="flex flex-wrap gap-2">
             <StartCooking recipe={recipe} />
@@ -576,7 +580,7 @@ function ColumnView({ recipe, adj, pane }: { recipe: Recipe; adj: Adjusted; pane
 /** Desktop page: title block and actions beside the photo, then ingredients beside the story and steps. */
 function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
   const t = useT();
-  const actions = useActions(recipe, adj);
+  const { actions, shareSheet } = useActions(recipe, adj);
   const photo = recipe.photoIds[0];
   const meta = metaLine(recipe, t);
   return (
@@ -597,6 +601,7 @@ function DeskView({ recipe, adj }: { recipe: Recipe; adj: Adjusted }) {
               <StartCooking recipe={recipe} />
               <Actions actions={actions} style="row" />
             </div>
+            {shareSheet}
           </div>
         </div>
         {photo && <Photo id={photo} alt={recipe.title} className="h-full min-h-75 w-full" />}
