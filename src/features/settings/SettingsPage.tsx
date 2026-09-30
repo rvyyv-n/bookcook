@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button as AriaButton, Disclosure, DisclosurePanel, Heading, Link } from 'react-aria-components';
+import { Button as AriaButton, Disclosure, Heading, Link } from 'react-aria-components';
 import { ShortcutList } from '../../app/shortcuts';
 import { useAppUpdate } from '../../app/update';
 import { useIsDesktop } from '../../app/useMediaQuery';
@@ -11,6 +11,7 @@ import { Segmented, Switch } from '../../ui/Controls';
 import { TextSizeSegmented } from './TextSizeSegmented';
 import { TextField } from '../../ui/Field';
 import { cx } from '../../ui/cx';
+import { FoldPanel } from '../../ui/Fold';
 import { Icon, type IconName } from '../../ui/Icon';
 import { RowButton, SelectRow } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
@@ -207,7 +208,7 @@ function VoiceSection({ onCommands }: { onCommands: () => void }) {
             />
           </AriaButton>
         </Heading>
-        <DisclosurePanel className="h-(--disclosure-panel-height) overflow-clip transition-[height] duration-(--dur) ease-(--ease-out)">
+        <FoldPanel>
           {/* Room at the edges so the card's shadow isn't clipped while the panel opens. */}
           <div className="-mx-2 px-2 pt-3.5 pb-2">
             <div className={cardClass}>
@@ -221,7 +222,7 @@ function VoiceSection({ onCommands }: { onCommands: () => void }) {
               <RowButton label={ts.voiceCommands} value={ts.voiceCommandsHint} onPress={onCommands} />
             </div>
           </div>
-        </DisclosurePanel>
+        </FoldPanel>
       </Disclosure>
     </section>
   );

@@ -1,6 +1,7 @@
 import type { ReactNode, Ref } from 'react';
 import { cx } from './cx';
 import { Icon, type IconName } from './Icon';
+import { useStagger } from './motion';
 
 /**
  * An empty page that explains itself: a sample of what will be here on a slightly turned sheet of
@@ -33,16 +34,21 @@ export function EmptyState({
   className?: string;
 }) {
   const Heading = headingLevel === 1 ? 'h1' : 'h2';
+  // The sample, the question, the steps and the action arrive in that order, the first time.
+  const sampleRise = useStagger(`empty:${id}:sample`, 0);
+  const titleRise = useStagger(`empty:${id}:title`, 1);
+  const stepsRise = useStagger(`empty:${id}:steps`, 2);
+  const actionRise = useStagger(`empty:${id}:action`, 3);
   return (
     <section
       aria-labelledby={id}
       className={cx(
-        'flex animate-rise flex-col gap-7 pt-2 desk:grid desk:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] desk:items-center desk:gap-12',
+        'flex flex-col gap-7 pt-2 desk:grid desk:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] desk:items-center desk:gap-12',
         className,
       )}
     >
       {/* Two sheets of paper, the front one turned a little, like a note left on the counter. */}
-      <figure aria-label={sampleLabel} className="relative mx-3 mt-2 desk:mx-0">
+      <figure aria-label={sampleLabel} className={cx('relative mx-3 mt-2 desk:mx-0', sampleRise.className)} style={sampleRise.style}>
         <div aria-hidden className="absolute inset-0 rotate-[2.5deg] rounded-lg bg-sunk shadow-paper" />
         <div className="relative flex -rotate-[1.5deg] flex-col gap-3 rounded-lg bg-surface p-5 shadow-lift">
           <figcaption className="type-eyebrow text-accent-text">{sampleLabel}</figcaption>
@@ -51,7 +57,7 @@ export function EmptyState({
       </figure>
 
       <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
+        <div className={cx('flex flex-col gap-2', titleRise.className)} style={titleRise.style}>
           <p className="type-eyebrow text-lg text-accent-text">{eyebrow}</p>
           <Heading
             id={id}
@@ -65,7 +71,7 @@ export function EmptyState({
             {title}
           </Heading>
         </div>
-        <ol className="grid grid-cols-3 gap-2">
+        <ol className={cx('grid grid-cols-3 gap-2', stepsRise.className)} style={stepsRise.style}>
           {steps.map((step, i) => (
             <li key={step.title} className="relative flex flex-col items-center gap-2 text-center">
               {/* A dotted thread from each step to the next. */}
@@ -83,7 +89,11 @@ export function EmptyState({
             </li>
           ))}
         </ol>
-        {action}
+        {action && (
+          <div className={cx('flex flex-col', actionRise.className)} style={actionRise.style}>
+            {action}
+          </div>
+        )}
       </div>
     </section>
   );

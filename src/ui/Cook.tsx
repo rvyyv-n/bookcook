@@ -152,7 +152,7 @@ export function PinnedTimer({
       className={cx(
         // Rises in when started; turning hot warms the colours more slowly than anything else moves.
         'flex min-h-19 min-w-0 items-center gap-2.5 rounded-md py-2 pl-2 text-left data-[pressed]:scale-[.98]',
-        '[transition:transform_var(--dur)_var(--ease-out),background-color_400ms_var(--ease-out),color_400ms_var(--ease-out)]',
+        '[transition:transform_var(--dur)_var(--ease-out),background-color_var(--dur-slow)_var(--ease-out),color_var(--dur-slow)_var(--ease-out)]',
         leaving ? 'pointer-events-none animate-fade-out' : 'animate-rise',
         wide ? 'min-w-[12rem] pr-4' : 'pr-3',
         hot

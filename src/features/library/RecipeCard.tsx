@@ -3,6 +3,7 @@ import type { Recipe } from '../../db/types';
 import { useT } from '../../i18n';
 import { formatMinutes, totalMinutes } from '../../lib/format';
 import { cx } from '../../ui/cx';
+import { useStagger } from '../../ui/motion';
 import { Photo } from '../../ui/Photo';
 
 /** "Mom · 1 hr 45 min", and "Based on Mom's Pasta" for a version. */
@@ -17,10 +18,11 @@ function useCardLines(recipe: Recipe, parentTitle: string | undefined) {
 let opened: string | undefined;
 
 /** Phone cookbook card: a 4:3 photo (or stripes), the title, then who and how long. The whole card is one link. */
-export function RecipeCard({ recipe, parentTitle }: { recipe: Recipe; parentTitle?: string }) {
+export function RecipeCard({ recipe, parentTitle, index = 0 }: { recipe: Recipe; parentTitle?: string; index?: number }) {
   const { meta, extra } = useCardLines(recipe, parentTitle);
+  const rise = useStagger(`recipe:${recipe.id}`, index);
   return (
-    <li className="min-w-0">
+    <li className={cx('min-w-0', rise.className)} style={rise.style}>
       <Link
         to={`/r/${recipe.id}`}
         onClick={() => (opened = recipe.id)}
@@ -54,15 +56,18 @@ export function RecipeRow({
   parentTitle,
   href,
   selected,
+  index = 0,
 }: {
   recipe: Recipe;
   parentTitle?: string;
   href: string;
   selected?: boolean;
+  index?: number;
 }) {
   const { meta, extra } = useCardLines(recipe, parentTitle);
+  const rise = useStagger(`row:${recipe.id}`, index);
   return (
-    <li>
+    <li className={rise.className} style={rise.style}>
       <Link
         to={href}
         aria-current={selected ? 'true' : undefined}

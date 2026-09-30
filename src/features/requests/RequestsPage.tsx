@@ -9,6 +9,7 @@ import { useT } from '../../i18n';
 import { relativeTime } from '../../lib/format';
 import { Button, ButtonLink } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
+import { useStagger } from '../../ui/motion';
 import { cx } from '../../ui/cx';
 import { TextField } from '../../ui/Field';
 import { Icon, type IconName } from '../../ui/Icon';
@@ -104,12 +105,13 @@ function RemoveButton({ request }: { request: RecipeRequest }) {
 }
 
 /** Someone wants this from you: "Sam would love to learn · 3 days ago", then Tell it now (or Continue a draft). */
-function IncomingCard({ request, draft }: { request: RecipeRequest; draft?: Draft }) {
+function IncomingCard({ request, draft, index }: { request: RecipeRequest; draft?: Draft; index: number }) {
+  const rise = useStagger(`request:${request.id}`, index);
   const t = useT();
   const tr = t.ui.requests;
   const tellIt = useTellIt();
   return (
-    <li className={cardClass}>
+    <li className={cx(cardClass, rise.className)} style={rise.style}>
       <Who name={request.requestedBy} icon="requests" when={relativeTime(request.createdAt)}>
         <b>{request.requestedBy || tr.someone}</b> {tr.wouldLove}
       </Who>
@@ -138,13 +140,14 @@ function IncomingCard({ request, draft }: { request: RecipeRequest; draft?: Draf
 }
 
 /** You asked someone: "You asked Nani · 2 weeks ago", with Send again. */
-function OutgoingCard({ request }: { request: RecipeRequest }) {
+function OutgoingCard({ request, index }: { request: RecipeRequest; index: number }) {
+  const rise = useStagger(`request:${request.id}`, index);
   const t = useT();
   const tr = t.ui.requests;
   const toast = useToast();
   const { myName } = useSettings();
   return (
-    <li className={cardClass}>
+    <li className={cx(cardClass, rise.className)} style={rise.style}>
       <Who name={request.askedOf} icon="send" when={relativeTime(request.createdAt)}>
         {tr.youAsked} {request.askedOf && <b>{request.askedOf}</b>}
       </Who>
@@ -167,7 +170,8 @@ function OutgoingCard({ request }: { request: RecipeRequest }) {
 }
 
 /** "Grandma's Banana Bread · Nani told it. It's in your cookbook." on --success-soft. */
-function ToldCard({ request, recipeTitle }: { request: RecipeRequest; recipeTitle?: string }) {
+function ToldCard({ request, recipeTitle, index }: { request: RecipeRequest; recipeTitle?: string; index: number }) {
+  const rise = useStagger(`told:${request.id}`, index);
   const t = useT();
   const tr = t.ui.requests;
   const teller = request.direction === 'outgoing' ? request.askedOf : undefined;
@@ -185,7 +189,7 @@ function ToldCard({ request, recipeTitle }: { request: RecipeRequest; recipeTitl
   const cls =
     'grid grid-cols-[3.2rem_minmax(0,1fr)] items-center gap-3.5 rounded-lg bg-success-soft px-4.5 py-4 text-ink no-underline desk:flex desk:flex-col desk:items-start desk:gap-2.5 desk:p-5';
   return (
-    <li>
+    <li className={rise.className} style={rise.style}>
       {recipeTitle && request.fulfilledRecipeId ? (
         <Link href={`/r/${request.fulfilledRecipeId}`} className={cx(cls, 'h-full data-[hovered]:shadow-paper')}>
           {body}
@@ -328,22 +332,22 @@ export function RequestsPage() {
       {!requests.length && <EmptyRequests onSend={openSheet} />}
       {incoming.length > 0 && (
         <Section id="req-waiting" title={tr.waiting}>
-          {incoming.map((r) => (
-            <IncomingCard key={r.id} request={r} draft={draftFor(r.id)} />
+          {incoming.map((r, i) => (
+            <IncomingCard key={r.id} index={i} request={r} draft={draftFor(r.id)} />
           ))}
         </Section>
       )}
       {outgoing.length > 0 && (
         <Section id="req-asked" title={tr.youAsked}>
-          {outgoing.map((r) => (
-            <OutgoingCard key={r.id} request={r} />
+          {outgoing.map((r, i) => (
+            <OutgoingCard key={r.id} index={i} request={r} />
           ))}
         </Section>
       )}
       {told.length > 0 && (
         <Section id="req-told" title={tr.told}>
-          {told.map((r) => (
-            <ToldCard key={r.id} request={r} recipeTitle={r.fulfilledRecipeId ? titles.get(r.fulfilledRecipeId) : undefined} />
+          {told.map((r, i) => (
+            <ToldCard key={r.id} index={i} request={r} recipeTitle={r.fulfilledRecipeId ? titles.get(r.fulfilledRecipeId) : undefined} />
           ))}
         </Section>
       )}

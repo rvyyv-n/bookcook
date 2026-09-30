@@ -25,7 +25,7 @@ function useDragToClose(close: () => void, enabled: boolean) {
     const { el, dy } = d;
     const fast = dy / Math.max(1, e.timeStamp - d.t) > FLICK;
     if (e.type === 'pointerup' && (dy > el.offsetHeight / 3 || fast)) {
-      el.style.transition = 'transform 180ms var(--ease-in)';
+      el.style.transition = 'transform var(--dur-exit) var(--ease-in)';
       el.style.transform = 'translateY(100%)';
       el.addEventListener(
         'transitionend',

@@ -83,7 +83,10 @@ export function AudioPlayer({
       {playing && (
         <div className="flex min-w-32 flex-1 items-center gap-3" aria-hidden>
           <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-line">
-            <div className="h-full rounded-full bg-accent-mark transition-[width] duration-200" style={{ width: `${progress * 100}%` }} />
+            <div
+              className="h-full rounded-full bg-accent-mark transition-[width] duration-(--dur) ease-linear"
+              style={{ width: `${progress * 100}%` }}
+            />
           </div>
           <span className="text-[0.875rem] text-ink-muted tabular-nums">
             {formatClock(time)} / {length}

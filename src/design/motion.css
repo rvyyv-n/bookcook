@@ -8,6 +8,14 @@
 :root {
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --dur-exit: 150ms;
+  /* Slow changes of state that shouldn't draw the eye, like a timer warming as it runs out. */
+  --dur-slow: 400ms;
+  /* Moving between screens: a slide on the phone, a cross-fade between tabs and on desktop. */
+  --dur-page: 340ms;
+  --dur-page-fade: 180ms;
+  --ease-page: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Items in a collection arrive one after another, this far apart, up to the eighth. */
+  --stagger-step: 40ms;
 }
 
 @theme {
@@ -79,12 +87,12 @@
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
-    animation-duration: 340ms;
-    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation-duration: var(--dur-page);
+    animation-timing-function: var(--ease-page);
   }
   html[data-nav='fade']::view-transition-old(root),
   html[data-nav='fade']::view-transition-new(root) {
-    animation-duration: 180ms;
+    animation-duration: var(--dur-page-fade);
   }
   @media (width < 56.25rem) {
     html[data-nav='forward']::view-transition-old(root) {
@@ -131,6 +139,18 @@
   from {
     transform: translateX(-25%);
     opacity: 0.7;
+  }
+}
+
+/*
+ * A collection arriving: each item rises in a beat after the one before (set --i to its index), so
+ * a page of cards reads as a set rather than one block. Under Reduce Motion they are all there at once.
+ */
+@utility animate-stagger {
+  animation: var(--animate-rise);
+  animation-delay: calc(min(var(--i, 0), 8) * var(--stagger-step));
+  @media (prefers-reduced-motion: reduce) {
+    animation-delay: 0s;
   }
 }
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Form } from 'react-aria-components';
 import { addManualItem, clearChecked, restoreGroceryItems, setChecked } from '../../db/grocery';
 import { useGrocery, useRecipes } from '../../db/hooks';
@@ -7,6 +7,7 @@ import { useT } from '../../i18n';
 import { formatIngredient } from '../../lib/parse/ingredient';
 import { Button, ButtonLink } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
+import { useStagger } from '../../ui/motion';
 import { Icon, type IconName } from '../../ui/Icon';
 import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
 import type { Aisle } from '../../lib/parse/aisles';
@@ -96,6 +97,16 @@ function AddItem() {
         {t.ui.grocery.add}
       </Button>
     </Form>
+  );
+}
+
+/** An aisle of the list: it rises in with the others the first time the list is shown. */
+function AisleSection({ aisle, index, children }: { aisle: Aisle; index: number; children: ReactNode }) {
+  const rise = useStagger(`aisle:${aisle}`, index);
+  return (
+    <section aria-labelledby={`aisle-${index}`} className={cx('flex flex-col desk:pb-4.5', rise.className)} style={rise.style}>
+      {children}
+    </section>
   );
 }
 
@@ -217,7 +228,7 @@ export function GroceryPage() {
       ) : (
         <div className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1">
           {groups.map((g, gi) => (
-            <section key={g.aisle} aria-labelledby={`aisle-${gi}`} className="flex flex-col desk:pb-4.5">
+            <AisleSection key={g.aisle} aisle={g.aisle} index={gi}>
               <h2 id={`aisle-${gi}`} className="type-heading mb-1 flex items-center gap-2 text-lg">
                 <TopicIcon name={AISLE_ICONS[g.aisle]} size="1.25rem" className="shrink-0 text-ink-muted" />
                 {t.ui.grocery.aisles[g.aisle]}
@@ -227,7 +238,7 @@ export function GroceryPage() {
                   <Item key={item.id} item={item} titles={titles} leaving={clearing.has(item.id)} entering={restored.has(item.id)} />
                 ))}
               </ul>
-            </section>
+            </AisleSection>
           ))}
         </div>
       )}

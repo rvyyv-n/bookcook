@@ -242,8 +242,8 @@ function CookbookPhone() {
             {!searching && <SortMenu />}
           </div>
           <ul className={cx(cardGridClass, 'pt-1.5 pb-7')} aria-label={t.ui.library.recipes}>
-            {list.map((r) => (
-              <RecipeCard key={r.id} recipe={r} parentTitle={data.parentTitle(r)} />
+            {list.map((r, i) => (
+              <RecipeCard key={r.id} index={i} recipe={r} parentTitle={data.parentTitle(r)} />
             ))}
           </ul>
         </>
@@ -291,8 +291,15 @@ function CookbookDesktop() {
               {!searching && <SortMenu />}
             </div>
             <ul className="flex flex-col gap-1 px-3 pt-2.5 pb-6" aria-label={t.ui.library.recipes}>
-              {list.map((r) => (
-                <RecipeRow key={r.id} recipe={r} parentTitle={data.parentTitle(r)} href={`/?r=${r.id}`} selected={r.id === selected?.id} />
+              {list.map((r, i) => (
+                <RecipeRow
+                  key={r.id}
+                  index={i}
+                  recipe={r}
+                  parentTitle={data.parentTitle(r)}
+                  href={`/?r=${r.id}`}
+                  selected={r.id === selected?.id}
+                />
               ))}
             </ul>
           </>

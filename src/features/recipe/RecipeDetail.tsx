@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from 'react';
-import { Button as AriaButton, Disclosure, DisclosurePanel, Heading, Link as AriaLink } from 'react-aria-components';
+import { Button as AriaButton, Disclosure, Heading, Link as AriaLink } from 'react-aria-components';
 import { useNavigate, useParams } from 'react-router';
 import { useIsDesktop } from '../../app/useMediaQuery';
+import { FoldPanel } from '../../ui/Fold';
 import { skinConfig } from '../../design/skin';
 import { setRecipeCollections } from '../../db/collections';
 import { addToGrocery } from '../../db/grocery';
@@ -344,12 +345,9 @@ function InHerWords({ transcript }: { transcript: string }) {
           </span>
         </AriaButton>
       </Heading>
-      {/* The height opens and closes with the panel: --disclosure-panel-height is React Aria's. */}
-      <DisclosurePanel className="h-(--disclosure-panel-height) overflow-clip transition-[height] duration-(--dur) ease-(--ease-out)">
-        <p className="type-handwritten rounded-b-[min(var(--radius-md),18px)] bg-sunk px-4.5 pt-3 pb-4 text-lg leading-[1.5]">
-          {transcript}
-        </p>
-      </DisclosurePanel>
+      <FoldPanel panelClassName="rounded-b-[min(var(--radius-md),18px)] bg-sunk">
+        <p className="type-handwritten px-4.5 pt-3 pb-4 text-lg leading-[1.5]">{transcript}</p>
+      </FoldPanel>
     </Disclosure>
   );
 }

@@ -33,6 +33,7 @@ export function Segmented<K extends string>({
   className?: string;
   labelHidden?: boolean;
 }) {
+  const selected = options.findIndex((o) => o.id === value);
   return (
     <RadioGroup
       value={value}
@@ -43,18 +44,26 @@ export function Segmented<K extends string>({
       <Label className={cx('font-bold', labelHidden && 'sr-only')}>{label}</Label>
       <div
         className={cx(
-          'grid auto-cols-fr grid-flow-col p-1 bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
+          'relative isolate grid auto-cols-fr grid-flow-col p-1 bg-(--control-fill) shadow-[inset_0_0_0_1.5px_var(--line-strong)]',
           size === 'L' ? 'min-h-[3.5rem]' : 'min-h-[4rem]',
           'rounded-full',
         )}
       >
+        {/* The selected pill slides to the chosen option rather than jumping; the options are equal widths. */}
+        {selected >= 0 && (
+          <span
+            aria-hidden
+            className="absolute inset-y-1 left-1 -z-10 rounded-full bg-ink transition-transform duration-(--dur) ease-(--ease-out)"
+            style={{ width: `calc((100% - 0.5rem) / ${options.length})`, transform: `translateX(${selected * 100}%)` }}
+          />
+        )}
         {options.map((o) => (
           <Radio
             key={o.id}
             value={o.id}
             className={cx(
               'flex min-w-20 cursor-pointer items-center justify-center px-3 text-center leading-tight font-bold text-ink transition-colors duration-(--dur)',
-              'data-[hovered]:bg-(--control-fill-hover) data-[selected]:bg-ink data-[selected]:text-paper',
+              'data-[hovered]:not-data-[selected]:bg-(--control-fill-hover) data-[selected]:text-paper',
               'rounded-full',
               o.className,
             )}

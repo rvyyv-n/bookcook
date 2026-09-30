@@ -14,6 +14,7 @@ import { Photo } from '../../ui/Photo';
 import { useToast } from '../../ui/Toast';
 import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
 import { cardGridClass, RecipeCard } from './RecipeCard';
+import { useStagger } from '../../ui/motion';
 import { topicIcon } from './topics';
 
 function PageTitle({ title, count, action }: { title: string; count?: string; action?: ReactNode }) {
@@ -32,6 +33,7 @@ const tileGridClass = 'grid grid-cols-[repeat(auto-fill,minmax(min(100%,15rem),1
 
 /** A collection or tag: its icon, name and count, and the first few recipes in it. */
 function TopicTile({
+  index,
   href,
   icon,
   name,
@@ -43,9 +45,11 @@ function TopicTile({
   name: string;
   count: string;
   recipes: Recipe[];
+  index: number;
 }) {
+  const rise = useStagger(`tile:${href}`, index);
   return (
-    <li className="min-w-0">
+    <li className={cx('min-w-0', rise.className)} style={rise.style}>
       <Link
         href={href}
         className="group flex h-full flex-col gap-3.5 rounded-lg bg-surface p-4.5 text-ink no-underline shadow-paper transition-transform duration-(--dur) ease-(--ease-out) data-[hovered]:-translate-y-0.5"
@@ -79,8 +83,8 @@ function RecipeGrid({ recipes }: { recipes: Recipe[] }) {
   if (!recipes.length) return <p className="py-6 text-lg text-ink-muted">{t.ui.library.emptyFilter}</p>;
   return (
     <ul className={cx(cardGridClass, 'pb-8')} aria-label={t.ui.library.recipes}>
-      {recipes.map((r) => (
-        <RecipeCard key={r.id} recipe={r} parentTitle={r.forkedFromId ? byId.get(r.forkedFromId) : undefined} />
+      {recipes.map((r, i) => (
+        <RecipeCard key={r.id} index={i} recipe={r} parentTitle={r.forkedFromId ? byId.get(r.forkedFromId) : undefined} />
       ))}
     </ul>
   );
@@ -177,11 +181,12 @@ export function CollectionsPage() {
         </ul>
       ) : (
         <ul className={tileGridClass}>
-          {collections.map((c) => {
+          {collections.map((c, i) => {
             const list = inCollection(c.id);
             return (
               <TopicTile
                 key={c.id}
+                index={i}
                 href={`/c/${c.id}`}
                 icon={topicIcon(c.name, c.icon)}
                 name={c.name}
@@ -257,9 +262,10 @@ export function TagsPage() {
       <PageTitle title={t.ui.nav.tags} />
       {tags.length ? (
         <ul className={tileGridClass}>
-          {tags.map(([tag, list]) => (
+          {tags.map(([tag, list], i) => (
             <TopicTile
               key={tag}
+              index={i}
               href={`/t/${encodeURIComponent(tag)}`}
               icon={topicIcon(tag)}
               name={tag}
