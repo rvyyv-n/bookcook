@@ -49,7 +49,7 @@ Every animation is one of these. If a new one doesn't fit any, it probably isn't
 | **Give** | Scales to .97 (a big disc to .9) while pressed | give | Buttons, tabs, the New disc, action discs |
 | **Appear** | Rises 12px and fades in; a photo fades up once loaded | base (photos: settle) | Sheets, toasts, popovers, new timers, photos |
 | **Leave** | Fades (sheets also drop 8px); a row then collapses | exit | Sheets, toasts, cleared grocery rows, a removed request |
-| **Settle** | Glides from its old place to its new one | settle | The tab bar's highlight moving to the tab you open, sorting and filtering the cookbook, Undo putting a card back, aisles closing up, a toast let go short of the edge, the editor tabs scrolling to the chosen one |
+| **Settle** | Glides from its old place to its new one | settle | The tab bar's highlight opening out behind the tab you open, sorting and filtering the cookbook, Undo putting a card back, aisles closing up, a toast let go short of the edge, the editor tabs scrolling to the chosen one |
 | **Morph** | One thing becomes another in place | settle | A recipe card's photo grows into the recipe's; Save recipe turns into a tick |
 | **Count** | A changed number rolls up (more) or down (fewer) | settle | Servings, and the amounts that follow them |
 | **Fill** | A bar or segment fills from its start | settle | Cook mode's step bar |

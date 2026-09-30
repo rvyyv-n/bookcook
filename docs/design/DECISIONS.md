@@ -101,5 +101,6 @@ The handoff has no screens for these, so they're built from the request link pag
 ## The floating tab bar (1.4.0)
 
 - **The phone tab bar floats** instead of running edge to edge: inset 12px from the sides, lifted just above the home indicator (`max(12px, safe-area − 4px)` from the bottom), rounded to the skin's `--radius-xl`, on frosted `--surface` with a hairline and `--shadow-lift`. A bar glued to the bottom sat awkwardly on the iPhone home indicator in the installed app; floating clears it the way iOS's own apps do, and the page scrolls softly underneath.
-- **The current tab sits on a soft `--accent-soft` pill** that glides to the next tab (the settle move in [`MOTION.md`](MOTION.md)). The handoff's bold label and heavier icon stay. `--sunk` read as a hole in dark themes.
+- **The current tab's icon sits on a small `--accent-soft` pill**, only as wide as the icon, which opens out from the middle when the tab is chosen (the settle move in [`MOTION.md`](MOTION.md)). A highlight the width of the whole column crowded the labels. The handoff's bold label and heavier icon stay.
+- **The bar keeps its size at Large and Huge**: the labels are already capped at 15px and the icons are 24px, so the disc, the pill and the row height are capped too rather than squeezing five columns.
 - The five columns, labels, 56px+ targets and the New disc are as the handoff has them.
