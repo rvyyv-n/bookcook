@@ -7,7 +7,7 @@ import { useT } from '../../i18n';
 import { formatIngredient } from '../../lib/parse/ingredient';
 import { Button, ButtonLink } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
-import { useStagger } from '../../ui/motion';
+import { prefersReducedMotion, useFlip, useStagger } from '../../ui/motion';
 import { Icon, type IconName } from '../../ui/Icon';
 import { TopicIcon, type TopicIconName } from '../../ui/TopicIcon';
 import type { Aisle } from '../../lib/parse/aisles';
@@ -115,7 +115,12 @@ function AddItem() {
 function AisleSection({ aisle, index, children }: { aisle: Aisle; index: number; children: ReactNode }) {
   const rise = useStagger(`aisle:${aisle}`, index);
   return (
-    <section aria-labelledby={`aisle-${index}`} className={cx('flex flex-col desk:pb-4.5', rise.className)} style={rise.style}>
+    <section
+      data-flip={aisle}
+      aria-labelledby={`aisle-${index}`}
+      className={cx('flex flex-col desk:pb-4.5', rise.className)}
+      style={rise.style}
+    >
       {children}
     </section>
   );
@@ -195,6 +200,8 @@ export function GroceryPage() {
   const groups = useMemo(() => groupByAisle(items ?? []), [items]);
   const [clearing, setClearing] = useState<ReadonlySet<string>>(new Set());
   const [restored, setRestored] = useState<ReadonlySet<string>>(new Set());
+  // Settle: when an aisle empties or a new one starts, the aisles around it glide into place.
+  const aisles = useFlip<HTMLDivElement>();
   if (!items) return null;
   const inBasket = items.filter((i) => i.checked).length;
   const origins = items.map(originOf);
@@ -219,7 +226,7 @@ export function GroceryPage() {
             className="shrink-0"
             onPress={async () => {
               // The rows fade out and close up before they're removed (at once if motion is reduced).
-              if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+              if (!prefersReducedMotion()) {
                 setClearing(new Set(items.filter((i) => i.checked).map((i) => i.id)));
                 await new Promise((done) => setTimeout(done, LEAVE_MS));
               }
@@ -240,7 +247,10 @@ export function GroceryPage() {
       {!items.length ? (
         <EmptyGrocery />
       ) : (
-        <div className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1">
+        <div
+          ref={aisles}
+          className="grid items-start gap-x-8 gap-y-4.5 pt-1 desk:grid-cols-[repeat(auto-fill,minmax(14.375rem,1fr))] desk:gap-y-1"
+        >
           {groups.map((g, gi) => (
             <AisleSection key={g.aisle} aisle={g.aisle} index={gi}>
               <h2 id={`aisle-${gi}`} className="type-heading mb-1 flex items-center gap-2 text-lg">

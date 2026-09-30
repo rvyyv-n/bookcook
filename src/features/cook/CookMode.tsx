@@ -33,10 +33,12 @@ import {
   type ListeningState,
 } from '../../ui/Cook';
 import { cx } from '../../ui/cx';
+import { RollScope, Rolling } from '../../ui/Rolling';
 import { TextField } from '../../ui/Field';
 import { TimerChip } from '../../ui/TimerChip';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
+import { prefersReducedMotion } from '../../ui/motion';
 import { useAdjustedIngredients } from '../recipe/useAdjusted';
 import { elapsed, secondsLeft, stepTimer, timerForStep, timerState, type CookTimer } from './timers';
 import { useAlarm, useCookTimers, useVoiceCommands } from './useCook';
@@ -139,7 +141,12 @@ function Checklist({
                 <li key={i.id}>
                   <CheckItem dense={dense} isSelected={checked.has(i.id)} onChange={(on) => onToggle(i.id, on)}>
                     <Struck>
-                      {amount && <b>{amount}</b>} {p.name}
+                      {amount && (
+                        <b>
+                          <Rolling value={amount}>{amount}</Rolling>
+                        </b>
+                      )}{' '}
+                      {p.name}
                       {note && `, ${note}`}
                     </Struck>
                   </CheckItem>
@@ -228,7 +235,7 @@ function useLeavingTiles(tiles: Tile[]): Tile[] {
   const keys = tiles.map((t) => t.key).join('|');
   // Declared before the effect that keeps `last` up to date, so it still sees the previous tiles.
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (prefersReducedMotion()) return;
     const current = new Set(keys.split('|'));
     const gone = last.current.flatMap((el, index) =>
       current.has(String(el.key)) ? [] : [{ el: cloneElement(el, { leaving: true }), index }],
@@ -523,7 +530,9 @@ function Cook({ recipe }: { recipe: Recipe }) {
             <h2 className="text-xl">{t.ui.recipe.ingredients}</h2>
             <ServingsStepper adj={adj} />
           </div>
-          <Checklist dense ingredients={adj.ingredients} checked={checked} onToggle={toggle} />
+          <RollScope value={adj.servings}>
+            <Checklist dense ingredients={adj.ingredients} checked={checked} onToggle={toggle} />
+          </RollScope>
         </aside>
         <div className="flex min-w-0 flex-col gap-5.5 overflow-y-auto px-8 pt-5.5 pb-6.5">
           <div className="flex items-center gap-4.5">
@@ -592,12 +601,14 @@ function Cook({ recipe }: { recipe: Recipe }) {
               ]}
             />
           </div>
-          <Checklist
-            ingredients={adj.ingredients}
-            checked={checked}
-            onToggle={toggle}
-            forServings={adj.canScale && adj.factor !== 1 ? c.forServings(adj.servings) : undefined}
-          />
+          <RollScope value={adj.servings}>
+            <Checklist
+              ingredients={adj.ingredients}
+              checked={checked}
+              onToggle={toggle}
+              forServings={adj.canScale && adj.factor !== 1 ? c.forServings(adj.servings) : undefined}
+            />
+          </RollScope>
         </div>
       </Sheet>
       {madeSheet}

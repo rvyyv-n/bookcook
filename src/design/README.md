@@ -2,13 +2,13 @@
 
 Everything visual that comes from the design handoff lives here. The handoff docs are in [`docs/design/`](../../docs/design/) (start with `README.md`; decisions taken on it are in `DECISIONS.md`).
 
-| File         | What it holds                                                                                                                                          |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tokens.css` | **Source of truth.** Every colour, type, space, radius, shadow and motion value, for all five skins, light and dark, both accents and three text sizes |
-| `theme.css`  | The CSS entry: Tailwind, self-hosted fonts, tokens, and the `@theme inline` mapping to utilities (`bg-paper`, `text-accent-text`, `font-title`, …)     |
-| `skin.ts`    | The six layout differences between skins that tokens can't express (`skinConfig`), `applyAppearance()` and `spiceGroups()`                             |
-| `icons.ts`   | The Material Symbols → lucide-react mapping. Render icons with `src/ui/Icon.tsx`                                                                       |
-| `motion.css` | **Owned by the app, not the handoff.** The leaving ease and duration (`--ease-in`, `--dur-exit`) and the animations built on them                      |
+| File         | What it holds                                                                                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tokens.css` | **Source of truth.** Every colour, type, space, radius, shadow and motion value, for all five skins, light and dark, both accents and three text sizes          |
+| `theme.css`  | The CSS entry: Tailwind, self-hosted fonts, tokens, and the `@theme inline` mapping to utilities (`bg-paper`, `text-accent-text`, `font-title`, …)              |
+| `skin.ts`    | The six layout differences between skins that tokens can't express (`skinConfig`), `applyAppearance()` and `spiceGroups()`                                      |
+| `icons.ts`   | The Material Symbols → lucide-react mapping. Render icons with `src/ui/Icon.tsx`                                                                                |
+| `motion.css` | **Owned by the app, not the handoff.** The motion tokens by role (give, exit, settle, page, slow) and the animations built on them; see `docs/design/MOTION.md` |
 
 **The first four files are kept byte-identical to the handoff** (they're in `.prettierignore`). Adapt the app to them rather than editing them; a new handoff replaces them wholesale and leaves `motion.css` alone.
 

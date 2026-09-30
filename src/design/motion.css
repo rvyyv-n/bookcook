@@ -1,13 +1,25 @@
 /*
  * App motion, on top of the handoff's (--dur, --ease-out, rise, pop and breathe are in tokens.css).
  * This is the one file in src/design/ the app owns: a new handoff replaces the others and leaves it.
- * Entering takes --dur with --ease-out; leaving is faster, with --ease-in, so what goes gets out of
- * the way. Reduced motion is handled by the global rule in index.css, which makes every animation
- * and transition instant, and by tokens.css, which sets --dur to 1ms.
+ * The scheme (which move to use when, and the checklist for a new one) is docs/design/MOTION.md.
+ * Components take their timing from these tokens by role and never write their own milliseconds
+ * (src/ui/motion.test.ts checks). Reduced motion is handled by the global rule in index.css, which
+ * makes every animation and transition instant, and by tokens.css, which sets --dur to 1ms.
+ *
+ *   give    90ms    a press: the thing gives under the finger
+ *   exit    150ms   leaving, with --ease-in, so what goes gets out of the way
+ *   dur     200ms   appearing and most changes of state, with --ease-out (tokens.css)
+ *   settle  320ms   something finding its new place or shape, with --ease-settle
+ *   page    340ms   moving between screens
+ *   slow    400ms   a change that shouldn't draw the eye
  */
 :root {
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  /* A long, soft landing with no bounce: things arrive quickly and ease the last few pixels. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-give: 90ms;
   --dur-exit: 150ms;
+  --dur-settle: 320ms;
   /* Slow changes of state that shouldn't draw the eye, like a timer warming as it runs out. */
   --dur-slow: 400ms;
   /* Moving between screens: a slide on the phone, a cross-fade between tabs and on desktop. */
@@ -75,6 +87,52 @@
   }
   /* The scrim behind a sheet. */
   --animate-scrim-in: fade-in var(--dur) var(--ease-out) both;
+
+  /* Settle: a changed number rolls up into place (servings, and the amounts that follow them). */
+  --animate-count-up: bc-count-up var(--dur-settle) var(--ease-settle) both;
+  --animate-count-down: bc-count-down var(--dur-settle) var(--ease-settle) both;
+  @keyframes bc-count-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.45em);
+    }
+  }
+  @keyframes bc-count-down {
+    from {
+      opacity: 0;
+      transform: translateY(-0.45em);
+    }
+  }
+  /* Celebrate: a tick draws itself, just after its box pops (--animate-pop, 260ms). Lucide's check
+     path is under 24 units long, so a 24-unit dash hides all of it. */
+  --animate-draw: bc-draw var(--dur-settle) var(--ease-settle) 60ms both;
+  @keyframes bc-draw {
+    from {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 24;
+    }
+    to {
+      stroke-dasharray: 24;
+      stroke-dashoffset: 0;
+    }
+  }
+  /* Appear: a photo fades up from its placeholder colour once it has loaded. */
+  --animate-photo-in: fade-in var(--dur-settle) var(--ease-settle) both;
+  /* Settle: the current tab's icon lifts into place. */
+  --animate-tab-in: bc-tab-in var(--dur-settle) var(--ease-settle) both;
+  @keyframes bc-tab-in {
+    from {
+      transform: translateY(3px) scale(0.88);
+    }
+  }
+  /* Morph: a button's label gives way to a tick (Save recipe, then the recipe opens). */
+  --animate-morph-in: bc-morph-in var(--dur-settle) var(--ease-settle) both;
+  @keyframes bc-morph-in {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
 }
 
 /*
@@ -159,5 +217,5 @@
  * normal speed on release: the transition that runs is the one of the state being entered.
  */
 [data-pressed] {
-  transition-duration: 90ms;
+  transition-duration: var(--dur-give);
 }

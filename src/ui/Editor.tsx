@@ -26,6 +26,7 @@ import { mentionClass } from './Cook';
 import { cx } from './cx';
 import { AutoSizeInput } from './Field';
 import { Icon, type IconName } from './Icon';
+import { prefersReducedMotion } from './motion';
 import { Photo } from './Photo';
 
 export { TabPanel, Tabs } from 'react-aria-components';
@@ -67,7 +68,7 @@ function useSideScroll() {
       const pad = 32;
       const left = picked.getBoundingClientRect().left - row.getBoundingClientRect().left + row.scrollLeft;
       const right = left + picked.offsetWidth;
-      const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const smooth = !prefersReducedMotion();
       if (left - pad < row.scrollLeft) row.scrollTo({ left: left - pad, behavior: smooth ? 'smooth' : 'auto' });
       else if (right + pad > row.scrollLeft + row.clientWidth)
         row.scrollTo({ left: right + pad - row.clientWidth, behavior: smooth ? 'smooth' : 'auto' });

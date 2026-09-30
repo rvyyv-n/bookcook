@@ -11,6 +11,7 @@ import { Chip } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { SearchField } from '../../ui/Field';
 import { ChoiceMenu } from '../../ui/Menu';
+import { useFlip } from '../../ui/motion';
 import { useToast } from '../../ui/Toast';
 import { RecipeView } from '../recipe/RecipeDetail';
 import { addExampleRecipes } from './examples';
@@ -211,6 +212,8 @@ function CookbookPhone() {
   const t = useT();
   const data = useCookbook();
   const { recipes, list, filter, searching } = data;
+  // Settle: sorting, filtering or a recipe put back by Undo glides the cards into their new places.
+  const grid = useFlip<HTMLUListElement>();
   if (recipes === undefined) return null;
   if (!recipes.length)
     return (
@@ -241,7 +244,7 @@ function CookbookPhone() {
             </h2>
             {!searching && <SortMenu />}
           </div>
-          <ul className={cx(cardGridClass, 'pt-1.5 pb-7')} aria-label={t.ui.library.recipes}>
+          <ul ref={grid} className={cx(cardGridClass, 'pt-1.5 pb-7')} aria-label={t.ui.library.recipes}>
             {list.map((r, i) => (
               <RecipeCard key={r.id} index={i} recipe={r} parentTitle={data.parentTitle(r)} />
             ))}
@@ -262,6 +265,8 @@ function CookbookDesktop() {
   const data = useCookbook();
   const { recipes, list, filter, searching } = data;
   const [params] = useSearchParams();
+  // Settle: sorting, filtering or a recipe put back by Undo glides the rows into their new places.
+  const rows = useFlip<HTMLUListElement>();
   if (recipes === undefined) return null;
   if (!recipes.length)
     return (
@@ -290,7 +295,7 @@ function CookbookDesktop() {
               </h2>
               {!searching && <SortMenu />}
             </div>
-            <ul className="flex flex-col gap-1 px-3 pt-2.5 pb-6" aria-label={t.ui.library.recipes}>
+            <ul ref={rows} className="flex flex-col gap-1 px-3 pt-2.5 pb-6" aria-label={t.ui.library.recipes}>
               {list.map((r, i) => (
                 <RecipeRow
                   key={r.id}

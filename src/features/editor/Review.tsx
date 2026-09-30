@@ -14,6 +14,7 @@ import { getUnit } from '../../lib/parse/units';
 import { Button } from '../../ui/Button';
 import { GrowingTextArea, IngredientLineField, SaveBar } from '../../ui/Editor';
 import { ReviewCard, ReviewIngredientRow, ReviewSectionHeading, ReviewStepRow, ReviewTap } from '../../ui/Review';
+import { useDone } from '../../ui/motion';
 import { useToast } from '../../ui/Toast';
 import { minutesText, type IngredientLine } from './model';
 import { checkText, DetailsFields, isHeadingLine, type EditorApi } from './sections';
@@ -54,11 +55,13 @@ function Review({ draftId }: { draftId: string }) {
   const [editing, setEditing] = useState<string | null>(null);
   const [nameError, setNameError] = useState(false);
   const [allSteps, setAllSteps] = useState(false);
+  const [savedDone, finishSaving] = useDone();
   const titleRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
   const groups = useMemo(() => spiceGroups((state?.lines ?? []).map((l) => sectionHeading(l.text))), [state?.lines]);
 
   async function save() {
-    if (!state || !draft) return;
+    // Once saved, the tick is showing and the recipe is about to open: a second press does nothing.
+    if (!state || !draft || savedDone) return;
     if (!state.recipe.title?.trim()) {
       setNameError(true);
       setEditing('details');
@@ -67,6 +70,7 @@ function Review({ draftId }: { draftId: string }) {
     }
     await editor.finish();
     const recipe = await commitDraft(draft.id);
+    await finishSaving();
     if (recipe.author) void setSetting('lastAuthor', recipe.author);
     void requestPersistentStorage();
     toast.show({ message: t.ui.editor.saved, tone: 'success' });
@@ -339,7 +343,7 @@ function Review({ draftId }: { draftId: string }) {
       </>
     ) : null;
   const saveButton = (size: 'L' | 'XL', className?: string) => (
-    <Button variant="primary" size={size} icon="check" onPress={() => void save()} className={className}>
+    <Button variant="primary" size={size} icon="check" done={savedDone} onPress={() => void save()} className={className}>
       {t.ui.common.saveRecipe}
     </Button>
   );

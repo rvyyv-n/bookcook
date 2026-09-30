@@ -8,6 +8,7 @@ import { useT } from '../../i18n';
 import { requestPersistentStorage } from '../../lib/platform/storagePersist';
 import { Button } from '../../ui/Button';
 import { KeyHints, SaveBar, SavedIndicator, SectionTabs, TabPanel, Tabs } from '../../ui/Editor';
+import { useDone } from '../../ui/motion';
 import { useToast } from '../../ui/Toast';
 import { isBlankDraft, linesToIngredients } from './model';
 import { DeskDetails, DetailsFields, IngredientsEditor, StepsEditor, StoryEditor, type EditorApi } from './sections';
@@ -67,13 +68,15 @@ function RecipeEditor({ draftId, fresh = false }: { draftId: string; fresh?: boo
   const { draft, state } = editor;
   const [section, setSection] = useState<Section>('details');
   const [nameError, setNameError] = useState(false);
+  const [savedDone, finishSaving] = useDone();
   const titleRef = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
   const isEdit = draft?.mode === 'edit';
   const leave = useLeave(draft?.recipeId ? `/r/${draft.recipeId}` : '/');
   const ingredients = useMemo(() => (state ? linesToIngredients(state.lines) : []), [state]);
 
   async function save() {
-    if (!state || !draft) return;
+    // Once saved, the tick is showing and the recipe is about to open: a second press does nothing.
+    if (!state || !draft || savedDone) return;
     if (!state.recipe.title?.trim()) {
       setNameError(true);
       setSection('details');
@@ -82,6 +85,7 @@ function RecipeEditor({ draftId, fresh = false }: { draftId: string; fresh?: boo
     }
     await editor.finish();
     const recipe = await commitDraft(draft.id);
+    await finishSaving();
     if (recipe.author) void setSetting('lastAuthor', recipe.author);
     void requestPersistentStorage();
     toast.show({ message: e.saved, tone: 'success' });
@@ -130,7 +134,7 @@ function RecipeEditor({ draftId, fresh = false }: { draftId: string; fresh?: boo
         <header className="sticky top-0 z-20 flex items-center gap-4 border-b border-line bg-paper bg-(image:--grain) px-7 py-4">
           <h1 className="font-(family-name:--font-body) text-base font-bold text-ink-muted [font-variation-settings:normal]">{title}</h1>
           <span className="ml-auto">{saved}</span>
-          <Button variant="primary" icon="check" onPress={() => void save()} className="pr-[1.3rem] pl-[1rem]">
+          <Button variant="primary" icon="check" done={savedDone} onPress={() => void save()} className="pr-[1.3rem] pl-[1rem]">
             {t.ui.common.saveRecipe}
           </Button>
         </header>
@@ -190,7 +194,7 @@ function RecipeEditor({ draftId, fresh = false }: { draftId: string; fresh?: boo
         </TabPanel>
       </Tabs>
       <SaveBar>
-        <Button variant="primary" size="XL" icon="check" onPress={() => void save()} className="w-full">
+        <Button variant="primary" size="XL" icon="check" done={savedDone} onPress={() => void save()} className="w-full">
           {t.ui.common.saveRecipe}
         </Button>
       </SaveBar>

@@ -19,6 +19,7 @@ import { Chip } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { Icon, type IconName } from '../../ui/Icon';
 import { Photo } from '../../ui/Photo';
+import { RollScope } from '../../ui/Rolling';
 import { DangerCard, RowButton } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
 import { useToast } from '../../ui/Toast';
@@ -301,7 +302,10 @@ function Ingredients({ adj, desk }: { adj: Adjusted; desk?: boolean }) {
           {adj.canScale && <IngredientControls {...adj} showUnits={false} className="no-print" />}
         </>
       )}
-      <IngredientList ingredients={adj.ingredients} dense={desk} />
+      {/* More servings, the amounts roll up; fewer, they roll down. */}
+      <RollScope value={adj.servings}>
+        <IngredientList ingredients={adj.ingredients} dense={desk} />
+      </RollScope>
       {desk && <IngredientControls {...adj} canScale={false} className="no-print pt-3" />}
     </section>
   );

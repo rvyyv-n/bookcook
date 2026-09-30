@@ -18,18 +18,24 @@ export function StepTitle({ children }: { children: ReactNode }) {
   );
 }
 
-/** One segment per step: done in ink, the current one in the accent, the rest as lines. */
+/**
+ * One segment per step: done in ink, the current one in the accent, the rest as lines. Settle: going
+ * on, the next segment fills from its left edge as the one before turns to ink; going back, it empties.
+ */
 export function StepBar({ current, total, className }: { current: number; total: number; className?: string }) {
   return (
     <div aria-hidden className={cx('grid gap-1.25', className)} style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
       {Array.from({ length: total }, (_, i) => (
-        <span
-          key={i}
-          className={cx(
-            'h-1.25 rounded-full transition-colors duration-(--dur) ease-(--ease-out)',
-            i < current ? 'bg-ink' : i === current ? 'bg-accent-mark' : 'bg-line',
-          )}
-        />
+        <span key={i} className="h-1.25 overflow-hidden rounded-full bg-line">
+          <span
+            className={cx(
+              'block h-full origin-left rounded-full',
+              'transition-[scale,background-color] duration-(--dur-settle) ease-(--ease-settle)',
+              i < current ? 'bg-ink' : 'bg-accent-mark',
+              i <= current ? 'scale-x-100' : 'scale-x-0',
+            )}
+          />
+        </span>
       ))}
     </div>
   );

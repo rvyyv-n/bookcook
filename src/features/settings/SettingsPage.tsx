@@ -15,6 +15,7 @@ import { FoldPanel } from '../../ui/Fold';
 import { Icon, type IconName } from '../../ui/Icon';
 import { FoldRow, RowButton, SelectRow } from '../../ui/Rows';
 import { Sheet } from '../../ui/Sheet';
+import { prefersReducedMotion } from '../../ui/motion';
 import { BackupRows, useBackupStatus } from './Backup';
 import { nearest, SpeechSettings } from './SpeechSettings';
 
@@ -288,7 +289,7 @@ function SectionIndex() {
           key={id}
           aria-current={current === id ? 'true' : undefined}
           onPress={() => {
-            const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const reduce = prefersReducedMotion();
             // Scroll only the page's own scroller: scrollIntoView would also shift the shell around it.
             const main = document.getElementById('main');
             const el = document.getElementById(`settings-${id}`);

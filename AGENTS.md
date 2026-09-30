@@ -16,6 +16,7 @@ A voice-first family recipe app: React 19, TypeScript, Vite, Tailwind v4, React 
 
 - **Design values live only in `src/design/`.** `tokens.css`, `theme.css`, `skin.ts` and `icons.ts` stay byte-identical to the handoff; adapt the app to them. New design values that belong with the design (like motion) go in an app-owned file beside them, `motion.css`. Component styling lives in `src/ui/`; screens compose `src/ui` and don't style controls themselves. See `src/design/README.md`.
 - Size in rem (1rem = 16px at Normal) so Large and Huge text reflow. Borders are inset box-shadows.
+- Motion follows [`docs/design/MOTION.md`](docs/design/MOTION.md): each animation is one of its moves and takes its timing from the `motion.css` tokens by role, never its own milliseconds (a test checks).
 - One primary button per screen. Icons render through `src/ui/Icon.tsx`.
 - Every user-facing string goes in `src/i18n/en.ts`.
 - IndexedDB is only touched through the repositories in `src/db/`. Schema changes need a new Dexie version with an upgrade.
