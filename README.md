@@ -94,7 +94,7 @@ Installed, Bookcook opens in its own window, works offline, and tells you when a
 - **A cookbook to browse.** Search, collections, tags, sorting, and "Make Mine" copies of family recipes.
 - **Grocery list.** Add a recipe's ingredients at the current scale; duplicates merge and items are grouped by aisle.
 - **Requests.** Ask someone for the recipe you wish you could make like they do. They get a link, tell it, and send it back.
-- **Share and back up.** Share a recipe as a link that adds it to someone else's cookbook. Back up everything, photos and voice notes included, to a `.bookcook` file, and restore it on any device.
+- **Share and back up.** Share a recipe as a Bookcook link that adds it to someone else's cookbook, as text with its photo, or copy the link. Back up everything, photos and voice notes included, to a `.bookcook` file, and restore it on any device.
 - **Print the family cookbook.** A cover, contents, one recipe per page and the stories behind them, on Letter or A4.
 - **Five looks.** Five skins, light and dark, two accents and three text sizes, up to Huge.
 - **A gentle start.** A three-step welcome sets the text size, shows what voice can do and asks for the microphone once, with plain help if it's blocked. It can be opened again from Settings.
