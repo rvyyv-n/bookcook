@@ -5,6 +5,8 @@ import { useCollections, useDrafts, useRecipes, useRequests } from '../../db/hoo
 import type { Recipe, RecipeRequest } from '../../db/types';
 import { useT } from '../../i18n';
 import { Button, ButtonLink } from '../../ui/Button';
+import { EmptyState } from '../../ui/EmptyState';
+import { Icon, type IconName } from '../../ui/Icon';
 import { Chip } from '../../ui/Controls';
 import { cx } from '../../ui/cx';
 import { SearchField } from '../../ui/Field';
@@ -116,9 +118,15 @@ function SortMenu() {
   );
 }
 
-/** First run: one big button. "Try an example" fills the cookbook for a look around. */
+const EMPTY_ICONS: IconName[] = ['mic', 'tidy', 'startCooking'];
+
+/**
+ * First run: a sample recipe card, the question, how saving one goes, and the one big button.
+ * "Try an example" fills the cookbook for a look around.
+ */
 function EmptyCookbook() {
   const t = useT();
+  const tl = t.ui.library;
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
@@ -127,30 +135,52 @@ function EmptyCookbook() {
   useEffect(() => {
     if (welcomed) heading.current?.focus();
   }, [welcomed]);
+  const sample = tl.emptySampleRecipe;
   return (
-    <section className="flex max-w-xl flex-1 flex-col justify-center gap-4.5 px-2 py-10">
-      <p className="type-eyebrow text-lg text-accent-text">{t.ui.library.emptyEyebrow}</p>
-      <h1 ref={heading} tabIndex={-1} className="text-3xl leading-[1.02] tracking-[-0.02em] outline-none">
-        {t.ui.library.emptyTitle}
-      </h1>
-      <p className="text-lg leading-[1.4] text-ink-muted">{t.ui.library.emptyBody}</p>
-      <ButtonLink href="/new" variant="primary" icon="mic" className="mt-2.5 pr-6 pl-[1.2rem]">
-        {t.ui.library.emptyAction}
-      </ButtonLink>
-      <Button
-        variant="quiet"
-        className="self-start"
-        isDisabled={busy}
-        onPress={async () => {
-          setBusy(true);
-          await addExampleRecipes();
-          toast.show({ message: t.ui.library.examplesAdded, tone: 'success' });
-          setBusy(false);
-        }}
-      >
-        {t.ui.library.tryExample}
-      </Button>
-    </section>
+    <EmptyState
+      id="cookbook-empty"
+      className="w-full max-w-5xl desk:my-auto"
+      headingLevel={1}
+      headingRef={heading}
+      sampleLabel={tl.emptySample}
+      sample={
+        <>
+          {/* Where the photo goes: the pot, on the accent's soft tint. */}
+          <span aria-hidden className="grid h-28 place-items-center rounded-[min(var(--radius-md),18px)] bg-accent-soft text-accent-text">
+            <Icon name="startCooking" size="2.6rem" />
+          </span>
+          <p className="type-eyebrow text-ink-muted">{t.ui.common.fromKitchen(sample.author)}</p>
+          <p className="type-display text-2xl leading-[1.05]">{sample.title}</p>
+          <p className="text-ink-muted">
+            {t.ui.common.minutes(sample.minutes)} · {t.ui.common.serves(sample.serves)}
+          </p>
+          <p className="type-handwritten text-lg leading-[1.3] text-ink-muted">“{sample.quote}”</p>
+        </>
+      }
+      eyebrow={tl.emptyEyebrow}
+      title={tl.emptyTitle}
+      steps={tl.emptySteps.map((step, i) => ({ icon: EMPTY_ICONS[i]!, ...step }))}
+      action={
+        <div className="flex flex-col gap-1 desk:flex-row desk:flex-wrap desk:items-center desk:gap-2">
+          <ButtonLink href="/new" variant="primary" icon="mic" className="w-full pr-6 pl-[1.2rem] desk:w-auto">
+            {tl.emptyAction}
+          </ButtonLink>
+          <Button
+            variant="quiet"
+            className="self-center desk:self-auto"
+            isDisabled={busy}
+            onPress={async () => {
+              setBusy(true);
+              await addExampleRecipes();
+              toast.show({ message: tl.examplesAdded, tone: 'success' });
+              setBusy(false);
+            }}
+          >
+            {tl.tryExample}
+          </Button>
+        </div>
+      }
+    />
   );
 }
 
