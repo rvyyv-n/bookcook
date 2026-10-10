@@ -28,14 +28,27 @@ A voice-first family recipe app: React 19, TypeScript, Vite, Tailwind v4, React 
 
 `npm run test:visual` compares the key screens (every skin, light and dark, Huge, desktop) with the approved pictures in `e2e/snapshots`. The hook runs it when `src/` changes. When a screen is meant to change, run `npm run test:visual:update` and commit the new pictures with the change.
 
+`npm ci` installs from the lockfile (CI and fresh worktrees). Dev servers: the app on `npm run dev -- --port 5288 --strictPort`, the site on `npm run site:dev -- --port 5290`. Those are the main folder's ports; in a worktree pick a free port and point screenshot scripts at it.
+
+## Models and threads
+
+- **Gemini Flash**: repo scouting, test suites and visual-test runs, fast debug loops, CI.
+- **Sonnet**: extended build passes, features, UI polish.
+- **Opus**: architecture and ADRs (`DECISIONS.md`), 1-3 turns per task; no file reading or test-fix loops.
+- Thread length, worktrees, delegation and leaving nothing running follow the global rules.
+
 ## Looking at the app
 
 Screenshot only when a change is visual and can't be checked from tests or the page's text. Start `npm run dev -- --port 5288`, then `node scripts/shot.mjs '<json>'`. The JSON sets the path, viewport, theme, text size, any setting (`"settings":{"skin":"heirloom"}`) and click actions. To compare skins, themes, text sizes or widths, use `"grid"`: one labelled image instead of many shots. Examples are at the top of the script.
 
 ## Commits
 
-Commits are authored and committed as `rvyyv-n <296653698+rvyyv-n@users.noreply.github.com>` only. Commit messages and PR descriptions carry no co-author, session-link or generated-by lines.
+Commits are authored and committed as `rvyyv-n <296653698+rvyyv-n@users.noreply.github.com>` only. Commit messages and PR descriptions carry no co-author, session-link, generated-by or assistant lines, and no AI badges or mentions anywhere in the repo.
 
 ## Deployment
 
 GitHub Actions (`.github/workflows/deploy.yml`) runs the checks on every push and publishes `main` to GitHub Pages under `/bookcook/`. Pushing a `wip/` branch publishes a Cloudflare preview at `<branch-with-dashes>.bookcook.pages.dev` for trying a batch before it's merged. Anything that builds a URL by hand must go through `import.meta.env.BASE_URL` (the router already uses it as its basename). After changing the logo, run `npm run icons` to redraw the favicon and app icons.
+
+## Verify
+
+For a test handoff, run `npm run check` and `npm run test:visual` from the repo root. Never run `test:visual:update`.
