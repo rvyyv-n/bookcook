@@ -1,0 +1,44 @@
+{
+  "$schema": "https://t3.codes/schema/t3.json",
+  "iconPath": "website/public/favicon.svg",
+  "scripts": [
+    {
+      "name": "Worktree Setup",
+      "command": "npm ci",
+      "icon": "configure",
+      "runOnWorktreeCreate": true,
+      "async": false
+    },
+    {
+      "name": "Dev",
+      "command": "npm run dev -- --port 5288 --strictPort",
+      "icon": "play",
+      "stopOnSettle": true,
+      "previewUrl": "http://localhost:5288",
+      "autoOpenPreview": true
+    },
+    {
+      "name": "Site Dev",
+      "command": "npm run site:dev",
+      "icon": "play",
+      "stopOnSettle": true,
+      "previewUrl": "http://localhost:5290",
+      "autoOpenPreview": true
+    },
+    {
+      "name": "Check",
+      "command": "npm run check",
+      "icon": "lint"
+    },
+    {
+      "name": "Test Visual",
+      "command": "npm run test:visual",
+      "icon": "test"
+    },
+    {
+      "name": "Build",
+      "command": "npm run build",
+      "icon": "build"
+    }
+  ]
+}
